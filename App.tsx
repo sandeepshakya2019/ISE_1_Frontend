@@ -138,11 +138,13 @@ import KYCScreen from './src/screens/KYCScreen';
 import LoanDetailsScreen from './src/screens/LoanDetailsScreen';
 import LoanBorrowScreen from './src/screens/LoanBorrowScreen';
 import LoanRepayScreen from './src/screens/LoanRepayScreen';
+import { View, Text } from 'react-native';
 
 const Stack = createStackNavigator();
 
 const App = () => {
   return (
+    // 
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Login">
         <Stack.Screen
@@ -165,7 +167,7 @@ const App = () => {
           component={LoanDetailsScreen}
           options={{ headerShown: true, title: 'Loan Details' }}
         />
-        <Stack.Screen
+         <Stack.Screen
           name="LoanBorrow"
           component={LoanBorrowScreen}
           options={{ headerShown: true, title: 'Borrow Loan' }}
@@ -176,7 +178,12 @@ const App = () => {
           options={{ headerShown: true, title: 'Repay Loan' }}
         />
       </Stack.Navigator>
-    </NavigationContainer>
+      <View> 
+      <Text>fff</Text>
+    </View>  
+
+     </NavigationContainer>
+
   );
 };
 
