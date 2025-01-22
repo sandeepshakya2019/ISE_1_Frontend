@@ -6,7 +6,7 @@ import KYCScreen from '../screens/KYCScreen';
 import LoanDetailsScreen from '../screens/LoanDetailsScreen';
 import LoanBorrowScreen from '../screens/LoanBorrowScreen';
 import LoanRepayScreen from '../screens/LoanRepayScreen';
-
+import PaymentGatewayScreen from '../screens/PaymentGatewayScreen';
 export type RootStackParamList = {
   Login: undefined;
   OTP: undefined;
@@ -51,6 +51,12 @@ const StackNavigator = () => {
         component={LoanRepayScreen} 
         options={{ title: 'Repay Loan' }}
       />
+      <Stack.Screen 
+      name="PaymentGateway" 
+      component={PaymentGatewayScreen} 
+      options={{ title: 'Payment Gateway' }} 
+      />
+      
     </Stack.Navigator>
   );
 };
