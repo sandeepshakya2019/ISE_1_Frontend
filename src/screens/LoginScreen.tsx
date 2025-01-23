@@ -1,7 +1,16 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity } from 'react-native';
+import React, {useState} from 'react';
+import {
+  View,
+  Text,
+  TextInput,
+  Button,
+  StyleSheet,
+  TouchableOpacity,
+  Image,
+} from 'react-native';
+import Logo from '../components/Shared/Logo';
 
-const LoginScreen = ({ navigation }) => {
+const LoginScreen = ({navigation}) => {
   const [mobileNumber, setMobileNumber] = useState('');
   const [email, setEmail] = useState('');
   const [isTermsAccepted, setIsTermsAccepted] = useState(false);
@@ -16,7 +25,8 @@ const LoginScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.logo}>App Name</Text>
+      <Logo />
+      <Text style={styles.headingText}>Register</Text>
       <TextInput
         placeholder="Mobile Number"
         style={styles.input}
@@ -33,8 +43,7 @@ const LoginScreen = ({ navigation }) => {
       />
       <TouchableOpacity
         onPress={() => setIsTermsAccepted(!isTermsAccepted)}
-        style={styles.checkboxContainer}
-      >
+        style={styles.checkboxContainer}>
         <Text style={styles.checkbox}>
           {isTermsAccepted ? '☑' : '☐'} Accept Terms and Conditions
         </Text>
@@ -45,11 +54,27 @@ const LoginScreen = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: 20 },
-  logo: { fontSize: 24, fontWeight: 'bold', marginBottom: 20 },
-  input: { width: '100%', borderWidth: 1, borderColor: '#ccc', borderRadius: 5, padding: 10, marginVertical: 10 },
-  checkboxContainer: { flexDirection: 'row', marginVertical: 10 },
-  checkbox: { fontSize: 16, color: '#333' },
+  headingText: {
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+    backgroundColor: '#ffffff', // White background
+  },
+  input: {
+    width: '100%',
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    padding: 10,
+    marginVertical: 10,
+  },
+  checkboxContainer: {flexDirection: 'row', marginVertical: 10},
+  checkbox: {fontSize: 16, color: '#333'},
 });
 
 export default LoginScreen;

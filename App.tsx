@@ -130,8 +130,8 @@
 
 // export default App;
 import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
+import {NavigationContainer} from '@react-navigation/native';
+import {createStackNavigator} from '@react-navigation/stack';
 import LoginScreen from './src/screens/LoginScreen';
 import OTPScreen from './src/screens/OTPScreen';
 import KYCScreen from './src/screens/KYCScreen';
@@ -139,60 +139,67 @@ import LoanDetailsScreen from './src/screens/LoanDetailsScreen';
 import LoanBorrowScreen from './src/screens/LoanBorrowScreen';
 import LoanRepayScreen from './src/screens/LoanRepayScreen';
 import PaymentGatewayScreen from './src/screens/PaymentGatewayScreen';
-import { View, Text } from 'react-native';
+import {View, Text} from 'react-native';
 
 const Stack = createStackNavigator();
-const user = true
-const kyc = true
+const user = false;
+const kyc = false;
 
 const App = () => {
   return (
-    
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Login">
-        <Stack.Screen
-          name="Register"
-          component={LoginScreen}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="Login"
-          component={LoginScreen}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="OTP"
-          component={OTPScreen}
-          options={{ headerShown: true, title: 'Enter OTP' }}
-        />
-        <Stack.Screen
-          name="KYC"
-          component={KYCScreen}
-          options={{ headerShown: true, title: 'KYC Details' }}
-        />
-        <Stack.Screen
-          name="LoanDetails"
-          component={LoanDetailsScreen}
-          options={{ headerShown: true, title: 'Loan Details' }}
-        />
-         <Stack.Screen
-          name="LoanBorrow"
-          component={LoanBorrowScreen}
-          options={{ headerShown: true, title: 'Borrow Loan' }}
-        />
-        <Stack.Screen
-          name="LoanRepay"
-          component={LoanRepayScreen}
-          options={{ headerShown: true, title: 'Repay Loan' }}
-        />  
-        <Stack.Screen
-         name="PaymentGateway" 
-         component={PaymentGatewayScreen} 
-         options={{ title: 'Payment Gateway' }}
-          />
-        </Stack.Navigator>
-     </NavigationContainer>
-
+      <Stack.Navigator initialRouteName={user ? 'LoanDetails' : 'Login'}>
+        {!user ? (
+          <>
+            <Stack.Screen
+              name="Register"
+              component={LoginScreen}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="Login"
+              component={LoginScreen}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="OTP"
+              component={OTPScreen}
+              options={{headerShown: true, title: 'Enter OTP'}}
+            />
+          </>
+        ) : (
+          <>
+            {kyc ? null : (
+              <Stack.Screen
+                name="KYC"
+                component={KYCScreen}
+                options={{headerShown: true, title: 'KYC Details'}}
+              />
+            )}
+            <Stack.Screen
+              name="LoanDetails"
+              component={LoanDetailsScreen}
+              options={{headerShown: true, title: 'Loan Details'}}
+            />
+            <Stack.Screen
+              name="LoanBorrow"
+              component={LoanBorrowScreen}
+              options={{headerShown: true, title: 'Borrow Loan'}}
+            />
+            <Stack.Screen
+              name="LoanRepay"
+              component={LoanRepayScreen}
+              options={{headerShown: true, title: 'Repay Loan'}}
+            />
+            <Stack.Screen
+              name="PaymentGateway"
+              component={PaymentGatewayScreen}
+              options={{title: 'Payment Gateway'}}
+            />
+          </>
+        )}
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 };
 
