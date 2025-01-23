@@ -142,12 +142,19 @@ import PaymentGatewayScreen from './src/screens/PaymentGatewayScreen';
 import { View, Text } from 'react-native';
 
 const Stack = createStackNavigator();
+const user = true
+const kyc = true
 
 const App = () => {
   return (
     
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Login">
+        <Stack.Screen
+          name="Register"
+          component={LoginScreen}
+          options={{ headerShown: false }}
+        />
         <Stack.Screen
           name="Login"
           component={LoginScreen}
