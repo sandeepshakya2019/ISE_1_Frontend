@@ -1,5 +1,5 @@
 import React from 'react';
-import { createStackNavigator } from '@react-navigation/stack';
+import {createStackNavigator} from '@react-navigation/stack';
 import LoginScreen from '../screens/LoginScreen';
 import OTPScreen from '../screens/OTPScreen';
 import KYCScreen from '../screens/KYCScreen';
@@ -21,42 +21,41 @@ const Stack = createStackNavigator<RootStackParamList>();
 const StackNavigator = () => {
   return (
     <Stack.Navigator initialRouteName="Login">
-      <Stack.Screen 
-        name="Login" 
-        component={LoginScreen} 
-        options={{ title: 'Login / Register' }}
+      <Stack.Screen
+        name="Login"
+        component={LoginScreen}
+        options={{title: 'Login / Register'}}
       />
-      <Stack.Screen 
-        name="OTP" 
-        component={OTPScreen} 
-        options={{ title: 'OTP Verification' }}
+      <Stack.Screen
+        name="OTP"
+        component={OTPScreen}
+        options={{title: 'OTP Verification'}}
       />
-      <Stack.Screen 
-        name="KYC" 
-        component={KYCScreen} 
-        options={{ title: 'KYC Details' }}
+      <Stack.Screen
+        name="KYC"
+        component={KYCScreen}
+        options={{title: 'KYC Details'}}
       />
-      <Stack.Screen 
-        name="LoanDetails" 
-        component={LoanDetailsScreen} 
-        options={{ title: 'Loan Details' }}
+      <Stack.Screen
+        name="LoanDetails"
+        component={LoanDetailsScreen}
+        options={{title: 'Loan Details'}}
       />
-      <Stack.Screen 
-        name="LoanBorrow" 
-        component={LoanBorrowScreen} 
-        options={{ title: 'Borrow Loan' }}
+      <Stack.Screen
+        name="LoanBorrow"
+        component={LoanBorrowScreen}
+        options={{title: 'Borrow Loan'}}
       />
-      <Stack.Screen 
-        name="LoanRepay" 
-        component={LoanRepayScreen} 
-        options={{ title: 'Repay Loan' }}
+      <Stack.Screen
+        name="LoanRepay"
+        component={LoanRepayScreen}
+        options={{title: 'Repay Loan'}}
       />
-      <Stack.Screen 
-      name="PaymentGatewayScreen" 
-      component={PaymentGatewayScreen} 
-      options={{ title: 'Payment Gateway' }} 
+      <Stack.Screen
+        name="PaymentGatewayScreen"
+        component={PaymentGatewayScreen}
+        options={{title: 'Payment Gateway'}}
       />
-      
     </Stack.Navigator>
   );
 };

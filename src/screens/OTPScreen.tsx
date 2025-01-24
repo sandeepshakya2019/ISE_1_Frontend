@@ -1,32 +1,83 @@
 import React, {useState, useEffect} from 'react';
-import {View, Text, TextInput, Button, StyleSheet, Alert} from 'react-native';
+import {View, TextInput, Button, StyleSheet, Alert, Text} from 'react-native';
+import Toast from 'react-native-toast-message';
+import Logo from '../components/Shared/Logo';
+import {api} from '../utils/api'; // Assuming you have an API utility file to handle requests
 
 const OTPScreen = ({navigation, route}) => {
   const [otp, setOtp] = useState('');
-  const {fromLogin} = route.params; // Get the fromLogin parameter
+  const {fromLogin, mobileNo} = route.params || {}; // Get 'fromLogin' and 'mobileNo' from route.params
 
   useEffect(() => {
-    if (fromLogin === undefined) {
-      // Handle if the parameter is not passed
-      Alert.alert('Error', 'Navigation parameter missing.');
+    if (fromLogin === undefined || mobileNo === undefined) {
+      Alert.alert('Error', 'Navigation parameters missing.', [
+        {
+          text: 'OK',
+          onPress: () => {
+            navigation.replace('Login');
+          },
+        },
+      ]);
     }
-  }, [fromLogin]);
+  }, [fromLogin, mobileNo, navigation]);
 
-  const handleInputChange = (text: React.SetStateAction<string>) => {
+  const handleInputChange = text => {
     if (/^\d{0,6}$/.test(text)) {
       setOtp(text);
     }
   };
 
-  const handleVerifyOTP = () => {
+  const handleVerifyOTP = async () => {
     if (otp.length === 6) {
-      if (fromLogin) {
-        navigation.navigate('LoanDetails'); // Navigate to LoanDetailsScreen for Login flow
-      } else {
-        navigation.navigate('KYC'); // Navigate to KYC Screen for Register flow
+      try {
+        // API Request to verify OTP
+        const payload = {otp, mobileNo}; // Include OTP and mobileNo in the payload
+        const response = await api.post('/users/login-token', payload);
+
+        // Success Handling
+        if (response && response.data) {
+          Toast.show({
+            type: 'success',
+            text1: 'OTP Verified',
+            text2: 'Your OTP has been successfully verified.',
+          });
+
+          if (fromLogin) {
+            navigation.navigate('LoanDetails'); // Navigate to LoanDetailsScreen for Login flow
+          } else {
+            navigation.navigate('KYC'); // Navigate to KYC Screen for Register flow
+          }
+        }
+      } catch (error: any) {
+        // Error Handling
+        console.error('Login Error:', error?.response?.data);
+
+        let errorMessage = 'Something went wrong. Please try again.';
+        const errorData = error?.response?.data?.message;
+
+        if (errorData && typeof errorData === 'object') {
+          const firstNonEmptyKey = Object.keys(errorData).find(
+            key => errorData[key]?.trim() !== '',
+          );
+          errorMessage = firstNonEmptyKey
+            ? errorData[firstNonEmptyKey]
+            : errorMessage;
+        } else if (typeof errorData === 'string') {
+          errorMessage = errorData;
+        }
+
+        Toast.show({
+          type: 'error',
+          text1: 'OTP Verification Failed',
+          text2: errorMessage,
+        });
       }
     } else {
-      Alert.alert('Validation Error', 'Please enter a valid 6-digit OTP.');
+      Toast.show({
+        type: 'error',
+        text1: 'Validation Error',
+        text2: 'Please enter a valid 6-digit OTP.',
+      });
     }
   };
 
@@ -35,18 +86,11 @@ const OTPScreen = ({navigation, route}) => {
     Alert.alert('OTP Resent');
   };
 
-  const otpDisplay = otp.padEnd(6, '_').split('');
-
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Enter OTP</Text>
-      <View style={styles.otpContainer}>
-        {otpDisplay.map((char, index) => (
-          <Text key={index} style={styles.otpDigit}>
-            {char}
-          </Text>
-        ))}
-      </View>
+      <Toast />
+      <Logo />
+      <Text style={styles.logo}>Enter OTP</Text>
       <TextInput
         style={styles.input}
         value={otp}
@@ -55,6 +99,7 @@ const OTPScreen = ({navigation, route}) => {
         maxLength={6}
         placeholder="Enter OTP"
         autoFocus
+        textAlign="center"
       />
       <Button title="Verify" onPress={handleVerifyOTP} />
       <Button title="Resend OTP" onPress={handleResendOTP} />
@@ -63,27 +108,12 @@ const OTPScreen = ({navigation, route}) => {
 };
 
 const styles = StyleSheet.create({
+  logo: {fontSize: 24, fontWeight: 'bold', marginBottom: 20},
   container: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
-  },
-  title: {fontSize: 24, fontWeight: 'bold', marginBottom: 20},
-  otpContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    marginBottom: 20,
-  },
-  otpDigit: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    marginHorizontal: 8,
-    width: 40,
-    textAlign: 'center',
-    borderBottomWidth: 2,
-    borderColor: '#ccc',
-    color: '#333',
   },
   input: {
     width: '80%',
@@ -94,6 +124,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     textAlign: 'center',
     fontSize: 18,
+    letterSpacing: 8, // This makes the OTP digits more spaced out
   },
 });
 

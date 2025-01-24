@@ -86,7 +86,7 @@ const LoginScreen = ({navigation}) => {
     try {
       await loginUser();
       // Replace the navigation stack to prevent going back to Login or Register
-      navigation.replace('OTP', {fromLogin: true});
+      navigation.replace('OTP', {fromLogin: true, mobileNo: mobileNumber});
     } catch (error) {
       console.error('Error during login:', error);
     } finally {
