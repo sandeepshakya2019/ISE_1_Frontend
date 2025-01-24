@@ -15,6 +15,8 @@ import {View, Text} from 'react-native';
 
 const Stack = createStackNavigator();
 
+// comment
+
 const App = () => {
   const [initialRoute, setInitialRoute] = useState<string | null>(null);
 
