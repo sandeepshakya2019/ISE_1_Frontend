@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Alert,
@@ -14,6 +14,9 @@ import {
 } from 'react-native';
 import {launchCamera} from 'react-native-image-picker';
 import {StackNavigationProp} from '@react-navigation/stack';
+import axios from 'axios';
+import {api} from '../utils/api';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type RootStackParamList = {
   LoanDetails: {photo: string | null}; // Expecting a photo param
@@ -30,17 +33,16 @@ type Props = {
 
 const KYCScreen: React.FC<Props> = ({navigation}) => {
   const [photo, setPhoto] = useState<string | null>(null);
-  const [fullName, setFullName] = useState('');
-  const [street, setStreet] = useState('');
-  const [city, setCity] = useState('');
-  const [state, setState] = useState('');
-  const [postalCode, setPostalCode] = useState('');
+  const [f, setFullName] = useState('');
+  const [mobileNumber, setMobileNumber] = useState('');
+  const [address, setAddress] = useState('');
   const [aadhar, setAadhar] = useState('');
   const [incomeCertificate, setIncomeCertificate] = useState('');
   const [bankAccount, setBankAccount] = useState('');
   const [ifsc, setIfsc] = useState('');
   const [errors, setErrors] = useState({
     fullName: false,
+    mobileNumber: false,
     address: false,
     aadhar: false,
     incomeCertificate: false,
@@ -48,6 +50,32 @@ const KYCScreen: React.FC<Props> = ({navigation}) => {
     ifsc: false,
     photo: false,
   });
+
+  useEffect(() => {
+    // Fetch user details from the API
+    const fetchUserDetails = async () => {
+      try {
+        const token = await AsyncStorage.getItem('authToken');
+        const response = await api.get('/users/login-check', {
+          headers: {Authorization: `Bearer ${token}`},
+        });
+        console.log('User details:', response.data.message);
+        if (response && response.data && response.data.message) {
+          const {fullName, mobileNo} = response.data.message;
+          setFullName(fullName || '');
+          setMobileNumber(mobileNo || '');
+        }
+      } catch (error: any) {
+        console.error('Error fetching user details:', error);
+        Alert.alert(
+          'Error',
+          'Unable to fetch user details. Please try again later.',
+        );
+      }
+    };
+
+    fetchUserDetails();
+  }, []);
 
   const requestCameraPermission = async () => {
     if (Platform.OS === 'android') {
@@ -75,7 +103,7 @@ const KYCScreen: React.FC<Props> = ({navigation}) => {
   const capturePhoto = async () => {
     const hasPermission = await requestCameraPermission();
     if (!hasPermission) {
-      Alert.alert('Camera permission is required to capture photos.');
+      Alert.alert('Error', 'Camera permission is required to capture photos.');
       return;
     }
 
@@ -87,18 +115,19 @@ const KYCScreen: React.FC<Props> = ({navigation}) => {
       if (result.assets && result.assets.length > 0) {
         setPhoto(result.assets[0].uri || null);
       } else {
-        Alert.alert('No photo captured.');
+        Alert.alert('Error', 'No photo captured.');
       }
     } catch (error) {
       console.error('Error capturing photo:', error);
-      Alert.alert('An error occurred while capturing the photo.');
+      Alert.alert('Error', 'An error occurred while capturing the photo.');
     }
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const validationErrors = {
-      fullName: !fullName,
-      address: !(street && city && state && postalCode),
+      fullName: !f,
+      mobileNumber: mobileNumber.length !== 10,
+      address: !address,
       aadhar: aadhar.length !== 12,
       incomeCertificate: !incomeCertificate,
       bankAccount: !bankAccount,
@@ -109,9 +138,43 @@ const KYCScreen: React.FC<Props> = ({navigation}) => {
     setErrors(validationErrors);
 
     if (Object.values(validationErrors).includes(true)) {
-      Alert.alert('Please fill all required fields and capture a photo.');
-    } else {
-      navigation.navigate('LoanDetails', {photo});
+      Alert.alert(
+        'Error',
+        'Please fill all required fields and capture a photo.',
+      );
+      return;
+    }
+
+    try {
+      // Construct payload
+      const payload = {
+        f,
+        mobileNumber,
+        address,
+        aadhar,
+        incomeCertificate,
+        bankAccount,
+        ifsc,
+        photo, // Assuming the photo URI is accepted by the backend
+      };
+
+      // Simulating API request (Replace with actual API call)
+      const response = await axios.post('/users/kyc', payload);
+
+      if (response?.data?.success) {
+        Alert.alert(
+          'Success',
+          'Your KYC details have been submitted successfully.',
+        );
+        navigation.replace('LoanDetails', {photo});
+      }
+    } catch (error: any) {
+      console.error('KYC Submission Error:', error?.response?.data);
+      const errorMessage =
+        error?.response?.data?.message ||
+        'Something went wrong. Please try again.';
+
+      Alert.alert('Error', errorMessage);
     }
   };
 
@@ -121,36 +184,36 @@ const KYCScreen: React.FC<Props> = ({navigation}) => {
       <TextInput
         placeholder="Full Name"
         style={[styles.input, errors.fullName && styles.errorInput]}
-        value={fullName}
+        value={f}
         onChangeText={setFullName}
+        editable={false}
       />
       {errors.fullName && <Text style={styles.errorText}>*Required</Text>}
 
-      <Text style={styles.sectionTitle}>Address</Text>
       <TextInput
-        placeholder="Street"
-        style={[styles.input, errors.address && styles.errorInput]}
-        value={street}
-        onChangeText={setStreet}
-      />
-      <TextInput
-        placeholder="City"
-        style={[styles.input, errors.address && styles.errorInput]}
-        value={city}
-        onChangeText={setCity}
-      />
-      <TextInput
-        placeholder="State"
-        style={[styles.input, errors.address && styles.errorInput]}
-        value={state}
-        onChangeText={setState}
-      />
-      <TextInput
-        placeholder="Postal Code"
-        style={[styles.input, errors.address && styles.errorInput]}
-        value={postalCode}
-        onChangeText={setPostalCode}
+        placeholder="Mobile Number"
+        style={[styles.input, errors.mobileNumber && styles.errorInput]}
+        value={mobileNumber}
+        onChangeText={setMobileNumber}
         keyboardType="numeric"
+        maxLength={10}
+        editable={false}
+      />
+      {errors.mobileNumber && (
+        <Text style={styles.errorText}>*Must be 10 digits</Text>
+      )}
+
+      <TextInput
+        placeholder="Address"
+        style={[
+          styles.input,
+          styles.textArea,
+          errors.address && styles.errorInput,
+        ]}
+        value={address}
+        onChangeText={setAddress}
+        multiline
+        numberOfLines={4}
       />
       {errors.address && <Text style={styles.errorText}>*Required</Text>}
 
@@ -211,7 +274,6 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     textAlign: 'center',
   },
-  sectionTitle: {fontSize: 18, fontWeight: 'bold', marginTop: 20},
   input: {
     width: '100%',
     borderWidth: 1,
@@ -219,6 +281,10 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     padding: 10,
     marginVertical: 10,
+  },
+  textArea: {
+    height: 100,
+    textAlignVertical: 'top',
   },
   errorInput: {borderColor: 'red'},
   photoButton: {

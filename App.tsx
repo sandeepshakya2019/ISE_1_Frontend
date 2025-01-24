@@ -73,27 +73,42 @@ const App = () => {
         <Stack.Screen
           name="Register"
           component={RegisterScreen}
-          options={{headerShown: false, title: 'Register'}}
+          options={{
+            headerShown: false,
+            title: 'Register',
+            gestureEnabled: false,
+          }}
         />
         <Stack.Screen
           name="Login"
           component={LoginScreen}
-          options={{headerShown: false}}
+          options={{headerShown: false, title: 'Login', gestureEnabled: false}}
         />
         <Stack.Screen
           name="OTP"
           component={OTPScreen}
-          options={{headerShown: false, title: 'Enter OTP'}}
+          options={{
+            headerShown: false,
+            title: 'Enter OTP',
+            gestureEnabled: false,
+          }}
         />
         <Stack.Screen
           name="KYC"
           component={KYCScreen}
-          options={{headerShown: false, title: 'KYC Details'}}
+          options={{
+            headerShown: false,
+            title: 'KYC Details',
+            gestureEnabled: false,
+          }}
         />
         <Stack.Screen
           name="LoanDetails"
           component={LoanDetailsScreen}
-          options={{headerShown: false, title: 'Loan Details'}}
+          options={{
+            headerShown: false,
+            title: 'Loan Details',
+          }}
         />
         <Stack.Screen
           name="LoanBorrow"
