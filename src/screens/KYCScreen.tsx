@@ -11,6 +11,7 @@ import {
   Image,
   PermissionsAndroid,
   Platform,
+  ActivityIndicator, // Importing the ActivityIndicator
 } from 'react-native';
 import {launchCamera} from 'react-native-image-picker';
 import {StackNavigationProp} from '@react-navigation/stack';
@@ -35,21 +36,22 @@ const KYCScreen: React.FC<Props> = ({navigation}) => {
   const [photo, setPhoto] = useState<string | null>(null);
   const [f, setFullName] = useState('');
   const [mobileNumber, setMobileNumber] = useState('');
-  const [address, setAddress] = useState('');
-  const [aadhar, setAadhar] = useState('');
-  const [incomeCertificate, setIncomeCertificate] = useState('');
-  const [bankAccount, setBankAccount] = useState('');
-  const [ifsc, setIfsc] = useState('');
+  const [address, setAddress] = useState(
+    'Rani Awanti bai nagar shikohabad road etah',
+  );
+  const [aadhar, setAadhar] = useState('235689562356');
+  const [bankAccount, setBankAccount] = useState('895623895623');
+  const [ifsc, setIfsc] = useState('89562389562');
   const [errors, setErrors] = useState({
     fullName: false,
     mobileNumber: false,
     address: false,
     aadhar: false,
-    incomeCertificate: false,
     bankAccount: false,
     ifsc: false,
     photo: false,
   });
+  const [loading, setLoading] = useState(false); // Added loading state
 
   useEffect(() => {
     // Fetch user details from the API
@@ -129,7 +131,6 @@ const KYCScreen: React.FC<Props> = ({navigation}) => {
       mobileNumber: mobileNumber.length !== 10,
       address: !address,
       aadhar: aadhar.length !== 12,
-      incomeCertificate: !incomeCertificate,
       bankAccount: !bankAccount,
       ifsc: !ifsc,
       photo: !photo,
@@ -145,23 +146,48 @@ const KYCScreen: React.FC<Props> = ({navigation}) => {
       return;
     }
 
+    setLoading(true); // Set loading to true when submitting
+
     try {
-      // Construct payload
-      const payload = {
-        f,
-        mobileNumber,
-        address,
-        aadhar,
-        incomeCertificate,
-        bankAccount,
-        ifsc,
-        photo, // Assuming the photo URI is accepted by the backend
-      };
+      const token = await AsyncStorage.getItem('authToken');
+      if (!token) {
+        Alert.alert(
+          'Error',
+          'Authentication token not found. Please log in again.',
+        );
+        setLoading(false); // Set loading to false in case of error
+        return;
+      }
 
-      // Simulating API request (Replace with actual API call)
-      const response = await axios.post('/users/kyc', payload);
+      // Create FormData
+      const formData = new FormData();
+      formData.append('address', address);
+      formData.append('aadharCardId', aadhar);
+      formData.append('accountNumber', bankAccount);
+      formData.append('ifscCode', ifsc);
 
-      if (response?.data?.success) {
+      if (photo) {
+        const filename = photo.substring(photo.lastIndexOf('/') + 1);
+        const fileUri =
+          Platform.OS === 'android' ? photo : photo.replace('file://', '');
+        formData.append('livePhoto', {
+          uri: fileUri,
+          name: filename,
+          type: 'image/jpeg', // Ensure to match the correct type
+        });
+      }
+
+      console.log(formData);
+
+      // Send the request
+      const response = await api.post('/users/kyc', formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      if (response?.data?.message) {
         Alert.alert(
           'Success',
           'Your KYC details have been submitted successfully.',
@@ -169,12 +195,12 @@ const KYCScreen: React.FC<Props> = ({navigation}) => {
         navigation.replace('LoanDetails', {photo});
       }
     } catch (error: any) {
-      console.error('KYC Submission Error:', error?.response?.data);
+      console.error('KYC Submission Error:', error.response);
       const errorMessage =
-        error?.response?.data?.message ||
-        'Something went wrong. Please try again.';
-
+        error?.response?.data?.message || 'Something went wrong.';
       Alert.alert('Error', errorMessage);
+    } finally {
+      setLoading(false); // Set loading to false after API call
     }
   };
 
@@ -230,16 +256,6 @@ const KYCScreen: React.FC<Props> = ({navigation}) => {
       )}
 
       <TextInput
-        placeholder="Income Certificate No."
-        style={[styles.input, errors.incomeCertificate && styles.errorInput]}
-        value={incomeCertificate}
-        onChangeText={setIncomeCertificate}
-      />
-      {errors.incomeCertificate && (
-        <Text style={styles.errorText}>*Required</Text>
-      )}
-
-      <TextInput
         placeholder="Bank Account No."
         style={[styles.input, errors.bankAccount && styles.errorInput]}
         value={bankAccount}
@@ -256,12 +272,18 @@ const KYCScreen: React.FC<Props> = ({navigation}) => {
       {errors.ifsc && <Text style={styles.errorText}>*Required</Text>}
 
       <TouchableOpacity style={styles.photoButton} onPress={capturePhoto}>
-        <Text style={styles.photoButtonText}>📸 Capture Photo</Text>
+        {photo ? (
+          <Image source={{uri: photo}} style={styles.photoPreview} />
+        ) : (
+          <Text style={styles.photoButtonText}>📸 Capture Photo</Text>
+        )}
       </TouchableOpacity>
-      {photo && <Image source={{uri: photo}} style={styles.photoPreview} />}
-      {errors.photo && <Text style={styles.errorText}>*Photo is required</Text>}
 
-      <Button title="Submit" onPress={handleSubmit} />
+      {loading ? (
+        <ActivityIndicator size="large" color="#28a745" />
+      ) : (
+        <Button title="Submit" onPress={handleSubmit} />
+      )}
     </ScrollView>
   );
 };
@@ -289,13 +311,22 @@ const styles = StyleSheet.create({
   errorInput: {borderColor: 'red'},
   photoButton: {
     backgroundColor: '#28a745',
-    padding: 15,
-    borderRadius: 5,
+    width: 150,
+    height: 150,
+    borderRadius: 75,
     marginTop: 20,
+    marginBottom: 20,
     alignItems: 'center',
+    justifyContent: 'center',
+    overflow: 'hidden',
+    alignSelf: 'center',
   },
   photoButtonText: {color: '#fff', fontWeight: 'bold', fontSize: 16},
-  photoPreview: {width: '100%', height: 200, marginTop: 20, borderRadius: 5},
+  photoPreview: {
+    width: 150,
+    height: 150,
+    borderRadius: 75,
+  },
   errorText: {color: 'red', fontSize: 14, marginTop: 5, textAlign: 'left'},
 });
 
