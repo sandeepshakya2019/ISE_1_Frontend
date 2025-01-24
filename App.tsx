@@ -11,7 +11,6 @@ import LoanBorrowScreen from './src/screens/LoanBorrowScreen';
 import LoanRepayScreen from './src/screens/LoanRepayScreen';
 import PaymentGatewayScreen from './src/screens/PaymentGatewayScreen';
 import RegisterScreen from './src/screens/RegisterScreen';
-import {View, Text} from 'react-native';
 
 const Stack = createStackNavigator();
 
@@ -59,17 +58,17 @@ const App = () => {
         <Stack.Screen
           name="OTP"
           component={OTPScreen}
-          options={{headerShown: true, title: 'Enter OTP'}}
+          options={{headerShown: false, title: 'Enter OTP'}}
         />
         <Stack.Screen
           name="KYC"
           component={KYCScreen}
-          options={{headerShown: true, title: 'KYC Details'}}
+          options={{headerShown: false, title: 'KYC Details'}}
         />
         <Stack.Screen
           name="LoanDetails"
           component={LoanDetailsScreen}
-          options={{headerShown: true, title: 'Loan Details'}}
+          options={{headerShown: false, title: 'Loan Details'}}
         />
         <Stack.Screen
           name="LoanBorrow"
