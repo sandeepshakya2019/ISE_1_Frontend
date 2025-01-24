@@ -6,72 +6,169 @@ import {
   Button,
   StyleSheet,
   TouchableOpacity,
-  Alert,
+  ActivityIndicator,
 } from 'react-native';
+import Toast from 'react-native-toast-message'; // Import Toast
 import Logo from '../components/Shared/Logo';
-// Adjust the path as necessary
+import {api} from '../utils/api';
 
 const RegisterScreen = ({navigation}) => {
-  const [name, setName] = useState('');
-  const [mobileNumber, setMobileNumber] = useState('');
-  const [email, setEmail] = useState('');
-  const [isTermsAccepted, setIsTermsAccepted] = useState(false);
+  const [formData, setFormData] = useState({
+    name: 'Sandeep',
+    mobileNumber: '9084043946',
+    email: 'sandeep@gmail.com',
+    isTermsAccepted: false,
+  });
+  const [loading, setLoading] = useState(false); // Loading state
 
-  const handleGetOTP = () => {
-    if (mobileNumber.length === 10 && email && isTermsAccepted) {
-      navigation.navigate('OTP', {fromLogin: false});
-    } else {
-      Alert.alert(
-        'Validation Error',
-        'Please enter a valid 10-digit mobile number, email, and accept the terms and conditions.',
-      );
+  const handleInputChange = (field, value) => {
+    setFormData(prevState => ({...prevState, [field]: value}));
+  };
+
+  const validateForm = () => {
+    const {name, mobileNumber, email, isTermsAccepted} = formData;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!name.trim()) {
+      return 'Please enter your full name.';
+    }
+
+    if (!mobileNumber || mobileNumber.length !== 10) {
+      return 'Please enter a valid 10-digit mobile number.';
+    }
+
+    if (email && !emailRegex.test(email)) {
+      return 'Please enter a valid email address.';
+    }
+
+    if (!isTermsAccepted) {
+      return 'You must accept the Terms and Conditions.';
+    }
+
+    return null;
+  };
+
+  const registerUser = async () => {
+    try {
+      const {name, mobileNumber, email} = formData;
+      const payload = {
+        mobileNo: mobileNumber,
+        fullName: name,
+        emailId: email,
+      };
+
+      console.log('Register payload:', payload);
+
+      const response = await api.post('/users/register', payload);
+
+      Toast.show({
+        type: 'success',
+        text1: 'Registration Successful',
+        text2: 'Please wait for the OTP.',
+      });
+
+      return response;
+    } catch (error: any) {
+      console.error('Register Error:', error?.response?.data);
+
+      let errorMessage = 'Something went wrong. Please try again.'; // Default message
+      const errorData = error?.response?.data?.message;
+
+      // Check if `errorData` is an object and find the first key with a non-empty value
+      if (errorData && typeof errorData === 'object') {
+        const firstNonEmptyKey = Object.keys(errorData).find(
+          key => errorData[key]?.trim() !== '',
+        );
+        errorMessage = firstNonEmptyKey
+          ? errorData[firstNonEmptyKey]
+          : errorMessage;
+      } else if (typeof errorData === 'string') {
+        errorMessage = errorData;
+      }
+
+      Toast.show({
+        type: 'error',
+        text1: 'Registration Failed',
+        text2: errorMessage,
+      });
+
+      throw error;
+    }
+  };
+
+  const handleGetOTP = async () => {
+    const validationError = validateForm();
+    if (validationError) {
+      Toast.show({
+        type: 'error',
+        text1: 'Validation Error',
+        text2: validationError,
+      });
+      return;
+    }
+
+    setLoading(true); // Start loading
+    try {
+      await registerUser();
+      // navigation.navigate('OTP', {fromLogin: false}); // Uncomment if navigation is required
+    } catch (error) {
+      console.error('Error during registration:', error);
+    } finally {
+      setLoading(false); // Stop loading
     }
   };
 
   const handleAlreadyRegistered = () => {
-    navigation.navigate('Login'); // Navigate to Login screen
-  };
-
-  const handleMobileNumberChange = text => {
-    // Allow only numbers and limit to 10 digits
-    const formattedText = text.replace(/[^0-9]/g, '').slice(0, 10);
-    setMobileNumber(formattedText);
+    navigation.navigate('Login');
   };
 
   return (
     <View style={styles.container}>
-      {/* Logo Component */}
+      <Toast />
       <Logo />
 
       <Text style={styles.logoText}>Register</Text>
       <TextInput
         placeholder="Name"
         style={styles.input}
-        value={name}
-        onChangeText={setName}
+        value={formData.name}
+        onChangeText={text => handleInputChange('name', text)}
       />
       <TextInput
         placeholder="Mobile Number"
         style={styles.input}
         keyboardType="numeric"
-        value={mobileNumber}
-        onChangeText={handleMobileNumberChange}
+        value={formData.mobileNumber}
+        onChangeText={text =>
+          handleInputChange(
+            'mobileNumber',
+            text.replace(/[^0-9]/g, '').slice(0, 10),
+          )
+        }
       />
       <TextInput
         placeholder="Email ID (optional)"
         style={styles.input}
         keyboardType="email-address"
-        value={email}
-        onChangeText={setEmail}
+        value={formData.email}
+        onChangeText={text => handleInputChange('email', text)}
       />
       <TouchableOpacity
-        onPress={() => setIsTermsAccepted(!isTermsAccepted)}
+        onPress={() =>
+          handleInputChange('isTermsAccepted', !formData.isTermsAccepted)
+        }
         style={styles.checkboxContainer}>
         <Text style={styles.checkbox}>
-          {isTermsAccepted ? '☑' : '☐'} Accept Terms and Conditions
+          {formData.isTermsAccepted ? '☑' : '☐'} Accept Terms and Conditions
         </Text>
       </TouchableOpacity>
-      <Button title="Get OTP" onPress={handleGetOTP} />
+
+      {loading ? (
+        <ActivityIndicator size="large" color="#1E90FF" />
+      ) : (
+        <Button title="Get OTP" onPress={handleGetOTP} />
+      )}
+
       <TouchableOpacity
         onPress={handleAlreadyRegistered}
         style={styles.linkButton}>
@@ -88,7 +185,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 20,
   },
-  logoText: {fontSize: 24, fontWeight: 'bold', marginBottom: 20, marginTop: 10},
+  logoText: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 20,
+    marginTop: 10,
+  },
   input: {
     width: '100%',
     borderWidth: 1,
