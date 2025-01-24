@@ -11,7 +11,7 @@ import {
 import Toast from 'react-native-toast-message'; // Import Toast
 import Logo from '../components/Shared/Logo';
 import {api} from '../utils/api';
-
+// comment check
 const RegisterScreen = ({navigation}) => {
   const [formData, setFormData] = useState({
     name: 'Sandeep',
