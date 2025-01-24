@@ -6,32 +6,106 @@ import {
   Button,
   StyleSheet,
   TouchableOpacity,
-  Alert,
+  ActivityIndicator,
 } from 'react-native';
+import Toast from 'react-native-toast-message';
 import Logo from '../components/Shared/Logo';
-const LoginScreen = ({navigation}) => {
-  const [mobileNumber, setMobileNumber] = useState('');
-  const [email, setEmail] = useState('');
-  const [isTermsAccepted, setIsTermsAccepted] = useState(false);
+import {api} from '../utils/api';
 
-  const handleGetOTP = () => {
-    if (mobileNumber && email && isTermsAccepted) {
-      navigation.navigate('OTP', {fromLogin: true});
-    } else {
-      Alert.alert(
-        'Validation Error',
-        'Please fill in all fields and accept the terms and conditions.',
-      );
+const LoginScreen = ({navigation}) => {
+  const [mobileNumber, setMobileNumber] = useState('9084043946');
+  const [isTermsAccepted, setIsTermsAccepted] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const loginUser = async () => {
+    try {
+      const payload = {
+        mobileNo: mobileNumber,
+      };
+
+      console.log('Login payload:', payload);
+
+      const response = await api.post('/users/login-otp', payload);
+
+      console.log('Login response:', response);
+
+      Toast.show({
+        type: 'success',
+        text1: 'OTP Sent',
+        text2: 'Please check your mobile number for the OTP.',
+      });
+
+      return response;
+    } catch (error) {
+      console.error('Login Error:', error?.response?.data);
+
+      let errorMessage = 'Something went wrong. Please try again.';
+      const errorData = error?.response?.data?.message;
+
+      if (errorData && typeof errorData === 'object') {
+        const firstNonEmptyKey = Object.keys(errorData).find(
+          key => errorData[key]?.trim() !== '',
+        );
+        errorMessage = firstNonEmptyKey
+          ? errorData[firstNonEmptyKey]
+          : errorMessage;
+      } else if (typeof errorData === 'string') {
+        errorMessage = errorData;
+      }
+
+      Toast.show({
+        type: 'error',
+        text1: 'Login Failed',
+        text2: errorMessage,
+      });
+
+      throw error;
+    }
+  };
+
+  const handleGetOTP = async () => {
+    if (!mobileNumber || mobileNumber.length !== 10) {
+      Toast.show({
+        type: 'error',
+        text1: 'Validation Error',
+        text2: 'Please enter a valid 10-digit mobile number.',
+      });
+      return;
+    }
+
+    if (!isTermsAccepted) {
+      Toast.show({
+        type: 'error',
+        text1: 'Validation Error',
+        text2: 'You must accept the Terms and Conditions.',
+      });
+      return;
+    }
+
+    setLoading(true);
+    try {
+      await loginUser();
+      // Replace the navigation stack to prevent going back to Login or Register
+      navigation.replace('OTP', {fromLogin: true});
+    } catch (error) {
+      console.error('Error during login:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleRegisterNavigation = () => {
-    navigation.navigate('Register'); // Navigate to Register screen
+    navigation.navigate('Register');
+  };
+
+  const handleMobileNumberChange = text => {
+    const formattedText = text.replace(/[^0-9]/g, '').slice(0, 10);
+    setMobileNumber(formattedText);
   };
 
   return (
     <View style={styles.container}>
-      {/* Logo Component */}
+      <Toast />
       <Logo />
       <Text style={styles.logo}>Login</Text>
       <TextInput
@@ -39,14 +113,7 @@ const LoginScreen = ({navigation}) => {
         style={styles.input}
         keyboardType="numeric"
         value={mobileNumber}
-        onChangeText={setMobileNumber}
-      />
-      <TextInput
-        placeholder="Email ID"
-        style={styles.input}
-        keyboardType="email-address"
-        value={email}
-        onChangeText={setEmail}
+        onChangeText={handleMobileNumberChange}
       />
       <TouchableOpacity
         onPress={() => setIsTermsAccepted(!isTermsAccepted)}
@@ -55,7 +122,13 @@ const LoginScreen = ({navigation}) => {
           {isTermsAccepted ? '☑' : '☐'} Accept Terms and Conditions
         </Text>
       </TouchableOpacity>
-      <Button title="Get OTP" onPress={handleGetOTP} />
+
+      {loading ? (
+        <ActivityIndicator size="large" color="#1E90FF" />
+      ) : (
+        <Button title="Get OTP" onPress={handleGetOTP} />
+      )}
+
       <TouchableOpacity
         onPress={handleRegisterNavigation}
         style={styles.linkButton}>

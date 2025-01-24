@@ -110,7 +110,7 @@ const RegisterScreen = ({navigation}) => {
     setLoading(true); // Start loading
     try {
       await registerUser();
-      // navigation.navigate('OTP', {fromLogin: false}); // Uncomment if navigation is required
+      navigation.navigate('OTP', {fromLogin: false}); // Uncomment if navigation is required
     } catch (error) {
       console.error('Error during registration:', error);
     } finally {
