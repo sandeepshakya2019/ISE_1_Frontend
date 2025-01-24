@@ -17,8 +17,8 @@ const LoanDetailsScreen = ({route}) => {
   const [userDetails, setUserDetails] = useState<any>(null);
   const [loanDetails, setLoanDetails] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [fetchingLoans, setFetchingLoans] = useState(false); // To show spinner for loan fetch
-  const {photo} = route.params || {}; // Retrieve the photo URI passed from the KYC screen
+  const [fetchingLoans, setFetchingLoans] = useState(false);
+  const {photo} = route.params || {};
 
   const navigation = useNavigation();
 
@@ -40,7 +40,7 @@ const LoanDetailsScreen = ({route}) => {
         });
 
         if (response?.data?.message) {
-          setUserDetails(response.data.message); // Assuming the photo is in the 'message' field
+          setUserDetails(response.data.message);
         }
       } catch (error) {
         Toast.show({
@@ -56,11 +56,11 @@ const LoanDetailsScreen = ({route}) => {
     fetchUserDetails();
   }, []);
 
+  // Fetch loan details
   useEffect(() => {
     const fetchLoanDetails = async () => {
       setFetchingLoans(true);
       try {
-        // Retrieve the authentication token from AsyncStorage
         const token = await AsyncStorage.getItem('authToken');
         if (!token) {
           Toast.show({
@@ -70,14 +70,12 @@ const LoanDetailsScreen = ({route}) => {
           return;
         }
 
-        // Send the GET request to fetch loan details with Authorization header
         const response = await api.get('/loan/getAll', {
           headers: {
-            Authorization: `Bearer ${token}`, // Pass the token here
+            Authorization: `Bearer ${token}`,
           },
         });
 
-        // console.log('Loan details response:', response.data.message);
         if (response?.data?.message) {
           setLoanDetails(response.data.message);
           Toast.show({
@@ -99,7 +97,45 @@ const LoanDetailsScreen = ({route}) => {
     fetchLoanDetails();
   }, []);
 
-  const displayPhoto = photo || userDetails?.photo; // Fallback to user photo if available
+  const handleLogout = async () => {
+    try {
+      const token = await AsyncStorage.getItem('authToken');
+
+      if (token) {
+        // Send API request to logout
+        await api.post(
+          '/users/logout',
+          {},
+          {
+            headers: {Authorization: `Bearer ${token}`},
+          },
+        );
+      }
+
+      // Clear AsyncStorage
+      await AsyncStorage.removeItem('authToken');
+      await AsyncStorage.removeItem('MobileNo');
+
+      Toast.show({
+        text1: 'Success',
+        text2: 'You have been logged out.',
+      });
+
+      // Navigate to the login screen
+      navigation.reset({
+        index: 0,
+        routes: [{name: 'Login'}],
+      });
+    } catch (error) {
+      Toast.show({
+        text1: 'Error',
+        text2: 'Unable to logout. Please try again later.',
+      });
+      console.error('Error during logout:', error);
+    }
+  };
+
+  const displayPhoto = photo || userDetails?.photo;
 
   if (loading) {
     return (
@@ -110,22 +146,14 @@ const LoanDetailsScreen = ({route}) => {
     );
   }
 
-  const renderLoanItem = ({item}) => {
-    console.log(item);
-
-    return (
-      <View style={styles.loanItem}>
-        <Text style={styles.loanText}>
-          Loan Amount: ${item.totalLoanAmount}
-        </Text>
-        <Text style={styles.loanText}>Status: {item.loanStatus}</Text>
-        <Text style={styles.loanText}>Reason: {item.loanReason}</Text>
-        <Text style={styles.loanText}>
-          Payback Amount: {item.paybackAmount}
-        </Text>
-      </View>
-    );
-  };
+  const renderLoanItem = ({item}) => (
+    <View style={styles.loanItem}>
+      <Text style={styles.loanText}>Loan Amount: ${item.totalLoanAmount}</Text>
+      <Text style={styles.loanText}>Status: {item.loanStatus}</Text>
+      <Text style={styles.loanText}>Reason: {item.loanReason}</Text>
+      <Text style={styles.loanText}>Payback Amount: {item.paybackAmount}</Text>
+    </View>
+  );
 
   return (
     <View style={styles.container}>
@@ -147,7 +175,6 @@ const LoanDetailsScreen = ({route}) => {
         Number of Loans: {userDetails?.noOfLoan || 0}
       </Text>
 
-      {/* Borrow and Repay Loan buttons side by side */}
       <View style={styles.buttonContainer}>
         <View style={styles.button}>
           <Button
@@ -161,6 +188,10 @@ const LoanDetailsScreen = ({route}) => {
             onPress={() => navigation.navigate('LoanRepay')}
           />
         </View>
+      </View>
+
+      <View style={styles.logoutButton}>
+        <Button title="Logout" color="#d9534f" onPress={handleLogout} />
       </View>
 
       {fetchingLoans ? (
@@ -177,7 +208,13 @@ const LoanDetailsScreen = ({route}) => {
   );
 };
 
+export default LoanDetailsScreen;
+
 const styles = StyleSheet.create({
+  logoutButton: {
+    marginTop: 20,
+    width: '100%',
+  },
   container: {
     flex: 1,
     justifyContent: 'flex-start',
