@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, {useState} from 'react';
 import {
   View,
@@ -9,14 +10,15 @@ import {
   Alert,
 } from 'react-native';
 
-const LoginScreen = ({navigation}) => {
+const RegisterScreen = ({navigation}) => {
+  const [name, setName] = useState('');
   const [mobileNumber, setMobileNumber] = useState('');
   const [email, setEmail] = useState('');
   const [isTermsAccepted, setIsTermsAccepted] = useState(false);
 
 const handleGetOTP = () => {
   if (mobileNumber && email && isTermsAccepted) {
-    navigation.navigate('OTP', {fromLogin: true});
+    navigation.navigate('OTP', {fromLogin: false});
   } else {
     Alert.alert(
       'Validation Error',
@@ -26,13 +28,19 @@ const handleGetOTP = () => {
 };
 
 
-  const handleRegisterNavigation = () => {
-    navigation.navigate('Register'); // Navigate to Register screen
+  const handleAlreadyRegistered = () => {
+    navigation.navigate('Login'); // Navigate to Login screen
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.logo}>Login</Text>
+      <Text style={styles.logo}>Register</Text>
+      <TextInput
+        placeholder="Name"
+        style={styles.input}
+        value={name}
+        onChangeText={setName}
+      />
       <TextInput
         placeholder="Mobile Number"
         style={styles.input}
@@ -41,7 +49,7 @@ const handleGetOTP = () => {
         onChangeText={setMobileNumber}
       />
       <TextInput
-        placeholder="Email ID"
+        placeholder="Email ID (optional)"
         style={styles.input}
         keyboardType="email-address"
         value={email}
@@ -56,11 +64,9 @@ const handleGetOTP = () => {
       </TouchableOpacity>
       <Button title="Get OTP" onPress={handleGetOTP} />
       <TouchableOpacity
-        onPress={handleRegisterNavigation}
+        onPress={handleAlreadyRegistered}
         style={styles.linkButton}>
-        <Text style={styles.linkText}>
-          Don't have an account? Register here
-        </Text>
+        <Text style={styles.linkText}>Already registered? Login here</Text>
       </TouchableOpacity>
     </View>
   );
@@ -88,4 +94,4 @@ const styles = StyleSheet.create({
   linkText: {color: '#1E90FF', fontSize: 16, textDecorationLine: 'underline'},
 });
 
-export default LoginScreen;
+export default RegisterScreen;

@@ -9,7 +9,7 @@ import LoanRepayScreen from '../screens/LoanRepayScreen';
 import PaymentGatewayScreen from '../screens/PaymentGatewayScreen';
 export type RootStackParamList = {
   Login: undefined;
-  OTP: undefined;
+  OTP: {fromLogin: boolean};
   KYC: undefined;
   LoanDetails: undefined;
   LoanBorrow: undefined;
