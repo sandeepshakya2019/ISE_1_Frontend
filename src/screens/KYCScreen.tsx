@@ -24,6 +24,8 @@ type Props = {
   navigation: KYCScreenNavigationProp;
 };
 
+// tgtg
+
 const KYCScreen: React.FC<Props> = ({ navigation }) => {
   const [photo, setPhoto] = useState<string | null>(null);
   const [fullName, setFullName] = useState('');
