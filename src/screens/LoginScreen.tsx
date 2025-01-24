@@ -12,7 +12,8 @@ import Logo from '../components/Shared/Logo';
 import {api} from '../utils/api';
 
 const LoginScreen = ({navigation}) => {
-  const [mobileNumber, setMobileNumber] = useState('');
+  const [mobileNumber, setMobileNumber] = useState('9084043946');
+
   const [isTermsAccepted, setIsTermsAccepted] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -60,7 +61,7 @@ const LoginScreen = ({navigation}) => {
     }
     setLoading(true);
     try {
-      await loginUser();
+      // await loginUser();
       navigation.replace('OTP', {fromLogin: true, mobileNo: mobileNumber});
     } finally {
       setLoading(false);
