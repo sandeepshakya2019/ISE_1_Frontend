@@ -27,8 +27,6 @@ const LoginScreen = ({navigation}) => {
 
       const response = await api.post('/users/login-otp', payload);
 
-      console.log('Login response:', response);
-
       Toast.show({
         type: 'success',
         text1: 'OTP Sent',
