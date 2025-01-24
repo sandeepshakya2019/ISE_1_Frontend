@@ -18,18 +18,24 @@ const RegisterScreen = ({navigation}) => {
   const [isTermsAccepted, setIsTermsAccepted] = useState(false);
 
   const handleGetOTP = () => {
-    if (mobileNumber && email && isTermsAccepted) {
+    if (mobileNumber.length === 10 && email && isTermsAccepted) {
       navigation.navigate('OTP', {fromLogin: false});
     } else {
       Alert.alert(
         'Validation Error',
-        'Please fill in all fields and accept the terms and conditions.',
+        'Please enter a valid 10-digit mobile number, email, and accept the terms and conditions.',
       );
     }
   };
 
   const handleAlreadyRegistered = () => {
     navigation.navigate('Login'); // Navigate to Login screen
+  };
+
+  const handleMobileNumberChange = text => {
+    // Allow only numbers and limit to 10 digits
+    const formattedText = text.replace(/[^0-9]/g, '').slice(0, 10);
+    setMobileNumber(formattedText);
   };
 
   return (
@@ -49,7 +55,7 @@ const RegisterScreen = ({navigation}) => {
         style={styles.input}
         keyboardType="numeric"
         value={mobileNumber}
-        onChangeText={setMobileNumber}
+        onChangeText={handleMobileNumberChange}
       />
       <TextInput
         placeholder="Email ID (optional)"

@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Button, StyleSheet } from 'react-native';
+import { Alert,View, Text, Button, StyleSheet } from 'react-native';
 
 const PaymentGatewayScreen = ({ route, navigation }) => {
   const { repaymentAmount } = route.params;
@@ -9,10 +9,10 @@ const PaymentGatewayScreen = ({ route, navigation }) => {
       <Text style={styles.title}>Choose Payment Gateway</Text>
       <Text style={styles.amount}>Repayment Amount: ₹{repaymentAmount}</Text>
 
-      <Button title="Pay with UPI" onPress={() => alert('UPI ID: upi@bank')} />
+      <Button title="Pay with UPI" onPress={() => Alert.alert('UPI ID: upi@bank')} />
       <Button
         title="Pay with QR Code"
-        onPress={() => alert('Show QR Code to Scan')}
+        onPress={() => Alert.alert('Show QR Code to Scan')}
       />
       <Button title="Go Back" onPress={() => navigation.goBack()} />
     </View>

@@ -52,7 +52,7 @@ const StackNavigator = () => {
         options={{ title: 'Repay Loan' }}
       />
       <Stack.Screen 
-      name="PaymentGateway" 
+      name="PaymentGatewayScreen" 
       component={PaymentGatewayScreen} 
       options={{ title: 'Payment Gateway' }} 
       />
