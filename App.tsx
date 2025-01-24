@@ -1,4 +1,5 @@
 import React, {useEffect, useState} from 'react';
+import {ActivityIndicator, View, StyleSheet, Alert} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -16,55 +17,66 @@ import RegisterScreen from './src/screens/RegisterScreen';
 const Stack = createStackNavigator();
 
 const App = () => {
-  const [initialRoute, setInitialRoute] = useState<string | null>(null);
+  const [initialRoute, setInitialRoute] = useState<string | null>('Login');
+  const [loading, setLoading] = useState(true); // Loading state
 
   useEffect(() => {
     const checkUserAuthentication = async () => {
-      console.log('ss');
       try {
-        const keys = await AsyncStorage.getAllKeys();
-        console.log('All stored keys:', keys);
         const token = await AsyncStorage.getItem('authToken');
         if (token) {
-          console.log('token', token);
-          // Send token to the backend to validate the user and check KYC status
           const response = await api.get('/users/login-check', {
             headers: {Authorization: `Bearer ${token}`},
           });
-
-          console.log('login response', response.data.message);
-
+          setLoading(false);
           if (response && response.data && response.data.message) {
             const {isKYC, _id} = response.data.message;
 
             if (!_id) {
-              // No user found, go to Login or Register
               setInitialRoute('Login');
             } else {
-              // User exists, navigate based on KYC status
               if (!isKYC) {
-                setInitialRoute('KYC'); // Navigate to KYC page if KYC is pending
+                Alert.alert(
+                  'KYC Required',
+                  'Please fill in the KYC Details to proceed.',
+                );
+                setInitialRoute('KYC');
               } else {
-                setInitialRoute('LoanDetails'); // Navigate to LoanDetails if KYC is complete
+                setInitialRoute('LoanDetails');
               }
             }
           }
         } else {
-          // If no token, show Login or Register screen
+          Alert.alert('Session Expired', 'Please login again to continue.');
           setInitialRoute('Login');
         }
       } catch (error) {
+        setLoading(false);
+
         console.error('Error checking user authentication:', error);
-        setInitialRoute('Login'); // In case of error, fallback to Login
+
+        // Show alert for error
+        Alert.alert(
+          'Authentication Error',
+          'Unable to verify user. Please try again.',
+        );
+
+        setInitialRoute('Login'); // Fallback to Login
+      } finally {
+        setLoading(false); // Hide loading spinner after checking authentication
       }
     };
 
     checkUserAuthentication();
   }, []);
 
-  if (initialRoute === null) {
+  if (loading) {
     // Render a loading screen while determining the initial route
-    return null;
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#28a745" />
+      </View>
+    );
   }
 
   return (
@@ -82,7 +94,11 @@ const App = () => {
         <Stack.Screen
           name="Login"
           component={LoginScreen}
-          options={{headerShown: false, title: 'Login', gestureEnabled: false}}
+          options={{
+            headerShown: false,
+            title: 'Login',
+            gestureEnabled: false,
+          }}
         />
         <Stack.Screen
           name="OTP"
@@ -106,8 +122,9 @@ const App = () => {
           name="LoanDetails"
           component={LoanDetailsScreen}
           options={{
-            headerShown: false,
+            headerShown: true,
             title: 'Loan Details',
+            gestureEnabled: false,
           }}
         />
         <Stack.Screen
@@ -129,5 +146,14 @@ const App = () => {
     </NavigationContainer>
   );
 };
+
+const styles = StyleSheet.create({
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#f4f4f4', // Light background
+  },
+});
 
 export default App;
