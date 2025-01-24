@@ -53,7 +53,7 @@ const OTPScreen = ({navigation, route}) => {
             response.data?.message?.refresht,
           ); // Assuming the token is in response.data.token
           await AsyncStorage.setItem(
-            'authToken',
+            'mobileNo',
             response.data?.message?.user?.mobileNo,
           );
           Toast.show({
@@ -71,9 +71,6 @@ const OTPScreen = ({navigation, route}) => {
           }
         }
       } catch (error: any) {
-        // Error Handling
-        console.error('Login Error:', error?.response?.data);
-
         let errorMessage = 'Something went wrong. Please try again.';
         const errorData = error?.response?.data?.message;
 

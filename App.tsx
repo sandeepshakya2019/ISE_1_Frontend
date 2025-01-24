@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {api} from './src/utils/api'; // Assuming api is a utility for API requests
 
 import LoginScreen from './src/screens/LoginScreen';
 import OTPScreen from './src/screens/OTPScreen';
@@ -14,27 +15,51 @@ import RegisterScreen from './src/screens/RegisterScreen';
 
 const Stack = createStackNavigator();
 
-// comment
-
 const App = () => {
   const [initialRoute, setInitialRoute] = useState<string | null>(null);
 
   useEffect(() => {
-    const determineInitialRoute = async () => {
+    const checkUserAuthentication = async () => {
+      console.log('ss');
       try {
-        // Check if the user is already registered
-        const isRegistered = await AsyncStorage.getItem('isRegistered');
-        if (isRegistered === 'true') {
-          setInitialRoute('Login'); // Start with LoginScreen for registered users
+        const keys = await AsyncStorage.getAllKeys();
+        console.log('All stored keys:', keys);
+        const token = await AsyncStorage.getItem('authToken');
+        if (token) {
+          console.log('token', token);
+          // Send token to the backend to validate the user and check KYC status
+          const response = await api.get('/users/login-check', {
+            headers: {Authorization: `Bearer ${token}`},
+          });
+
+          console.log('login response', response.data.message);
+
+          if (response && response.data && response.data.message) {
+            const {isKYC, _id} = response.data.message;
+
+            if (!_id) {
+              // No user found, go to Login or Register
+              setInitialRoute('Login');
+            } else {
+              // User exists, navigate based on KYC status
+              if (!isKYC) {
+                setInitialRoute('KYC'); // Navigate to KYC page if KYC is pending
+              } else {
+                setInitialRoute('LoanDetails'); // Navigate to LoanDetails if KYC is complete
+              }
+            }
+          }
         } else {
-          setInitialRoute('Register'); // Start with RegisterScreen for new users
+          // If no token, show Login or Register screen
+          setInitialRoute('Login');
         }
       } catch (error) {
-        console.error('Error determining initial route:', error);
+        console.error('Error checking user authentication:', error);
+        setInitialRoute('Login'); // In case of error, fallback to Login
       }
     };
 
-    determineInitialRoute();
+    checkUserAuthentication();
   }, []);
 
   if (initialRoute === null) {
