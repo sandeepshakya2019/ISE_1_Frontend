@@ -8,23 +8,22 @@ import {
   TouchableOpacity,
   Alert,
 } from 'react-native';
-
+import Logo from '../components/Shared/Logo';
 const LoginScreen = ({navigation}) => {
   const [mobileNumber, setMobileNumber] = useState('');
   const [email, setEmail] = useState('');
   const [isTermsAccepted, setIsTermsAccepted] = useState(false);
 
-const handleGetOTP = () => {
-  if (mobileNumber && email && isTermsAccepted) {
-    navigation.navigate('OTP', {fromLogin: true});
-  } else {
-    Alert.alert(
-      'Validation Error',
-      'Please fill in all fields and accept the terms and conditions.',
-    );
-  }
-};
-
+  const handleGetOTP = () => {
+    if (mobileNumber && email && isTermsAccepted) {
+      navigation.navigate('OTP', {fromLogin: true});
+    } else {
+      Alert.alert(
+        'Validation Error',
+        'Please fill in all fields and accept the terms and conditions.',
+      );
+    }
+  };
 
   const handleRegisterNavigation = () => {
     navigation.navigate('Register'); // Navigate to Register screen
@@ -32,6 +31,8 @@ const handleGetOTP = () => {
 
   return (
     <View style={styles.container}>
+      {/* Logo Component */}
+      <Logo />
       <Text style={styles.logo}>Login</Text>
       <TextInput
         placeholder="Mobile Number"

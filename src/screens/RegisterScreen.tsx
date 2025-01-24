@@ -1,4 +1,3 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, {useState} from 'react';
 import {
   View,
@@ -9,6 +8,8 @@ import {
   TouchableOpacity,
   Alert,
 } from 'react-native';
+import Logo from '../components/Shared/Logo';
+// Adjust the path as necessary
 
 const RegisterScreen = ({navigation}) => {
   const [name, setName] = useState('');
@@ -16,17 +17,16 @@ const RegisterScreen = ({navigation}) => {
   const [email, setEmail] = useState('');
   const [isTermsAccepted, setIsTermsAccepted] = useState(false);
 
-const handleGetOTP = () => {
-  if (mobileNumber && email && isTermsAccepted) {
-    navigation.navigate('OTP', {fromLogin: false});
-  } else {
-    Alert.alert(
-      'Validation Error',
-      'Please fill in all fields and accept the terms and conditions.',
-    );
-  }
-};
-
+  const handleGetOTP = () => {
+    if (mobileNumber && email && isTermsAccepted) {
+      navigation.navigate('OTP', {fromLogin: false});
+    } else {
+      Alert.alert(
+        'Validation Error',
+        'Please fill in all fields and accept the terms and conditions.',
+      );
+    }
+  };
 
   const handleAlreadyRegistered = () => {
     navigation.navigate('Login'); // Navigate to Login screen
@@ -34,7 +34,10 @@ const handleGetOTP = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.logo}>Register</Text>
+      {/* Logo Component */}
+      <Logo />
+
+      <Text style={styles.logoText}>Register</Text>
       <TextInput
         placeholder="Name"
         style={styles.input}
@@ -79,7 +82,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 20,
   },
-  logo: {fontSize: 24, fontWeight: 'bold', marginBottom: 20},
+  logoText: {fontSize: 24, fontWeight: 'bold', marginBottom: 20, marginTop: 10},
   input: {
     width: '100%',
     borderWidth: 1,
