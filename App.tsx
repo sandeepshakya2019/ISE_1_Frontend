@@ -15,6 +15,8 @@ import RegisterScreen from './src/screens/RegisterScreen';
 
 const Stack = createStackNavigator();
 
+// ashant check
+
 const App = () => {
   const [initialRoute, setInitialRoute] = useState<string | null>(null);
 
