@@ -9,6 +9,8 @@ const toastConfig: ToastConfig = {
       style={{
         borderLeftColor: '#28a745',
         backgroundColor: '#e6f9ec',
+        zIndex: 9999,
+        elevation: 10,
       }}
       contentContainerStyle={{paddingHorizontal: 15}}
       text1Style={{
@@ -30,6 +32,8 @@ const toastConfig: ToastConfig = {
       style={{
         borderLeftColor: '#d32f2f',
         backgroundColor: '#fdecea',
+        zIndex: 9999,
+        elevation: 10,
       }}
       contentContainerStyle={{paddingHorizontal: 15}}
       text1Style={{

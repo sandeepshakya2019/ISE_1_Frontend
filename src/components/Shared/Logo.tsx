@@ -4,9 +4,8 @@ import React from 'react';
 const Logo = () => {
   return (
     <View>
-      {/* Logo */}
       <Image
-        source={require('../../assets/images/logo.png')} // Adjust the path to your logo file
+        source={require('../../assets/images/logo.png')}
         style={styles.logo}
       />
     </View>
@@ -20,7 +19,7 @@ const styles = StyleSheet.create({
     width: 150, // Width of the logo
     height: 150, // Height of the logo
     resizeMode: 'contain', // Maintain aspect ratio
-    // borderRadius: 10,
-    
+    borderRadius: 100,
+    marginBottom: 30,
   },
 });
