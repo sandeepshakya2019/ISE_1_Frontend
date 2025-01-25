@@ -155,11 +155,10 @@ const KYCScreen: React.FC<Props> = ({navigation}) => {
           'Error',
           'Authentication token not found. Please log in again.',
         );
-        setLoading(false); // Set loading to false in case of error
+        setLoading(false);
         return;
       }
 
-      // Create FormData
       const formData = new FormData();
       formData.append('address', address);
       formData.append('aadharCardId', aadhar);
@@ -173,13 +172,10 @@ const KYCScreen: React.FC<Props> = ({navigation}) => {
         formData.append('livePhoto', {
           uri: fileUri,
           name: filename,
-          type: 'image/jpeg', // Ensure to match the correct type
+          type: 'image/jpeg',
         });
       }
 
-      console.log(formData);
-
-      // Send the request
       const response = await api.post('/users/kyc', formData, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -187,20 +183,20 @@ const KYCScreen: React.FC<Props> = ({navigation}) => {
         },
       });
 
-      // if (response?.data?.message) {
-      //   Alert.alert(
-      //     'Success',
-      //     'Your KYC details have been submitted successfully.',
-      //   );
-      //   navigation.replace('LoanDetails', {photo});
-      // }
+      if (response?.data?.message) {
+        Alert.alert(
+          'Success',
+          'Your KYC details have been submitted successfully.',
+        );
+        navigation.replace('LoanDetails', {photo});
+      }
     } catch (error: any) {
       console.error('KYC Submission Error:', error.response);
       const errorMessage =
         error?.response?.data?.message || 'Something went wrong.';
       Alert.alert('Error', errorMessage);
     } finally {
-      setLoading(false); // Set loading to false after API call
+      setLoading(false);
     }
   };
 
@@ -239,6 +235,7 @@ const KYCScreen: React.FC<Props> = ({navigation}) => {
         value={address}
         onChangeText={setAddress}
         multiline
+        autoFocus
         numberOfLines={4}
       />
       {errors.address && <Text style={styles.errorText}>*Required</Text>}

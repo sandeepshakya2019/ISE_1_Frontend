@@ -77,58 +77,9 @@ const LoanRepayScreen = ({navigation}) => {
       });
       return;
     }
-
-    try {
-      setLoading(true);
-      const token = await AsyncStorage.getItem('authToken');
-      if (!token) {
-        Toast.show({
-          type: 'error',
-          text1: 'Authentication Error',
-          text2: 'Please log in to continue.',
-        });
-        navigation.replace('Login');
-        return;
-      }
-
-      // navigation.navigate('PaymentGateway', {
-      //   loan: selectedLoan,
-      // });
-
-      const response = await api.post(
-        '/loan/repay',
-        {loanId: selectedLoan._id},
-        {headers: {Authorization: `Bearer ${token}`}},
-      );
-
-      if (response?.data?.success) {
-        Toast.show({
-          type: 'success',
-          text1: 'Success',
-          text2: `Loan ${selectedLoan._id} repaid successfully.`,
-        });
-
-        // Navigate after successful repayment
-        navigation.navigate('PaymentDetails', {
-          loan: selectedLoan,
-        });
-
-        // Update loans list
-        setLoans(loans.filter(loan => loan._id !== selectedLoan._id));
-        setSelectedLoan(null);
-      } else {
-        throw new Error(response?.data?.message || 'Repaymßent failed.');
-      }
-    } catch (error) {
-      console.error('Error repaying loan:', error.response);
-      Toast.show({
-        type: 'error',
-        text1: 'Error',
-        text2: error?.message || 'Failed to repay the loan. Please try again.',
-      });
-    } finally {
-      setLoading(false);
-    }
+    navigation.navigate('PaymentGateway', {
+      loan: selectedLoan,
+    });
   };
 
   const renderLoanItem = ({item}) => (
@@ -247,7 +198,7 @@ const styles = StyleSheet.create({
   },
   // Button Styles
   repayButton: {
-    backgroundColor: '#FFD700', // Yellow color for the button
+    backgroundColor: 'orange', // Yellow color for the button
     paddingVertical: 12,
     paddingHorizontal: 20,
     borderRadius: 25, // Rounded corners for the button

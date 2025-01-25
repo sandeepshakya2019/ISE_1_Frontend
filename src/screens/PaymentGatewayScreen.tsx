@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   Alert,
   View,
@@ -7,81 +7,129 @@ import {
   TouchableOpacity,
   Image,
 } from 'react-native';
-
-// Using React Native's built-in components for Card and Button instead
-const Card = ({children, style}) => (
-  <View style={[styles.card, style]}>{children}</View>
-);
-
-const Button = ({onPress, children, style}) => (
-  <TouchableOpacity style={[styles.button, style]} onPress={onPress}>
-    <Text style={styles.buttonText}>{children}</Text>
-  </TouchableOpacity>
-);
+import Toast from 'react-native-toast-message';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {api} from '../utils/api';
 
 const PaymentGatewayScreen = ({route, navigation}) => {
-  const {repaymentAmount} = route.params;
+  const {loan} = route.params;
+  const [loading, setLoading] = useState(false);
+
+  const payment = async paymentMethod => {
+    try {
+      setLoading(true);
+      const token = await AsyncStorage.getItem('authToken');
+      if (!token) {
+        Toast.show({
+          type: 'error',
+          text1: 'Authentication Error',
+          text2: 'Please log in to continue.',
+        });
+        navigation.replace('Login');
+        return;
+      }
+
+      const response = await api.post(
+        '/loan/repay',
+        {
+          loanId: loan._id,
+          paymentMethod, // Pass the selected payment method
+        },
+        {headers: {Authorization: `Bearer ${token}`}},
+      );
+
+      if (response?.data?.success) {
+        Alert.alert(
+          'Payment Successful',
+          `Loan ${loan._id} repaid successfully.`,
+          [{text: 'OK'}],
+          {cancelable: false},
+        );
+
+        // Navigate to Loan Details page after successful repayment
+        navigation.navigate('LoanDetails');
+
+        // Optionally, update loans list or other state as needed
+      } else {
+        throw new Error(response?.data?.message || 'Payment failed.');
+      }
+    } catch (error: any) {
+      console.error('Error during payment:', error.response || error.message);
+      Toast.show({
+        type: 'error',
+        text1: 'Payment Error',
+        text2:
+          error?.message || 'Failed to process the payment. Please try again.',
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleGooglePay = () => {
-    Alert.alert('Redirecting to Google Pay');
+    // Alert.alert('Processing', 'Redirecting to Google Pay...');
+    payment('googlePay');
   };
 
   const handleCardPayment = () => {
-    Alert.alert('Proceeding to Card Payment');
+    // Alert.alert('Processing', 'Proceeding to Card Payment...');
+    payment('card');
   };
 
   const handleQRCodePayment = () => {
-    Alert.alert('Displaying QR Code');
+    // Alert.alert('Processing', 'Displaying QR Code...');
+    payment('qrCode');
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Choose Payment Method</Text>
-      <Text style={styles.amount}>Repayment Amount: ₹{repaymentAmount}</Text>
+      <Text style={styles.amount}>
+        Repayment Amount:{' '}
+        <Text style={styles.amount}>₹ {loan?.totalLoanAmount}</Text>
+      </Text>
 
       {/* QR Code Payment Option */}
-      <Card style={styles.cardContainer}>
+      <View style={styles.cardContainer}>
         <TouchableOpacity
           style={styles.paymentOption}
-          onPress={handleQRCodePayment}>
+          onPress={handleQRCodePayment}
+          disabled={loading}>
           <Image
             source={{uri: 'https://dummyimage.com/100x100/000/fff&text=QR'}}
             style={styles.image}
           />
           <Text style={styles.optionText}>Pay with QR Code</Text>
         </TouchableOpacity>
-      </Card>
+      </View>
 
       {/* Card Payment Option */}
-      <Card style={styles.cardContainer}>
+      <View style={styles.cardContainer}>
         <TouchableOpacity
           style={styles.paymentOption}
-          onPress={handleCardPayment}>
+          onPress={handleCardPayment}
+          disabled={loading}>
           <Image
             source={{uri: 'https://dummyimage.com/100x100/000/fff&text=Card'}}
             style={styles.image}
           />
           <Text style={styles.optionText}>Pay with Card</Text>
         </TouchableOpacity>
-      </Card>
+      </View>
 
       {/* Google Pay Payment Option */}
-      <Card style={styles.cardContainer}>
+      <View style={styles.cardContainer}>
         <TouchableOpacity
           style={styles.paymentOption}
-          onPress={handleGooglePay}>
+          onPress={handleGooglePay}
+          disabled={loading}>
           <Image
             source={{uri: 'https://dummyimage.com/100x100/000/fff&text=GPay'}}
             style={styles.image}
           />
           <Text style={styles.optionText}>Pay with Google Pay</Text>
         </TouchableOpacity>
-      </Card>
-
-      {/* Go Back Button */}
-      <Button onPress={() => navigation.goBack()} style={styles.goBackButton}>
-        Go Back
-      </Button>
+      </View>
     </View>
   );
 };
@@ -95,8 +143,23 @@ const styles = StyleSheet.create({
     backgroundColor: '#f8f9fa',
   },
   title: {fontSize: 24, fontWeight: 'bold', marginBottom: 20, color: '#333'},
-  amount: {fontSize: 18, marginBottom: 20, color: '#555'},
-  card: {
+  amount: {
+    fontSize: 18,
+    marginBottom: 20,
+    color: '#fff', // White text color for contrast
+    backgroundColor: '#00796b', // Chip background color (you can adjust this)
+    fontWeight: 'bold',
+    paddingVertical: 8, // Vertical padding for chip height
+    paddingHorizontal: 20, // Horizontal padding for chip width
+    borderRadius: 25, // Rounded corners for the chip
+    textAlign: 'center', // Center the text inside the chip
+    elevation: 3, // Shadow for Android
+    shadowColor: '#000', // Shadow color for iOS
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+    shadowOffset: {width: 0, height: 2}, // Shadow offset for iOS
+  },
+  cardContainer: {
     backgroundColor: '#fff',
     padding: 15,
     borderRadius: 10,
@@ -117,15 +180,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: 20,
+    width: '90%',
   },
   buttonText: {color: '#fff', fontSize: 16, fontWeight: 'bold'},
-  cardContainer: {
-    width: '90%',
-    marginVertical: 10,
-  },
-  goBackButton: {
-    marginTop: 20,
-    width: '90%',
+  disabledButton: {
+    backgroundColor: '#e0e0e0',
   },
 });
 
