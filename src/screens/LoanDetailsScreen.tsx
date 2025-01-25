@@ -167,9 +167,8 @@ const LoanDetailsScreen = ({route}) => {
           />
         </View>
       </View>
-      <View style={styles.logoutButton}>
-        <Button title="Logout" color="#d9534f" onPress={handleLogout} />
-      </View>
+
+      {/* List of loans - Horizontal Scroll */}
       {fetchingLoans ? (
         <ActivityIndicator size="large" color="#28a745" />
       ) : (
@@ -177,18 +176,21 @@ const LoanDetailsScreen = ({route}) => {
           data={loanDetails}
           renderItem={renderLoanItem}
           keyExtractor={item => item._id.toString()}
+          // horizontal={true} // Set horizontal scrolling
+          showsVerticalScrollIndicator={false} // Hide the scroll indicator
           contentContainerStyle={styles.loanList}
         />
       )}
+
+      {/* Logout Button at Bottom */}
+      <View style={styles.logoutButtonContainer}>
+        <Button title="Logout" color="#d9534f" onPress={handleLogout} />
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  logoutButton: {
-    marginTop: 30,
-    width: '100%',
-  },
   container: {
     flex: 1,
     justifyContent: 'flex-start',
@@ -222,9 +224,9 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   loanItem: {
-    width: '100%',
-    padding: 15,
-    marginVertical: 10,
+    width: 300, // Each item takes up 300px width (adjustable)
+    marginBottom: 20, // Space between loan items
+    padding: 10,
     backgroundColor: '#ffffff',
     borderRadius: 10,
     shadowColor: '#000',
@@ -239,10 +241,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginBottom: 8,
     color: '#444',
-  },
-  loanTextHighlight: {
-    fontWeight: 'bold',
-    color: '#28a745',
   },
   loanList: {
     width: '100%',
@@ -260,6 +258,14 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#ddd', // Border color
     overflow: 'hidden', // To prevent text overflow outside the button
+  },
+  // Logout Button container at the bottom
+  logoutButtonContainer: {
+    width: '60%',
+    marginTop: 10,
+    borderRadius: 300,
+    borderWidth: 1,
+    borderColor: '#ddd',
   },
 });
 

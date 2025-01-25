@@ -146,7 +146,7 @@ const LoanRepayScreen = ({navigation}) => {
         </View>
       )}
       <Toast />
-      <Text style={styles.title}>Repay Loan</Text>
+      {/* <Text style={styles.title}>Repay Loan</Text> */}
       <Text style={styles.welcomeText}>Welcome, {userName}!</Text>
       {filteredLoans.length > 0 ? (
         <FlatList
@@ -160,11 +160,21 @@ const LoanRepayScreen = ({navigation}) => {
           No loans available for repayment.
         </Text>
       )}
-      <Button
-        title="Repay Selected Loan"
+      <TouchableOpacity
+        style={[
+          styles.repayButton,
+          !selectedLoan || loading ? styles.repayButtonDisabled : {},
+        ]}
         onPress={handleRepay}
-        disabled={!selectedLoan || loading}
-      />
+        disabled={!selectedLoan || loading}>
+        <Text
+          style={[
+            styles.repayButtonText,
+            !selectedLoan || loading ? styles.repayButtonTextDisabled : {},
+          ]}>
+          Repay Selected Loan
+        </Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -179,10 +189,12 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 20,
+    color: '#333',
   },
   welcomeText: {
     fontSize: 18,
     marginBottom: 20,
+    color: '#555',
   },
   loanItem: {
     padding: 15,
@@ -199,6 +211,7 @@ const styles = StyleSheet.create({
   loanText: {
     fontSize: 16,
     marginBottom: 5,
+    color: '#333',
   },
   loadingContainer: {
     flex: 1,
@@ -217,6 +230,54 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     zIndex: 1,
+  },
+  // Button Styles
+  repayButton: {
+    backgroundColor: '#FFD700', // Yellow color for the button
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 25, // Rounded corners for the button
+    marginTop: 20,
+    marginBottom: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    elevation: 3, // Adds shadow for Android
+    shadowColor: '#000', // Shadow for iOS
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+  },
+  repayButtonText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#fff', // White text for contrast
+    fontFamily: 'Roboto', // Change this to any custom font or use a system font
+  },
+  repayButtonDisabled: {
+    backgroundColor: '#ccc', // Disable button with a grey background
+  },
+  repayButtonTextDisabled: {
+    color: '#666', // Disabled button text in grey
+  },
+  loanItemButton: {
+    backgroundColor: '#28a745', // Green accent color
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 25,
+    marginTop: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+  },
+  loanItemButtonText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#fff',
+  },
+  loanItemButtonPressed: {
+    backgroundColor: '#1c7c3c', // Darken on press
   },
 });
 
