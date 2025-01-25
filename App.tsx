@@ -23,6 +23,8 @@ const App = () => {
   useEffect(() => {
     const checkUserAuthentication = async () => {
       try {
+        const getAllKeys = await AsyncStorage.getAllKeys();
+        console.log('Auth', getAllKeys);
         const token = await AsyncStorage.getItem('authToken');
         if (token) {
           const response = await api.get('/users/login-check', {
@@ -122,7 +124,7 @@ const App = () => {
           name="LoanDetails"
           component={LoanDetailsScreen}
           options={{
-            headerShown: true,
+            headerShown: false,
             title: 'Loan Details',
             gestureEnabled: false,
           }}
