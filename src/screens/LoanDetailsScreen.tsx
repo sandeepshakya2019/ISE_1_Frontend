@@ -13,6 +13,7 @@ import {api} from '../utils/api';
 import Toast from 'react-native-toast-message';
 import {useNavigation} from '@react-navigation/native';
 import {logoutApiCall} from '../utils/logout';
+import toastConfig from '../styles/toastConfig';
 
 const LoanDetailsScreen = ({route}) => {
   const [userDetails, setUserDetails] = useState<any>(null);
@@ -135,22 +136,14 @@ const LoanDetailsScreen = ({route}) => {
 
   return (
     <View style={styles.container}>
-      <Toast />
+      <Toast config={toastConfig} />
       <Text style={styles.title}>Loan Details</Text>
       {displayPhoto ? (
         <Image source={{uri: displayPhoto}} style={styles.photo} />
       ) : (
         <Text style={styles.noPhotoText}>No photo available</Text>
       )}
-      <Text style={styles.info}>
-        Total Loan Amount: {userDetails?.sectionedAmount || 'N/A'}
-      </Text>
-      <Text style={styles.info}>
-        Eligible Loan Amount: {userDetails?.offeredAmount || 'N/A'}
-      </Text>
-      <Text style={styles.info}>
-        Number of Loans: {userDetails?.noOfLoan || 0}
-      </Text>
+
       <View style={styles.buttonContainer}>
         <View style={styles.button}>
           <Button
@@ -167,8 +160,31 @@ const LoanDetailsScreen = ({route}) => {
           />
         </View>
       </View>
+      <View style={styles.cardContainer}>
+        <View style={styles.card}>
+          <View style={styles.cardRow}>
+            <Text style={styles.cardLabel}>Total Amount</Text>
+            <Text style={styles.rupee}>
+              ₹ {userDetails?.sectionedAmount || '0'}
+            </Text>
+          </View>
+        </View>
+        <View style={styles.card}>
+          <View style={styles.cardRow}>
+            <Text style={styles.cardLabel}>Eligible Amount</Text>
+            <Text style={styles.rupee}>
+              ₹ {userDetails?.offeredAmount || '00000'}
+            </Text>
+          </View>
+        </View>
+        <View style={styles.card}>
+          <View style={styles.cardRow}>
+            <Text style={styles.cardLabel}>Number of Loans</Text>
+            <Text style={styles.rupee}>{userDetails?.noOfLoan || 0}</Text>
+          </View>
+        </View>
+      </View>
 
-      {/* List of loans - Horizontal Scroll */}
       {fetchingLoans ? (
         <ActivityIndicator size="large" color="#28a745" />
       ) : (
@@ -176,13 +192,11 @@ const LoanDetailsScreen = ({route}) => {
           data={loanDetails}
           renderItem={renderLoanItem}
           keyExtractor={item => item._id.toString()}
-          // horizontal={true} // Set horizontal scrolling
-          showsVerticalScrollIndicator={false} // Hide the scroll indicator
+          showsVerticalScrollIndicator={false}
           contentContainerStyle={styles.loanList}
         />
       )}
 
-      {/* Logout Button at Bottom */}
       <View style={styles.logoutButtonContainer}>
         <Button title="Logout" color="#d9534f" onPress={handleLogout} />
       </View>
@@ -191,6 +205,46 @@ const LoanDetailsScreen = ({route}) => {
 };
 
 const styles = StyleSheet.create({
+  cardContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    padding: 10,
+  },
+  card: {
+    backgroundColor: '#ffffff',
+    padding: 15,
+    borderRadius: 15,
+    margin: 5,
+    width: '30%',
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    shadowOffset: {width: 0, height: 2},
+    elevation: 3,
+    borderWidth: 1,
+    borderColor: '#e0e0ee',
+    alignItems: 'center',
+  },
+  cardRow: {
+    alignItems: 'center',
+  },
+  cardLabel: {
+    textAlign: 'center',
+    fontSize: 16,
+    color: '#757575',
+    fontWeight: '500',
+  },
+  rupee: {
+    color: '#00796b',
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginVertical: 5,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    textAlign: 'center',
+  },
+
   container: {
     flex: 1,
     justifyContent: 'flex-start',
@@ -201,15 +255,11 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 30,
+    marginBottom: 20,
     textAlign: 'center',
     color: '#333',
   },
-  info: {
-    fontSize: 18,
-    marginVertical: 15,
-    color: '#555',
-  },
+
   photo: {
     width: 150,
     height: 150,
@@ -224,8 +274,8 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   loanItem: {
-    width: 300, // Each item takes up 300px width (adjustable)
-    marginBottom: 20, // Space between loan items
+    width: 300,
+    marginBottom: 20,
     padding: 10,
     backgroundColor: '#ffffff',
     borderRadius: 10,
@@ -254,12 +304,11 @@ const styles = StyleSheet.create({
   },
   button: {
     width: '45%',
-    borderRadius: 25, // Rounded corners for buttons
+    borderRadius: 25,
     borderWidth: 1,
-    borderColor: '#ddd', // Border color
-    overflow: 'hidden', // To prevent text overflow outside the button
+    borderColor: '#ddd',
+    overflow: 'hidden',
   },
-  // Logout Button container at the bottom
   logoutButtonContainer: {
     width: '60%',
     marginTop: 10,
