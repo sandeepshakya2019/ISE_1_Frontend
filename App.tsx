@@ -17,7 +17,7 @@ import RegisterScreen from './src/screens/RegisterScreen';
 const Stack = createStackNavigator();
 
 const App = () => {
-  const [initialRoute, setInitialRoute] = useState<string | null>('Login');
+  const [initialRoute, setInitialRoute] = useState<string | null>('Register');
   const [loading, setLoading] = useState(true); // Loading state
 
   useEffect(() => {
@@ -30,42 +30,31 @@ const App = () => {
           const response = await api.get('/users/login-check', {
             headers: {Authorization: `Bearer ${token}`},
           });
-          setLoading(false);
           if (response && response.data && response.data.message) {
-            const {isKYC, _id} = response.data.message;
+            const {isKYC} = response.data.message;
 
-            if (!_id) {
-              setInitialRoute('Login');
+            if (!isKYC) {
+              Alert.alert(
+                'KYC Required',
+                'Please fill the KYC Details to proceed.',
+              );
+              setInitialRoute('KYC');
             } else {
-              if (!isKYC) {
-                Alert.alert(
-                  'KYC Required',
-                  'Please fill in the KYC Details to proceed.',
-                );
-                setInitialRoute('KYC');
-              } else {
-                setInitialRoute('LoanDetails');
-              }
+              setInitialRoute('LoanDetails');
             }
           }
         } else {
-          Alert.alert('Session Expired', 'Please login again to continue.');
           setInitialRoute('Login');
         }
       } catch (error) {
-        setLoading(false);
-
         console.error('Error checking user authentication:', error);
-
-        // Show alert for error
         Alert.alert(
           'Authentication Error',
           'Something Went Wrong Pls Try Again...',
         );
-
-        setInitialRoute('Login'); // Fallback to Login
+        setInitialRoute('Login');
       } finally {
-        setLoading(false); // Hide loading spinner after checking authentication
+        setLoading(false);
       }
     };
 
@@ -73,7 +62,6 @@ const App = () => {
   }, []);
 
   if (loading) {
-    // Render a loading screen while determining the initial route
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="#28a745" />
@@ -142,7 +130,7 @@ const App = () => {
         <Stack.Screen
           name="PaymentGateway"
           component={PaymentGatewayScreen}
-          options={{title: 'Payment Gateway'}}
+          options={{headerShown: true, title: 'Payment Gateway'}}
         />
       </Stack.Navigator>
     </NavigationContainer>
