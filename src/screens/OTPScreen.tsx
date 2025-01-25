@@ -65,18 +65,30 @@ const OTPScreen = ({navigation, route}) => {
           navigation.navigate(isKyc ? 'LoanDetails' : 'KYC');
         }
       } catch (error) {
+        console.error('OTP Error:', error?.response?.data);
+
+        let errorMessage = 'Something went wrong. Please try again.'; // Default message
         const errorData = error?.response?.data?.message;
-        const errorMessage =
-          typeof errorData === 'object'
-            ? Object.keys(errorData).find(
-                key => errorData[key]?.trim() !== '',
-              ) || 'Something went wrong. Please try again.'
-            : errorData || 'Something went wrong. Please try again.';
+        console.log(errorData);
+        // Check if `errorData` is an object and find the first key with a non-empty value
+        if (errorData && typeof errorData === 'object') {
+          const firstNonEmptyKey = Object.keys(errorData).find(
+            key => errorData[key]?.trim() !== '',
+          );
+          errorMessage = firstNonEmptyKey
+            ? errorData[firstNonEmptyKey]
+            : errorMessage;
+        } else if (typeof errorData === 'string') {
+          errorMessage = errorData;
+        }
+
         Toast.show({
           type: 'error',
-          text1: 'OTP Verification Failed',
+          text1: 'Registration Failed',
           text2: errorMessage,
         });
+
+        throw error;
       } finally {
         setLoading(false);
       }
@@ -103,18 +115,31 @@ const OTPScreen = ({navigation, route}) => {
         });
         setOtp('');
       }
-    } catch (error) {
+    } catch (error: any) {
+      console.error('OTP Error:', error?.response?.data);
+
+      let errorMessage = 'Something went wrong. Please try again.'; // Default message
       const errorData = error?.response?.data?.message;
-      const errorMessage =
-        typeof errorData === 'object'
-          ? Object.keys(errorData).find(key => errorData[key]?.trim() !== '') ||
-            'Something went wrong. Please try again.'
-          : errorData || 'Something went wrong. Please try again.';
+      console.log(errorData);
+      // Check if `errorData` is an object and find the first key with a non-empty value
+      if (errorData && typeof errorData === 'object') {
+        const firstNonEmptyKey = Object.keys(errorData).find(
+          key => errorData[key]?.trim() !== '',
+        );
+        errorMessage = firstNonEmptyKey
+          ? errorData[firstNonEmptyKey]
+          : errorMessage;
+      } else if (typeof errorData === 'string') {
+        errorMessage = errorData;
+      }
+
       Toast.show({
         type: 'error',
-        text1: 'Resend OTP Failed',
+        text1: 'Registration Failed',
         text2: errorMessage,
       });
+
+      throw error;
     } finally {
       setOtp('');
       setLoading(false);

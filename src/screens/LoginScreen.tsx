@@ -29,16 +29,29 @@ const LoginScreen = ({navigation}) => {
       });
       return response;
     } catch (error) {
-      let errorMessage = 'Something went wrong. Please try again.';
+      console.error('Login Error:', error?.response?.data);
+
+      let errorMessage = 'Something went wrong. Please try again.'; // Default message
       const errorData = error?.response?.data?.message;
-      if (errorData && typeof errorData === 'string') {
+
+      // Check if `errorData` is an object and find the first key with a non-empty value
+      if (errorData && typeof errorData === 'object') {
+        const firstNonEmptyKey = Object.keys(errorData).find(
+          key => errorData[key]?.trim() !== '',
+        );
+        errorMessage = firstNonEmptyKey
+          ? errorData[firstNonEmptyKey]
+          : errorMessage;
+      } else if (typeof errorData === 'string') {
         errorMessage = errorData;
       }
+
       Toast.show({
         type: 'error',
         text1: 'Login Failed',
         text2: errorMessage,
       });
+
       throw error;
     }
   };
