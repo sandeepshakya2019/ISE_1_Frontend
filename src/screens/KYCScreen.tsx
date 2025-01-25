@@ -4,150 +4,285 @@ import {
   Alert,
   Text,
   TextInput,
+  Button,
+  StyleSheet,
+  ScrollView,
   TouchableOpacity,
   Image,
   PermissionsAndroid,
   Platform,
-  ScrollView,
-  ActivityIndicator,
-  StyleSheet,
+  ActivityIndicator, // Importing the ActivityIndicator
 } from 'react-native';
 import {launchCamera} from 'react-native-image-picker';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import {StackNavigationProp} from '@react-navigation/stack';
+import axios from 'axios';
 import {api} from '../utils/api';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const KYCScreen = ({navigation}) => {
-  const [photo, setPhoto] = useState(null);
-  const [fullName, setFullName] = useState('');
+type RootStackParamList = {
+  LoanDetails: {photo: string | null}; // Expecting a photo param
+};
+
+type KYCScreenNavigationProp = StackNavigationProp<
+  RootStackParamList,
+  'LoanDetails'
+>;
+
+type Props = {
+  navigation: KYCScreenNavigationProp;
+};
+
+const KYCScreen: React.FC<Props> = ({navigation}) => {
+  const [photo, setPhoto] = useState<string | null>(null);
+  const [f, setFullName] = useState('');
   const [mobileNumber, setMobileNumber] = useState('');
-  const [address, setAddress] = useState('Rani Awanti bai nagar...');
+  const [address, setAddress] = useState(
+    'Rani Awanti bai nagar shikohabad road etah',
+  );
   const [aadhar, setAadhar] = useState('235689562356');
   const [bankAccount, setBankAccount] = useState('895623895623');
   const [ifsc, setIfsc] = useState('89562389562');
-  const [loading, setLoading] = useState(false);
-  const [errors, setErrors] = useState({});
-
-  const fetchDetails = async () => {
-    try {
-      const token = await AsyncStorage.getItem('authToken');
-      const response = await api.get('/users/login-check', {
-        headers: {Authorization: `Bearer ${token}`},
-      });
-      setFullName(response.data.message.fullName || '');
-      setMobileNumber(response.data.message.mobileNo || '');
-    } catch (error) {
-      Alert.alert('Error', 'Unable to fetch user details.');
-    }
-  };
+  const [errors, setErrors] = useState({
+    fullName: false,
+    mobileNumber: false,
+    address: false,
+    aadhar: false,
+    bankAccount: false,
+    ifsc: false,
+    photo: false,
+  });
+  const [loading, setLoading] = useState(false); // Added loading state
 
   useEffect(() => {
-    fetchDetails();
+    // Fetch user details from the API
+    const fetchUserDetails = async () => {
+      try {
+        const token = await AsyncStorage.getItem('authToken');
+        const response = await api.get('/users/login-check', {
+          headers: {Authorization: `Bearer ${token}`},
+        });
+        console.log('User details:', response.data.message);
+        if (response && response.data && response.data.message) {
+          const {fullName, mobileNo} = response.data.message;
+          setFullName(fullName || '');
+          setMobileNumber(mobileNo || '');
+        }
+      } catch (error: any) {
+        console.error('Error fetching user details:', error);
+        Alert.alert(
+          'Error',
+          'Unable to fetch user details. Please try again later.',
+        );
+      }
+    };
+
+    fetchUserDetails();
   }, []);
 
   const requestCameraPermission = async () => {
     if (Platform.OS === 'android') {
-      return (
-        (await PermissionsAndroid.request(
+      try {
+        const granted = await PermissionsAndroid.request(
           PermissionsAndroid.PERMISSIONS.CAMERA,
-          {title: 'Camera Permission', message: 'Need camera access.'},
-        )) === PermissionsAndroid.RESULTS.GRANTED
-      );
+          {
+            title: 'Camera Permission',
+            message: 'This app needs access to your camera to capture photos.',
+            buttonNeutral: 'Ask Me Later',
+            buttonNegative: 'Cancel',
+            buttonPositive: 'OK',
+          },
+        );
+        return granted === PermissionsAndroid.RESULTS.GRANTED;
+      } catch (err) {
+        console.error(err);
+        return false;
+      }
+    } else {
+      return true;
     }
-    return true;
   };
 
-  const handleCapture = async () => {
-    const permission = await requestCameraPermission();
-    if (!permission) {
-      Alert.alert('Permission Denied', 'Camera access required.');
+  const capturePhoto = async () => {
+    const hasPermission = await requestCameraPermission();
+    if (!hasPermission) {
+      Alert.alert('Error', 'Camera permission is required to capture photos.');
       return;
     }
-    const result = await launchCamera({mediaType: 'photo', saveToPhotos: true});
-    if (result.assets) setPhoto(result.assets[0].uri);
-    else Alert.alert('Error', 'Photo not captured.');
+
+    try {
+      const result = await launchCamera({
+        mediaType: 'photo',
+        saveToPhotos: true,
+      });
+      if (result.assets && result.assets.length > 0) {
+        setPhoto(result.assets[0].uri || null);
+      } else {
+        Alert.alert('Error', 'No photo captured.');
+      }
+    } catch (error) {
+      console.error('Error capturing photo:', error);
+      Alert.alert('Error', 'An error occurred while capturing the photo.');
+    }
   };
 
   const handleSubmit = async () => {
-    setLoading(true);
+    const validationErrors = {
+      fullName: !f,
+      mobileNumber: mobileNumber.length !== 10,
+      address: !address,
+      aadhar: aadhar.length !== 12,
+      bankAccount: !bankAccount,
+      ifsc: !ifsc,
+      photo: !photo,
+    };
+
+    setErrors(validationErrors);
+
+    if (Object.values(validationErrors).includes(true)) {
+      Alert.alert(
+        'Error',
+        'Please fill all required fields and capture a photo.',
+      );
+      return;
+    }
+
+    setLoading(true); // Set loading to true when submitting
+
     try {
+      const token = await AsyncStorage.getItem('authToken');
+      if (!token) {
+        Alert.alert(
+          'Error',
+          'Authentication token not found. Please log in again.',
+        );
+        setLoading(false); // Set loading to false in case of error
+        return;
+      }
+
+      // Create FormData
       const formData = new FormData();
       formData.append('address', address);
-      if (photo)
-        formData.append('livePhoto', {
-          uri: photo,
-          name: 'photo.jpg',
-          type: 'image/jpeg',
-        });
+      formData.append('aadharCardId', aadhar);
+      formData.append('accountNumber', bankAccount);
+      formData.append('ifscCode', ifsc);
 
-      await api.post('/users/kyc', formData, {
-        headers: {Authorization: `Bearer token`},
+      if (photo) {
+        const filename = photo.substring(photo.lastIndexOf('/') + 1);
+        const fileUri =
+          Platform.OS === 'android' ? photo : photo.replace('file://', '');
+        formData.append('livePhoto', {
+          uri: fileUri,
+          name: filename,
+          type: 'image/jpeg', // Ensure to match the correct type
+        });
+      }
+
+      console.log(formData);
+
+      // Send the request
+      const response = await api.post('/users/kyc', formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data',
+        },
       });
-      navigation.replace('LoanDetails', {photo});
-    } catch (error) {
-      Alert.alert('Error', 'Submission Failed.');
+
+      // if (response?.data?.message) {
+      //   Alert.alert(
+      //     'Success',
+      //     'Your KYC details have been submitted successfully.',
+      //   );
+      //   navigation.replace('LoanDetails', {photo});
+      // }
+    } catch (error: any) {
+      console.error('KYC Submission Error:', error.response);
+      const errorMessage =
+        error?.response?.data?.message || 'Something went wrong.';
+      Alert.alert('Error', errorMessage);
     } finally {
-      setLoading(false);
+      setLoading(false); // Set loading to false after API call
     }
   };
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>KYC Verification</Text>
-
+      <Text style={styles.title}>KYC Details</Text>
       <TextInput
         placeholder="Full Name"
-        value={fullName}
-        style={styles.input}
+        style={[styles.input, errors.fullName && styles.errorInput]}
+        value={f}
+        onChangeText={setFullName}
         editable={false}
       />
+      {errors.fullName && <Text style={styles.errorText}>*Required</Text>}
+
       <TextInput
         placeholder="Mobile Number"
+        style={[styles.input, errors.mobileNumber && styles.errorInput]}
         value={mobileNumber}
-        style={styles.input}
+        onChangeText={setMobileNumber}
+        keyboardType="numeric"
+        maxLength={10}
         editable={false}
       />
+      {errors.mobileNumber && (
+        <Text style={styles.errorText}>*Must be 10 digits</Text>
+      )}
+
       <TextInput
         placeholder="Address"
+        style={[
+          styles.input,
+          styles.textArea,
+          errors.address && styles.errorInput,
+        ]}
         value={address}
-        style={[styles.input, styles.textArea]}
         onChangeText={setAddress}
         multiline
+        numberOfLines={4}
       />
+      {errors.address && <Text style={styles.errorText}>*Required</Text>}
+
       <TextInput
-        placeholder="Aadhar Number"
+        placeholder="Aadhar Details"
+        style={[styles.input, errors.aadhar && styles.errorInput]}
         value={aadhar}
-        style={styles.input}
         onChangeText={setAadhar}
-        maxLength={12}
         keyboardType="numeric"
+        maxLength={12}
       />
+      {errors.aadhar && (
+        <Text style={styles.errorText}>*Must be 12 digits</Text>
+      )}
+
       <TextInput
-        placeholder="Bank Account Number"
+        placeholder="Bank Account No."
+        style={[styles.input, errors.bankAccount && styles.errorInput]}
         value={bankAccount}
-        style={styles.input}
         onChangeText={setBankAccount}
       />
+      {errors.bankAccount && <Text style={styles.errorText}>*Required</Text>}
+
       <TextInput
         placeholder="IFSC Code"
+        style={[styles.input, errors.ifsc && styles.errorInput]}
         value={ifsc}
-        style={styles.input}
         onChangeText={setIfsc}
       />
+      {errors.ifsc && <Text style={styles.errorText}>*Required</Text>}
 
-      <TouchableOpacity style={styles.captureButton} onPress={handleCapture}>
+      <TouchableOpacity style={styles.photoButton} onPress={capturePhoto}>
         {photo ? (
           <Image source={{uri: photo}} style={styles.photoPreview} />
         ) : (
-          <Text style={styles.captureText}>📷 Capture Photo</Text>
+          <Text style={styles.photoButtonText}>📸 Capture Photo</Text>
         )}
       </TouchableOpacity>
 
       {loading ? (
-        <ActivityIndicator size="large" color="#4CAF50" />
+        <ActivityIndicator size="large" color="#28a745" />
       ) : (
-        <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
-          <Text style={styles.submitText}>Submit</Text>
-        </TouchableOpacity>
+        <Button title="Submit" onPress={handleSubmit} />
       )}
     </ScrollView>
   );
@@ -156,11 +291,10 @@ const KYCScreen = ({navigation}) => {
 const styles = StyleSheet.create({
   container: {padding: 20},
   title: {
-    fontSize: 26, // Increased font size for the title
-    fontWeight: '700', // Bold text
+    fontSize: 24,
+    fontWeight: 'bold',
     marginBottom: 20,
     textAlign: 'center',
-    fontFamily: 'Roboto', // If you want to use a specific font, you can add a custom one here
   },
   input: {
     width: '100%',
@@ -169,18 +303,14 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     padding: 10,
     marginVertical: 10,
-    fontFamily: 'Arial', // You can change this to a custom font family here
-    fontSize: 16, // Larger text inside the input fields
   },
   textArea: {
     height: 100,
     textAlignVertical: 'top',
-    fontSize: 16, // Adjust the font size in textarea
-    fontFamily: 'Arial', // Font family applied to textarea
   },
   errorInput: {borderColor: 'red'},
   photoButton: {
-    backgroundColor: '#1DA1F2', // Twitter blue color
+    backgroundColor: '#28a745',
     width: 150,
     height: 150,
     borderRadius: 75,
@@ -190,26 +320,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     overflow: 'hidden',
     alignSelf: 'center',
-    fontFamily: 'Roboto', // Set font family for the button text
   },
-  photoButtonText: {
-    color: '#fff', // Text color in button
-    fontWeight: '600', // Semi-bold text in the button
-    fontSize: 18, // Slightly larger button text size
-    fontFamily: 'Roboto', // Custom font family, you can change to a different one
-  },
+  photoButtonText: {color: '#fff', fontWeight: 'bold', fontSize: 16},
   photoPreview: {
     width: 150,
     height: 150,
     borderRadius: 75,
   },
-  errorText: {
-    color: 'red',
-    fontSize: 14,
-    marginTop: 5,
-    textAlign: 'left',
-    fontFamily: 'Arial', // Font family for error messages
-  },
+  errorText: {color: 'red', fontSize: 14, marginTop: 5, textAlign: 'left'},
 });
 
 export default KYCScreen;
