@@ -12,6 +12,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {api} from '../utils/api';
 import Toast from 'react-native-toast-message';
 import {useNavigation} from '@react-navigation/native';
+import {logoutApiCall} from '../utils/logout';
 
 const LoanDetailsScreen = ({route}) => {
   const [userDetails, setUserDetails] = useState<any>(null);
@@ -98,40 +99,17 @@ const LoanDetailsScreen = ({route}) => {
   }, []);
 
   const handleLogout = async () => {
-    try {
-      const token = await AsyncStorage.getItem('authToken');
-
-      if (token) {
-        // Send API request to logout
-        await api.post(
-          '/users/logout',
-          {},
-          {
-            headers: {Authorization: `Bearer ${token}`},
-          },
-        );
-      }
-
-      // Clear AsyncStorage
-      await AsyncStorage.removeItem('authToken');
-      await AsyncStorage.removeItem('MobileNo');
-
-      Toast.show({
-        text1: 'Success',
-        text2: 'You have been logged out.',
-      });
-
-      // Navigate to the login screen
+    const log = await logoutApiCall();
+    if (log) {
       navigation.reset({
         index: 0,
         routes: [{name: 'Login'}],
       });
-    } catch (error) {
+    } else {
       Toast.show({
         text1: 'Error',
         text2: 'Unable to logout. Please try again later.',
       });
-      console.error('Error during logout:', error);
     }
   };
 
@@ -157,14 +135,13 @@ const LoanDetailsScreen = ({route}) => {
 
   return (
     <View style={styles.container}>
+      <Toast />
       <Text style={styles.title}>Loan Details</Text>
-
       {displayPhoto ? (
         <Image source={{uri: displayPhoto}} style={styles.photo} />
       ) : (
         <Text style={styles.noPhotoText}>No photo available</Text>
       )}
-
       <Text style={styles.info}>
         Total Loan Amount: {userDetails?.sectionedAmount || 'N/A'}
       </Text>
@@ -174,7 +151,6 @@ const LoanDetailsScreen = ({route}) => {
       <Text style={styles.info}>
         Number of Loans: {userDetails?.noOfLoan || 0}
       </Text>
-
       <View style={styles.buttonContainer}>
         <View style={styles.button}>
           <Button
@@ -189,11 +165,9 @@ const LoanDetailsScreen = ({route}) => {
           />
         </View>
       </View>
-
       <View style={styles.logoutButton}>
         <Button title="Logout" color="#d9534f" onPress={handleLogout} />
       </View>
-
       {fetchingLoans ? (
         <ActivityIndicator size="large" color="#28a745" />
       ) : (
@@ -207,8 +181,6 @@ const LoanDetailsScreen = ({route}) => {
     </View>
   );
 };
-
-export default LoanDetailsScreen;
 
 const styles = StyleSheet.create({
   logoutButton: {
