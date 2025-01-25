@@ -5,7 +5,8 @@ import Toast from 'react-native-toast-message';
 export const logoutApiCall = async () => {
   try {
     const token = await AsyncStorage.getItem('authToken');
-
+    await AsyncStorage.removeItem('authToken');
+    await AsyncStorage.removeItem('mobileNo');
     if (token) {
       // Send API request to logout
       await api.post(
@@ -16,10 +17,6 @@ export const logoutApiCall = async () => {
         },
       );
     }
-
-    // Clear AsyncStorage
-    await AsyncStorage.removeItem('authToken');
-    await AsyncStorage.removeItem('mobileNo');
 
     Toast.show({
       text1: 'Success',

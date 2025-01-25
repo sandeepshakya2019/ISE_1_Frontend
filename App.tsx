@@ -13,6 +13,7 @@ import LoanBorrowScreen from './src/screens/LoanBorrowScreen';
 import LoanRepayScreen from './src/screens/LoanRepayScreen';
 import PaymentGatewayScreen from './src/screens/PaymentGatewayScreen';
 import RegisterScreen from './src/screens/RegisterScreen';
+import {logoutApiCall} from './src/utils/logout';
 
 const Stack = createStackNavigator();
 
@@ -46,8 +47,11 @@ const App = () => {
         } else {
           setInitialRoute('Login');
         }
-      } catch (error) {
-        console.error('Error checking user authentication:', error);
+      } catch (error: any) {
+        const isSuccess = error?.response?.data?.success;
+        if (!isSuccess) {
+          logoutApiCall();
+        }
         Alert.alert(
           'Authentication Error',
           'Something Went Wrong Pls Try Again...',
