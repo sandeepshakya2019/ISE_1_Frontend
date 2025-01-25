@@ -180,12 +180,14 @@ const LoanDetailsScreen = ({route}) => {
           <Button
             title="Borrow Loan"
             onPress={() => navigation.navigate('LoanBorrow')}
+            color="#4CAF50"
           />
         </View>
         <View style={styles.button}>
           <Button
             title="Repay Loan"
             onPress={() => navigation.navigate('LoanRepay')}
+            color="#FF9800"
           />
         </View>
       </View>
@@ -212,26 +214,26 @@ export default LoanDetailsScreen;
 
 const styles = StyleSheet.create({
   logoutButton: {
-    marginTop: 20,
+    marginTop: 30,
     width: '100%',
   },
   container: {
     flex: 1,
     justifyContent: 'flex-start',
     alignItems: 'center',
-    padding: 20,
-    backgroundColor: '#f4f4f4', // Light background for the app
+    padding: 30,
+    backgroundColor: '#f4f4f4',
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 20,
+    marginBottom: 30,
     textAlign: 'center',
     color: '#333',
   },
   info: {
     fontSize: 18,
-    marginVertical: 10,
+    marginVertical: 15,
     color: '#555',
   },
   photo: {
@@ -248,16 +250,16 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   loanItem: {
-    width: '100%', // Take full width of the app
+    width: '100%',
     padding: 15,
     marginVertical: 10,
-    backgroundColor: '#ffffff', // White background for loan items
-    borderRadius: 10, // Rounded corners
+    backgroundColor: '#ffffff',
+    borderRadius: 10,
     shadowColor: '#000',
     shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.1,
     shadowRadius: 5,
-    elevation: 3, // Add shadow for Android
+    elevation: 3,
     borderWidth: 1,
     borderColor: '#ddd',
   },
@@ -268,7 +270,7 @@ const styles = StyleSheet.create({
   },
   loanTextHighlight: {
     fontWeight: 'bold',
-    color: '#28a745', // Highlight color for important text
+    color: '#28a745',
   },
   loanList: {
     width: '100%',
@@ -282,7 +284,9 @@ const styles = StyleSheet.create({
   },
   button: {
     width: '45%',
+    borderRadius: 25, // Rounded corners for buttons
+    borderWidth: 1,
+    borderColor: '#ddd', // Border color
+    overflow: 'hidden', // To prevent text overflow outside the button
   },
 });
-
-export default LoanDetailsScreen;
