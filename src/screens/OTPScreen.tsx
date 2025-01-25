@@ -16,7 +16,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const OTPScreen = ({navigation, route}) => {
   const [otp, setOtp] = useState('');
   const [loading, setLoading] = useState(false);
-  const [timer, setTimer] = useState(0); // Timer state
+  const [timer, setTimer] = useState(0);
   const {fromLogin, mobileNo} = route.params || {};
 
   useEffect(() => {
@@ -75,7 +75,7 @@ const OTPScreen = ({navigation, route}) => {
 
           navigation.navigate(isKyc ? 'LoanDetails' : 'KYC');
         }
-      } catch (error) {
+      } catch (error: any) {
         console.error('OTP Error:', error?.response?.data);
         let errorMessage = 'Something went wrong. Please try again.';
         const errorData = error?.response?.data?.message;
@@ -125,7 +125,7 @@ const OTPScreen = ({navigation, route}) => {
           setOtp('');
           setTimer(120); // Set timer to 2 minutes
         }
-      } catch (error) {
+      } catch (error: any) {
         console.error('Resend OTP Error:', error?.response?.data);
         let errorMessage = 'Something went wrong. Please try again.';
         const errorData = error?.response?.data?.message;
