@@ -89,7 +89,6 @@ const LoanBorrowScreen = () => {
         style={styles.input}
         value={amount}
         onChangeText={setAmount}
-        keyboardType="numeric"
       />
       <TextInput
         placeholder="Reason"
@@ -97,11 +96,7 @@ const LoanBorrowScreen = () => {
         value={reason}
         onChangeText={setReason}
       />
-      {loading ? (
-        <ActivityIndicator size="large" color="#28a745" />
-      ) : (
-        <Button title="Submit" onPress={handleBorrow} />
-      )}
+      <Button title="Submit" onPress={handleBorrow} />
     </View>
   );
 };
