@@ -262,3 +262,5 @@ const styles = StyleSheet.create({
     overflow: 'hidden', // To prevent text overflow outside the button
   },
 });
+
+export default LoanDetailsScreen;
