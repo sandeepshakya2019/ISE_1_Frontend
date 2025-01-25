@@ -11,6 +11,7 @@ import {
 import Toast from 'react-native-toast-message';
 import Logo from '../components/Shared/Logo';
 import {api} from '../utils/api';
+import toastConfig from '../styles/toastConfig';
 
 const LoginScreen = ({navigation}) => {
   const [mobileNumber, setMobileNumber] = useState('9084043946');
@@ -103,7 +104,7 @@ const LoginScreen = ({navigation}) => {
 
   return (
     <View style={styles.container}>
-      <Toast />
+      <Toast config={toastConfig} />
       <Logo />
       <Text style={styles.logo}>Login</Text>
       <TextInput

@@ -60,7 +60,7 @@ const App = () => {
         // Show alert for error
         Alert.alert(
           'Authentication Error',
-          'Unable to verify user. Please try again.',
+          'Something Went Wrong Pls Try Again...',
         );
 
         setInitialRoute('Login'); // Fallback to Login
