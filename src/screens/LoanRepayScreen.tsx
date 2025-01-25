@@ -4,13 +4,13 @@ import {
   Text,
   FlatList,
   TouchableOpacity,
-  Button,
   StyleSheet,
   ActivityIndicator,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import Toast from 'react-native-toast-message'; // Toast notifications
-import {api} from '../utils/api'; // API utility
+import Toast from 'react-native-toast-message';
+import {api} from '../utils/api';
+import toastConfig from '../styles/toastConfig';
 
 const LoanRepayScreen = ({navigation}) => {
   const [loans, setLoans] = useState([]);
@@ -19,56 +19,56 @@ const LoanRepayScreen = ({navigation}) => {
   const [userName, setUserName] = useState('');
 
   useEffect(() => {
-    const fetchUserDetailsAndLoans = async () => {
-      try {
-        setLoading(true);
-        const token = await AsyncStorage.getItem('authToken');
-        if (!token) {
-          Toast.show({
-            type: 'error',
-            text1: 'Authentication Error',
-            text2: 'Please log in to continue.',
-          });
-          navigation.replace('Login'); // Redirect to login if token is missing
-          return;
-        }
+    fetchUserDetailsAndLoans();
+  }, []);
 
-        const userResponse = await api.get('/users/login-check', {
-          headers: {Authorization: `Bearer ${token}`},
-        });
-
-        if (userResponse?.data?.message) {
-          setUserName(userResponse?.data?.message?.fullName);
-        } else {
-          throw new Error('Failed to fetch user details.');
-        }
-
-        const loansResponse = await api.get('/loan/getAll', {
-          headers: {Authorization: `Bearer ${token}`},
-        });
-
-        if (loansResponse?.data?.message) {
-          setLoans(loansResponse.data.message);
-        } else {
-          throw new Error('Failed to fetch loan details.');
-        }
-      } catch (error) {
-        console.error('Error:', error);
+  const fetchUserDetailsAndLoans = async () => {
+    try {
+      setLoading(true);
+      const token = await AsyncStorage.getItem('authToken');
+      if (!token) {
         Toast.show({
           type: 'error',
-          text1: 'Error',
-          text2: error.message || 'An error occurred while fetching data.',
+          text1: 'Authentication Error',
+          text2: 'Please log in to continue.',
         });
-        navigation.replace('Login'); // Redirect to login on error
-      } finally {
-        setLoading(false);
+        navigation.replace('Login');
+        return;
       }
-    };
 
-    fetchUserDetailsAndLoans();
-  }, [navigation]);
+      const userResponse = await api.get('/users/login-check', {
+        headers: {Authorization: `Bearer ${token}`},
+      });
 
-  const handleRepay = async () => {
+      if (userResponse?.data?.message) {
+        setUserName(userResponse.data.message.fullName);
+      } else {
+        throw new Error('Failed to fetch user details.');
+      }
+
+      const loansResponse = await api.get('/loan/getAll', {
+        headers: {Authorization: `Bearer ${token}`},
+      });
+
+      if (loansResponse?.data?.message) {
+        setLoans(loansResponse.data.message);
+      } else {
+        throw new Error('Failed to fetch loan details.');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: error.message || 'An error occurred while fetching data.',
+      });
+      navigation.replace('Login');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleRepayLoan = async () => {
     if (!selectedLoan) {
       Toast.show({
         type: 'error',
@@ -91,6 +91,10 @@ const LoanRepayScreen = ({navigation}) => {
         return;
       }
 
+      // navigation.navigate('PaymentGateway', {
+      //   loan: selectedLoan,
+      // });
+
       const response = await api.post(
         '/loan/repay',
         {loanId: selectedLoan._id},
@@ -104,14 +108,19 @@ const LoanRepayScreen = ({navigation}) => {
           text2: `Loan ${selectedLoan._id} repaid successfully.`,
         });
 
+        // Navigate after successful repayment
+        navigation.navigate('PaymentDetails', {
+          loan: selectedLoan,
+        });
+
+        // Update loans list
         setLoans(loans.filter(loan => loan._id !== selectedLoan._id));
         setSelectedLoan(null);
-        navigation.navigate('LoanDetails');
       } else {
-        throw new Error(response?.data?.message || 'Repayment failed.');
+        throw new Error(response?.data?.message || 'Repaymßent failed.');
       }
     } catch (error) {
-      console.error('Error repaying loan:', error);
+      console.error('Error repaying loan:', error.response);
       Toast.show({
         type: 'error',
         text1: 'Error',
@@ -145,8 +154,7 @@ const LoanRepayScreen = ({navigation}) => {
           <ActivityIndicator size="large" color="#28a745" />
         </View>
       )}
-      <Toast />
-      {/* <Text style={styles.title}>Repay Loan</Text> */}
+      <Toast config={toastConfig} />
       <Text style={styles.welcomeText}>Welcome, {userName}!</Text>
       {filteredLoans.length > 0 ? (
         <FlatList
@@ -165,19 +173,25 @@ const LoanRepayScreen = ({navigation}) => {
           styles.repayButton,
           !selectedLoan || loading ? styles.repayButtonDisabled : {},
         ]}
-        onPress={handleRepay}
+        onPress={handleRepayLoan}
         disabled={!selectedLoan || loading}>
         <Text
           style={[
             styles.repayButtonText,
             !selectedLoan || loading ? styles.repayButtonTextDisabled : {},
           ]}>
-          Repay Selected Loan
+          Repay Loan
         </Text>
       </TouchableOpacity>
     </View>
   );
 };
+
+// const styles = StyleSheet.create({
+//   /* same styles as provided */
+// });
+
+// export default LoanRepayScreen;
 
 const styles = StyleSheet.create({
   container: {

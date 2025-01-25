@@ -16,6 +16,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const OTPScreen = ({navigation, route}) => {
   const [otp, setOtp] = useState('');
   const [loading, setLoading] = useState(false);
+  const [timer, setTimer] = useState(0); // Timer state
   const {fromLogin, mobileNo} = route.params || {};
 
   useEffect(() => {
@@ -30,6 +31,16 @@ const OTPScreen = ({navigation, route}) => {
       ]);
     }
   }, [fromLogin, mobileNo, navigation]);
+
+  useEffect(() => {
+    let interval;
+    if (timer > 0) {
+      interval = setInterval(() => {
+        setTimer(prev => prev - 1);
+      }, 1000);
+    }
+    return () => clearInterval(interval);
+  }, [timer]);
 
   const handleInputChange = text => {
     if (/^\d{0,6}$/.test(text)) {
@@ -66,11 +77,9 @@ const OTPScreen = ({navigation, route}) => {
         }
       } catch (error) {
         console.error('OTP Error:', error?.response?.data);
-
-        let errorMessage = 'Something went wrong. Please try again.'; // Default message
+        let errorMessage = 'Something went wrong. Please try again.';
         const errorData = error?.response?.data?.message;
-        console.log(errorData);
-        // Check if `errorData` is an object and find the first key with a non-empty value
+
         if (errorData && typeof errorData === 'object') {
           const firstNonEmptyKey = Object.keys(errorData).find(
             key => errorData[key]?.trim() !== '',
@@ -84,10 +93,9 @@ const OTPScreen = ({navigation, route}) => {
 
         Toast.show({
           type: 'error',
-          text1: 'Registration Failed',
+          text1: 'Verification Failed',
           text2: errorMessage,
         });
-
         throw error;
       } finally {
         setLoading(false);
@@ -102,48 +110,53 @@ const OTPScreen = ({navigation, route}) => {
   };
 
   const handleResendOTP = async () => {
-    try {
-      setLoading(true);
-      const payload = {mobileNo};
-      const response = await api.post('/users/login-otp', payload);
+    if (timer === 0) {
+      try {
+        setLoading(true);
+        const payload = {mobileNo};
+        const response = await api.post('/users/login-otp', payload);
 
-      if (response?.data) {
+        if (response?.data) {
+          Toast.show({
+            type: 'success',
+            text1: 'OTP Resent',
+            text2: 'A new OTP has been sent to your mobile number.',
+          });
+          setOtp('');
+          setTimer(120); // Set timer to 2 minutes
+        }
+      } catch (error) {
+        console.error('Resend OTP Error:', error?.response?.data);
+        let errorMessage = 'Something went wrong. Please try again.';
+        const errorData = error?.response?.data?.message;
+
+        if (errorData && typeof errorData === 'object') {
+          const firstNonEmptyKey = Object.keys(errorData).find(
+            key => errorData[key]?.trim() !== '',
+          );
+          errorMessage = firstNonEmptyKey
+            ? errorData[firstNonEmptyKey]
+            : errorMessage;
+        } else if (typeof errorData === 'string') {
+          errorMessage = errorData;
+        }
+
         Toast.show({
-          type: 'success',
-          text1: 'OTP Resent',
-          text2: 'A new OTP has been sent to your mobile number.',
+          type: 'error',
+          text1: 'Error',
+          text2: errorMessage,
         });
-        setOtp('');
+        throw error;
+      } finally {
+        setLoading(false);
       }
-    } catch (error: any) {
-      console.error('OTP Error:', error?.response?.data);
-
-      let errorMessage = 'Something went wrong. Please try again.'; // Default message
-      const errorData = error?.response?.data?.message;
-      console.log(errorData);
-      // Check if `errorData` is an object and find the first key with a non-empty value
-      if (errorData && typeof errorData === 'object') {
-        const firstNonEmptyKey = Object.keys(errorData).find(
-          key => errorData[key]?.trim() !== '',
-        );
-        errorMessage = firstNonEmptyKey
-          ? errorData[firstNonEmptyKey]
-          : errorMessage;
-      } else if (typeof errorData === 'string') {
-        errorMessage = errorData;
-      }
-
-      Toast.show({
-        type: 'error',
-        text1: 'Registration Failed',
-        text2: errorMessage,
-      });
-
-      throw error;
-    } finally {
-      setOtp('');
-      setLoading(false);
     }
+  };
+
+  const formatTime = seconds => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
   };
 
   return (
@@ -173,8 +186,13 @@ const OTPScreen = ({navigation, route}) => {
           <TouchableOpacity style={styles.button} onPress={handleVerifyOTP}>
             <Text style={styles.buttonText}>Verify</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.button} onPress={handleResendOTP}>
-            <Text style={styles.buttonText}>Resend OTP</Text>
+          <TouchableOpacity
+            style={[styles.button, timer > 0 && {backgroundColor: '#ccc'}]}
+            onPress={handleResendOTP}
+            disabled={timer > 0}>
+            <Text style={styles.buttonText}>
+              {timer > 0 ? `Resend OTP (${formatTime(timer)})` : 'Resend OTP'}
+            </Text>
           </TouchableOpacity>
         </>
       )}
