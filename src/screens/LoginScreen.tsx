@@ -62,7 +62,7 @@ const LoginScreen = ({navigation}) => {
     }
     setLoading(true);
     try {
-      // await loginUser();
+      await loginUser();
       navigation.replace('OTP', {fromLogin: true, mobileNo: mobileNumber});
     } finally {
       setLoading(false);

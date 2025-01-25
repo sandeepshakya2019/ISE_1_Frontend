@@ -116,6 +116,7 @@ const OTPScreen = ({navigation, route}) => {
         text2: errorMessage,
       });
     } finally {
+      setOtp('');
       setLoading(false);
     }
   };
