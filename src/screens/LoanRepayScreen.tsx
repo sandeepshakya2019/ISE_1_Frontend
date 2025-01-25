@@ -106,6 +106,7 @@ const LoanRepayScreen = ({navigation}) => {
 
         setLoans(loans.filter(loan => loan._id !== selectedLoan._id));
         setSelectedLoan(null);
+        navigation.navigate('LoanDetails');
       } else {
         throw new Error(response?.data?.message || 'Repayment failed.');
       }
