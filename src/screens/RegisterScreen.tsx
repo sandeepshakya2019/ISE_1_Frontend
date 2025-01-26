@@ -3,16 +3,15 @@ import {
   View,
   Text,
   TextInput,
-  Button,
-  StyleSheet,
   TouchableOpacity,
+  StyleSheet,
   ActivityIndicator,
 } from 'react-native';
 import Toast from 'react-native-toast-message'; // Import Toast
 import Logo from '../components/Shared/Logo';
 import {api} from '../utils/api';
 import toastConfig from '../styles/toastConfig';
-// comment check
+
 const RegisterScreen = ({navigation}) => {
   const [formData, setFormData] = useState({
     name: 'Sandeep',
@@ -47,48 +46,6 @@ const RegisterScreen = ({navigation}) => {
     }
 
     return null;
-  };
-
-  const loginUser = async () => {
-    try {
-      const payload = {mobileNo: formData.mobileNumber};
-      const response = await api.post('/users/login-otp', payload);
-      Toast.show({
-        type: 'success',
-        text1: 'OTP Sent',
-        text2: 'Please check your mobile number.',
-      });
-      return response;
-    } catch (error: any) {
-      let errorMessage = 'Something went wrong. Please try again.';
-      const errorData = error?.response?.data?.message;
-      if (errorData && typeof errorData === 'string') {
-        errorMessage = errorData;
-      }
-      Toast.show({
-        type: 'error',
-        text1: 'Login Failed',
-        text2: errorMessage,
-      });
-      throw error;
-    }
-  };
-
-  const getOTP = async () => {
-    if (!formData.mobileNumber || formData.mobileNumber.length !== 10) {
-      Toast.show({
-        type: 'error',
-        text1: 'Validation Error',
-        text2: 'Enter a valid 10-digit mobile number.',
-      });
-      return;
-    }
-    setLoading(true);
-    try {
-      await loginUser();
-    } finally {
-      setLoading(false);
-    }
   };
 
   const registerUser = async () => {
@@ -147,7 +104,6 @@ const RegisterScreen = ({navigation}) => {
     setLoading(true); // Start loading
     try {
       await registerUser();
-      await getOTP();
       navigation.replace('OTP', {
         fromLogin: false,
         mobileNo: formData.mobileNumber,
@@ -172,16 +128,16 @@ const RegisterScreen = ({navigation}) => {
     <View style={styles.container}>
       <Toast config={toastConfig} />
       <Logo />
-
-      <Text style={styles.logoText}>Register</Text>
+      <Text style={styles.logo}>Register</Text>
       <TextInput
-        placeholder="Name"
+        placeholder="Enter Full Name"
         style={styles.input}
         value={formData.name}
         onChangeText={text => handleInputChange('name', text)}
+        placeholderTextColor="#888"
       />
       <TextInput
-        placeholder="Mobile Number"
+        placeholder="Enter Mobile Number"
         style={styles.input}
         keyboardType="numeric"
         value={formData.mobileNumber}
@@ -191,6 +147,7 @@ const RegisterScreen = ({navigation}) => {
             text.replace(/[^0-9]/g, '').slice(0, 10),
           )
         }
+        placeholderTextColor="#888"
       />
       <TextInput
         placeholder="Email ID (optional)"
@@ -198,6 +155,7 @@ const RegisterScreen = ({navigation}) => {
         keyboardType="email-address"
         value={formData.email}
         onChangeText={text => handleInputChange('email', text)}
+        placeholderTextColor="#888"
       />
       <TouchableOpacity
         onPress={() =>
@@ -212,7 +170,9 @@ const RegisterScreen = ({navigation}) => {
       {loading ? (
         <ActivityIndicator size="large" color="#1E90FF" />
       ) : (
-        <Button title="Get OTP" onPress={handleGetOTP} />
+        <TouchableOpacity style={styles.button} onPress={handleGetOTP}>
+          <Text style={styles.buttonText}>Get OTP</Text>
+        </TouchableOpacity>
       )}
 
       <TouchableOpacity
@@ -227,28 +187,66 @@ const RegisterScreen = ({navigation}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#F4F7FC',
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
   },
-  logoText: {
-    fontSize: 24,
+  logo: {
+    fontSize: 28,
     fontWeight: 'bold',
-    marginBottom: 20,
-    marginTop: 10,
+    color: '#1E90FF',
+    marginBottom: 30,
   },
   input: {
     width: '100%',
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 5,
-    padding: 10,
+    backgroundColor: '#fff',
+    borderWidth: 0,
+    borderRadius: 30,
+    padding: 15,
+    marginVertical: 10,
+    fontSize: 16,
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 5,
+  },
+  checkboxContainer: {
+    flexDirection: 'row',
     marginVertical: 10,
   },
-  checkboxContainer: {flexDirection: 'row', marginVertical: 10},
-  checkbox: {fontSize: 16, color: '#333'},
-  linkButton: {marginTop: 20},
-  linkText: {color: '#1E90FF', fontSize: 16, textDecorationLine: 'underline'},
+  checkbox: {
+    fontSize: 16,
+    color: '#444',
+  },
+  button: {
+    width: '100%',
+    backgroundColor: '#1E90FF',
+    borderRadius: 30,
+    paddingVertical: 15,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 20,
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 4},
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
+    elevation: 5,
+  },
+  buttonText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#fff',
+  },
+  linkButton: {
+    marginTop: 20,
+  },
+  linkText: {
+    color: '#1E90FF',
+    fontSize: 16,
+    textDecorationLine: 'underline',
+  },
 });
 
 export default RegisterScreen;
