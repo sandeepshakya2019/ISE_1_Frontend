@@ -9,8 +9,12 @@ const toastConfig: ToastConfig = {
       style={{
         borderLeftColor: '#28a745',
         backgroundColor: '#e6f9ec',
-        zIndex: 9999,
-        elevation: 10,
+        zIndex: 10000, // Increased zIndex to ensure it stays on top
+        elevation: 20, // Increased elevation for Android
+        position: 'absolute', // Ensure proper placement
+        top: 10, // Adjust as needed to prevent overlap
+        width: '90%',
+        alignSelf: 'center',
       }}
       contentContainerStyle={{paddingHorizontal: 15}}
       text1Style={{
@@ -32,8 +36,12 @@ const toastConfig: ToastConfig = {
       style={{
         borderLeftColor: '#d32f2f',
         backgroundColor: '#fdecea',
-        zIndex: 9999,
-        elevation: 10,
+        zIndex: 10000, // Increased zIndex to ensure it stays on top
+        elevation: 20, // Increased elevation for Android
+        position: 'absolute', // Ensure proper placement
+        top: 10, // Adjust as needed to prevent overlap
+        width: '90%',
+        alignSelf: 'center',
       }}
       contentContainerStyle={{paddingHorizontal: 15}}
       text1Style={{
