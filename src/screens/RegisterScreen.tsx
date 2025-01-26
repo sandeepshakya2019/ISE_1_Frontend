@@ -4,14 +4,13 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  StyleSheet,
   ActivityIndicator,
 } from 'react-native';
 import Toast from 'react-native-toast-message'; // Import Toast
 import Logo from '../components/Shared/Logo';
 import {api} from '../utils/api';
 import toastConfig from '../styles/toastConfig';
-
+// comment check
 const RegisterScreen = ({navigation}) => {
   const [formData, setFormData] = useState({
     name: 'Sandeep',
@@ -46,6 +45,48 @@ const RegisterScreen = ({navigation}) => {
     }
 
     return null;
+  };
+
+  const loginUser = async () => {
+    try {
+      const payload = {mobileNo: formData.mobileNumber};
+      const response = await api.post('/users/login-otp', payload);
+      Toast.show({
+        type: 'success',
+        text1: 'OTP Sent',
+        text2: 'Please check your mobile number.',
+      });
+      return response;
+    } catch (error: any) {
+      let errorMessage = 'Something went wrong. Please try again.';
+      const errorData = error?.response?.data?.message;
+      if (errorData && typeof errorData === 'string') {
+        errorMessage = errorData;
+      }
+      Toast.show({
+        type: 'error',
+        text1: 'Login Failed',
+        text2: errorMessage,
+      });
+      throw error;
+    }
+  };
+
+  const getOTP = async () => {
+    if (!formData.mobileNumber || formData.mobileNumber.length !== 10) {
+      Toast.show({
+        type: 'error',
+        text1: 'Validation Error',
+        text2: 'Enter a valid 10-digit mobile number.',
+      });
+      return;
+    }
+    setLoading(true);
+    try {
+      await loginUser();
+    } finally {
+      setLoading(false);
+    }
   };
 
   const registerUser = async () => {
@@ -104,6 +145,7 @@ const RegisterScreen = ({navigation}) => {
     setLoading(true); // Start loading
     try {
       await registerUser();
+      await getOTP();
       navigation.replace('OTP', {
         fromLogin: false,
         mobileNo: formData.mobileNumber,
