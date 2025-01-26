@@ -193,7 +193,7 @@ const RegisterScreen = ({navigation}) => {
         placeholderTextColor="#888"
       />
       <TextInput
-        placeholder="Email ID (optional)"
+        placeholder="Email ID"
         style={styles.input}
         keyboardType="email-address"
         value={formData.email}
