@@ -5,6 +5,7 @@ import {
   TextInput,
   TouchableOpacity,
   ActivityIndicator,
+  StyleSheet,
 } from 'react-native';
 import Toast from 'react-native-toast-message'; // Import Toast
 import Logo from '../components/Shared/Logo';
