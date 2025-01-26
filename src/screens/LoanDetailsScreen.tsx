@@ -127,10 +127,22 @@ const LoanDetailsScreen = ({route}) => {
 
   const renderLoanItem = ({item}) => (
     <View style={styles.loanItem}>
-      <Text style={styles.loanText}>Loan Amount: ₹ {item.totalLoanAmount}</Text>
-      <Text style={styles.loanText}>Status: {item.loanStatus}</Text>
-      <Text style={styles.loanText}>Reason: {item.loanReason}</Text>
-      <Text style={styles.loanText}>Payback Amount: {item.paybackAmount}</Text>
+      <View style={styles.row}>
+        <Text style={styles.chip}>Loan Amount:</Text>
+        <Text style={styles.loanText}>₹ {item.totalLoanAmount}</Text>
+      </View>
+      <View style={styles.row}>
+        <Text style={styles.chip}>Status:</Text>
+        <Text style={styles.loanText}>{item.loanStatus}</Text>
+      </View>
+      <View style={styles.row}>
+        <Text style={styles.chip}>Reason:</Text>
+        <Text style={styles.loanText}>{item.loanReason}</Text>
+      </View>
+      <View style={styles.row}>
+        <Text style={styles.chip}>Payback Amount:</Text>
+        <Text style={styles.loanText}>{item.paybackAmount}</Text>
+      </View>
     </View>
   );
 
@@ -273,25 +285,6 @@ const styles = StyleSheet.create({
     color: '#777',
     marginBottom: 20,
   },
-  loanItem: {
-    width: 300,
-    marginBottom: 20,
-    padding: 10,
-    backgroundColor: '#ffffff',
-    borderRadius: 10,
-    shadowColor: '#000',
-    shadowOffset: {width: 0, height: 2},
-    shadowOpacity: 0.1,
-    shadowRadius: 5,
-    elevation: 3,
-    borderWidth: 1,
-    borderColor: '#ddd',
-  },
-  loanText: {
-    fontSize: 16,
-    marginBottom: 8,
-    color: '#444',
-  },
   loanList: {
     width: '100%',
     marginTop: 20,
@@ -315,6 +308,37 @@ const styles = StyleSheet.create({
     borderRadius: 300,
     borderWidth: 1,
     borderColor: '#ddd',
+  },
+  loanItem: {
+    padding: 15,
+    marginVertical: 10,
+    backgroundColor: '#ffffff',
+    borderRadius: 12,
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 4,
+  },
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 5,
+  },
+  chip: {
+    backgroundColor: '#f0f0f0',
+    color: '#333',
+    fontSize: 14,
+    fontWeight: '600',
+    paddingVertical: 4,
+    paddingHorizontal: 8,
+    borderRadius: 16,
+    overflow: 'hidden',
+    marginRight: 8,
+  },
+  loanText: {
+    fontSize: 14,
+    color: '#555',
   },
 });
 
