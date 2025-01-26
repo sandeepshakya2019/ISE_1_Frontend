@@ -14,11 +14,12 @@ import LoanRepayScreen from './src/screens/LoanRepayScreen';
 import PaymentGatewayScreen from './src/screens/PaymentGatewayScreen';
 import RegisterScreen from './src/screens/RegisterScreen';
 import {logoutApiCall} from './src/utils/logout';
+import HomeScreen from './src/screens/HomeScreen';
 
 const Stack = createStackNavigator();
 
 const App = () => {
-  const [initialRoute, setInitialRoute] = useState<string | null>('Register');
+  const [initialRoute, setInitialRoute] = useState<string | null>('Home');
   const [loading, setLoading] = useState(true); // Loading state
 
   useEffect(() => {
@@ -45,7 +46,7 @@ const App = () => {
             }
           }
         } else {
-          setInitialRoute('Login');
+          setInitialRoute('Home');
         }
       } catch (error: any) {
         const isSuccess = error?.response?.data?.success;
@@ -56,7 +57,7 @@ const App = () => {
           'Authentication Error',
           'Something Went Wrong Pls Try Again...',
         );
-        setInitialRoute('Login');
+        setInitialRoute('Home');
       } finally {
         setLoading(false);
       }
@@ -76,6 +77,15 @@ const App = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName={initialRoute}>
+        <Stack.Screen
+          name="Home"
+          component={HomeScreen}
+          options={{
+            headerShown: false,
+            title: 'Home',
+            gestureEnabled: false,
+          }}
+        />
         <Stack.Screen
           name="Register"
           component={RegisterScreen}
