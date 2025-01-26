@@ -11,9 +11,9 @@ const LOCAL_API_PORT = 3005; // Your Node.js server port
 
 // const API_BASE_URL = 'https://ise-1-backend.vercel.app/api/v1';
 
-const API_BASE_URL = 'http://10.23.x.x:3005/api/v1';
+const API_BASE_URL = 'http://10.23.86.204:3005/api/v1';
 
 export const api = axios.create({
   baseURL: API_BASE_URL,
-  timeout: 10000,
+  timeout: 100000, // 10 seconds timeout
 });

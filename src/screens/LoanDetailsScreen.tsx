@@ -7,6 +7,8 @@ import {
   Image,
   FlatList,
   ActivityIndicator,
+  BackHandler,
+  Alert,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {api} from '../utils/api';
@@ -23,6 +25,34 @@ const LoanDetailsScreen = ({route}) => {
   const {photo} = route.params || {};
 
   const navigation = useNavigation();
+
+  useEffect(() => {
+    const handleBackPress = () => {
+      Alert.alert(
+        'Hold on!',
+        'Are you sure you want to exit the app?',
+        [
+          {
+            text: 'Cancel',
+            onPress: () => null,
+            style: 'cancel',
+          },
+          {
+            text: 'Yes',
+            onPress: () => BackHandler.exitApp(),
+          },
+        ],
+        {cancelable: false},
+      );
+      return true; // Prevent default back action
+    };
+
+    BackHandler.addEventListener('hardwareBackPress', handleBackPress);
+
+    return () => {
+      BackHandler.removeEventListener('hardwareBackPress', handleBackPress);
+    };
+  }, []);
 
   // Fetch user details
   useEffect(() => {
