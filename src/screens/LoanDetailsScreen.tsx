@@ -173,7 +173,7 @@ const LoanDetailsScreen = ({route}) => {
           <View style={styles.cardRow}>
             <Text style={styles.cardLabel}>Eligible Amount</Text>
             <Text style={styles.rupee}>
-              ₹ {userDetails?.offeredAmount || '00000'}
+              ₹ {userDetails?.offeredAmount || '0'}
             </Text>
           </View>
         </View>
