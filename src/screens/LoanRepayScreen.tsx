@@ -89,7 +89,7 @@ const LoanRepayScreen = ({navigation}) => {
         selectedLoan?._id === item._id && styles.selectedLoanItem,
       ]}
       onPress={() => setSelectedLoan(item)}>
-      <Text style={styles.loanText}>Loan Amount: ${item.totalLoanAmount}</Text>
+      <Text style={styles.loanText}>Loan Amount: ₹ {item.totalLoanAmount}</Text>
       <Text style={styles.loanText}>Status: {item.loanStatus}</Text>
       <Text style={styles.loanText}>Reason: {item.loanReason}</Text>
       <Text style={styles.loanText}>Payback Amount: {item.paybackAmount}</Text>
