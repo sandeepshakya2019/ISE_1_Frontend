@@ -134,7 +134,7 @@ Login with JWT issuance upon successful authentication.
 Logout functionality (invalidate token and clear AsyncStorage).
 Add auto-login functionality on app restart if a valid JWT exists in AsyncStorage.
 
-## 2.2.2 Uploading a Photo
+### 2.2.2 Uploading a Photo
 Description: Allow users to upload real-time photos for verification or loan application.
 
 Implementation: 
@@ -149,7 +149,7 @@ Provide features like:
 Viewing uploaded photos directly in the app via Cloudinary CDN URLs.
 Photo optimization for fast upload and reduced data usage.
 
-## 2.2.3 Profile Management
+### 2.2.3 Profile Management
 Description: Users can view a dedicated profile page showing their details and loan information.
 
 Implementation:
@@ -161,7 +161,7 @@ Use Axios to fetch profile data from the backend.
 Display loan-related information using dynamic lists.
 Include an option for profile photo updates, utilizing the upload photo feature.
 
-## 2.2.4 Take a Loan
+### 2.2.4 Take a Loan
 Description: Enable users to apply for loans by entering the amount and purpose.
 
 Implementation:
@@ -174,7 +174,7 @@ UI/UX Features:
 Form with validation for entering loan details.
 Status page showing approval pending/completed loans.
 
-## 2.2.5 Repay a Loan
+### 2.2.5 Repay a Loan
 Description: Allow users to repay selected loans with payment integration in future versions.
 
 Implementation:
@@ -188,7 +188,7 @@ Maintain a transaction log for repayments for the user to track.
 Future Scope:
 Integrate payment gateways like Razorpay, Stripe, or PayPal for seamless repayments.
 
-## 2.2.6 Data Fetching and Backend Communication with Axios
+### 2.2.6 Data Fetching and Backend Communication with Axios
 Description: Ensure seamless data communication between frontend and backend using Axios.
 
 Implementation:
@@ -214,7 +214,7 @@ Automatically attach the JWT from AsyncStorage to every API call.
 
 This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
 
-# Installation Guide
+# 3. Installation Guide
 
 > **Note**: Make sure you have completed the [React Native - Environment Setup](https://reactnative.dev/docs/environment-setup) instructions till "Creating a new application" step, before proceeding.
 
@@ -291,13 +291,10 @@ You've successfully run React Native App.
 
 ---
 
-# Project Details
-
-### Features for Frontend Android App
+# 4. Project Details
 
 
-
-# Libraries used :
+## 4.1 Libraries used :
 
 - Axios `axios` : is a popular JavaScript library used to make HTTP requests from Node.js or the browser. It provides a simple and intuitive API for interacting with RESTful APIs, handling errors, and working with promises or async/await.
 - React `react` : it is used in react-native by default we have used `useState` and `useEffect` Hooks
@@ -306,7 +303,7 @@ You've successfully run React Native App.
 - React Native Reanimated `react-native-reanimated` : is a library for handling animations in React Native. It provides a highly performant and declarative API to create complex animations that run directly on the native thread.
 - React Native Toast Message `react-native-toast-message` : is a lightweight and customizable library for displaying toast notifications in React Native applications. It allows you to show short, informative messages like success, error, or info alerts in a visually appealing way.
 
-# Gameplay Video Related to FinSphere App (On Local Host)
+## 4.2 Gameplay Video Related to FinSphere App (On Local Host)
 
 - **Login and Register (with validation)** :
 
@@ -314,17 +311,17 @@ You've successfully run React Native App.
 
 - **Profile View, Borrow a Loan, Repay a Loan** :
 
-# Issues After Pushing the Backend to server(on Vercel) 
+# 5. Issues After Pushing the Backend to server(on Vercel) 
  
 * [Backend Server](https://ise-1-backend.vercel.app/api/v1/users) hosted on vercel
 * After hoisitng since at time of KYC we are taking the photo from user using **multer** we upload on **server** and then we upload on **cloudinary** since this is free tier hosting so runtime file changes is not allowed on free tier server hosting so right now we are able to run only on local host.(backend)
 
-# Convert the react-native app to APK file
+# 6. Convert the react-native app to APK file
 
 
 
 
-## Authors
+# 7. Authors
 
 - [Sandeep Kumar CS24M112](https://github.com/sandeepshakya2019)
 - [Abhishek Kumar CS24M120](https://github.com/imabhishekmahli)
