@@ -14,9 +14,9 @@ import toastConfig from '../styles/toastConfig';
 // comment check
 const RegisterScreen = ({navigation}) => {
   const [formData, setFormData] = useState({
-    name: 'Sandeep',
-    mobileNumber: '9084043946',
-    email: 'sandeep@gmail.com',
+    name: '',
+    mobileNumber: '',
+    email: '',
     isTermsAccepted: false,
   });
   const [loading, setLoading] = useState(false); // Loading state
