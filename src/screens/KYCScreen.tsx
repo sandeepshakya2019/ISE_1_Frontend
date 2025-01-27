@@ -39,9 +39,9 @@ const KYCScreen: React.FC<Props> = ({navigation}) => {
   const [address, setAddress] = useState(
     'Rani Awanti bai nagar shikohabad road etah',
   );
-  const [aadhar, setAadhar] = useState('235689562356');
-  const [bankAccount, setBankAccount] = useState('895623895623');
-  const [ifsc, setIfsc] = useState('89562389562');
+  const [aadhar, setAadhar] = useState('');
+  const [bankAccount, setBankAccount] = useState('');
+  const [ifsc, setIfsc] = useState('');
   const [errors, setErrors] = useState({
     fullName: false,
     mobileNumber: false,
