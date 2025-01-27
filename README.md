@@ -1,6 +1,220 @@
+# APP DOCUMENTATION
+
+# 1. Introduction
+* App Name: **FinSphere**
+* Version: **Beta**
+* Author/Team: **Sandeep Kumar, Ashant Kumar, Abhishek Kumar**
+* Submission Date: **30/01/2025**
+* Purpose: **Objective To develop a mobile application that addresses financial inclusion by providing access to essential financial services like savings, loans, and insurance to underbanked and underserved populations. The app leverages mobile banking, microfinance, and fintech innovations to create an easy-to-use, accessible platform.**
+
+# 2. Features
+
+## 2.1 Proposed Features 
+
+### 2.1.1 User Authentication
+Description: Provides secure access control for users through Register, Login, and Logout functionalities.
+Proposed Implementation:
+
+* Use JWT (JSON Web Token) for stateless authentication.
+* Store tokens using AsyncStorage for session persistence.
+* Integrate Redux (or similar state management) to track user sessions(future Implementation)
+
+### 2.1.2 e-KYC 
+Description: Allows users to upload photos for identity verification or loan applications in real time.
+Proposed Implementation:
+
+Frontend:
+* Real-time photo capture using device camera API.
+* Option to upload existing images from the device gallery.
+* Authentication of e-KYC Data such as Aadhar ID, Bank etc.
+
+Backend:
+
+* Use Multer middleware to handle file uploads.
+* Store images in Cloudinary, ensuring optimized delivery and transformation.
+
+### 2.1.3 User Profile Management
+Description: Displays user-specific details, including personal information and loan history.
+
+Proposed Implementation:
+
+* Dedicated backend route to fetch and update user profiles.
+* Display: Name, email, and demographic details.
+* Active and past loans.
+
+### 2.1.4 Loan Management
+Take a Loan
+
+Description: 
+
+Users can apply for loans by specifying the amount and reason.
+
+Proposed Implementation:
+
+* Input form to collect loan details (amount and purpose).
+* API call to backend for loan application with user authentication (via JWT).
+* Response includes loan status, approval, and repayment schedule.
+
+Repay a Loan
+
+Description: 
+
+Users can select from their active loans and repay them partially or in full.
+
+Proposed Implementation:
+
+* Fetch active loans via API.
+* UI/UX feature to select a loan, specify repayment amount, and confirm the transaction.
+* Maintain transaction logs for repayment history.
+
+### 2.1.5 Notifications
+
+Description: 
+
+Notify users about loan repayment deadlines, application status, or profile changes.
+
+Proposed Implementation:
+
+* Push notifications using Firebase Cloud Messaging (FCM).
+* Customizable reminders for payment deadlines.
+
+### 2.1.6 Financial Literacy Resources
+
+Description: 
+
+Educate users about loans, savings, and financial planning.
+
+Proposed Implementation:
+
+* Interactive modules for financial literacy (e.g., videos, quizzes).
+* Progress tracking to reward users for completed lessons.
+
+### 2.1.7 Data Fetching with Axios
+
+Description: 
+
+Establish reliable communication between frontend and backend.
+
+Proposed Implementation:
+
+* Standardized Axios instances with base URLs and JWT authorization headers.
+* Graceful error handling for API calls, including retry mechanisms.
+* Use interceptors to include JWT automatically in requests.
+
+### 2.1.8 More Enhancements
+
+Payment Gateway Integration:
+
+For seamless repayment of loans via Stripe, Razorpay, or PayPal.
+
+AI-Based Recommendations:
+
+* Detect Below Poverty Level People's finance based on user behavior, history and some other data.
+
+Offline Support:
+
+* Enable basic functionalities like viewing profiles or logging past transactions offline.
+
+Accessibility Features:
+
+* Multilingual support, text-to-speech, and high-contrast UI for inclusivity.
+
+
+## 2.2 Implemented Features
+
+### 2.2.1 User Authentication (Register, Login, Logout)
+Description: Secure user authentication system using JWT.
+
+Implementation: Use JSON Web Token (JWT) for stateless user authentication.
+AsyncStorage for storing JWT locally to maintain session states.
+Integrate state management tools like Redux for advanced user session tracking.
+Routes for:
+User registration.
+Login with JWT issuance upon successful authentication.
+Logout functionality (invalidate token and clear AsyncStorage).
+Add auto-login functionality on app restart if a valid JWT exists in AsyncStorage.
+
+## 2.2.2 Uploading a Photo
+Description: Allow users to upload real-time photos for verification or loan application.
+
+Implementation: 
+
+Frontend:
+Use the device camera for clicking photos in real-time.
+Integrate file input components to allow manual uploads.
+Backend:
+Use Multer middleware to handle image uploads from the frontend.
+Upload images to Cloudinary for efficient storage, delivery, and on-the-fly transformations.
+Provide features like:
+Viewing uploaded photos directly in the app via Cloudinary CDN URLs.
+Photo optimization for fast upload and reduced data usage.
+
+## 2.2.3 Profile Management
+Description: Users can view a dedicated profile page showing their details and loan information.
+
+Implementation:
+
+Backend route to retrieve user-specific profile data, including:
+Name, email, and personal details.
+List of active loans, past loans, and repayment status.
+Use Axios to fetch profile data from the backend.
+Display loan-related information using dynamic lists.
+Include an option for profile photo updates, utilizing the upload photo feature.
+
+## 2.2.4 Take a Loan
+Description: Enable users to apply for loans by entering the amount and purpose.
+
+Implementation:
+
+Backend endpoint to process loan requests:
+Inputs: Loan amount, purpose/reason, user ID (from JWT).
+Response: Loan approval status and repayment terms.
+Use Axios to send loan applications to the backend.
+UI/UX Features:
+Form with validation for entering loan details.
+Status page showing approval pending/completed loans.
+
+## 2.2.5 Repay a Loan
+Description: Allow users to repay selected loans with payment integration in future versions.
+
+Implementation:
+
+Fetch all active loans for a user via an API (using Axios).
+Provide a user-friendly UI to:
+Select a loan from the list.
+Input the repayment amount.
+Confirm the repayment with backend verification.
+Maintain a transaction log for repayments for the user to track.
+Future Scope:
+Integrate payment gateways like Razorpay, Stripe, or PayPal for seamless repayments.
+
+## 2.2.6 Data Fetching and Backend Communication with Axios
+Description: Ensure seamless data communication between frontend and backend using Axios.
+
+Implementation:
+
+Standardize API calls:
+Create reusable Axios instances to include base URLs and JWT headers.
+Error handling:
+Show toast notifications for network failures, authentication errors, or invalid responses.
+Use Axios interceptors:
+Automatically attach the JWT from AsyncStorage to every API call.
+
+## 2.3 Future Implementation
+
+*  **2.3.1 Loan Recommendations**
+* **2.3.2 Financial Planning Tools**
+* **2.3.3 Push Notifications**
+*  **2.3.4 Payment Integration**
+* **2.3.5 Real Time e-KYC Authentication**
+* **2.3.6 Multilingual support**
+* **2.3.7 AI based Recommendations System**
+
+
+
 This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
 
-# Getting Started
+# Installation Guide
 
 > **Note**: Make sure you have completed the [React Native - Environment Setup](https://reactnative.dev/docs/environment-setup) instructions till "Creating a new application" step, before proceeding.
 
@@ -81,21 +295,7 @@ You've successfully run React Native App.
 
 ### Features for Frontend Android App
 
-- **Register, Login and Logout a user** : using JWT (Json web token) and AsyncStorage to handle the above implementing Features
 
-  - **JSON Web Token (JWT)** is used for securely transmitting information between parties as a JSON object. It is commonly used in authentication and authorization systems due to its lightweight and stateless nature.
-  - **AsyncStorage** is used to provides a simple key-value storage system for persisting data locally on the device. we canuse sevrel other state management things to keep track the login users as well such as redux etc.
-
-- **Uploading a Photo** : using Multer and Cloudinary for backend users are able to click the photo at real time and we can upload it on our server
-
-  - **Multer** is a middleware for handling multipart/form-data, which is primarily used for uploading files.
-  - **Cloudinary** is a cloud-based service for managing media assets (images, videos, etc.) with features like image optimization, transformations, and delivery via a CDN.
-
-- **Profile** : we have dedicated route which provides the profile for ervery user related to loans that user taken
-
-- **Take a Loan** OR **Repay a Loan** : by entring the amount and reasons of loan user can take the loan and by selecting a loan from the list of loans user can reapy it (`Payment Integration Feature we can implemented at Future Stages if required`)
-
-- **Axios** is a popular JavaScript library used to make HTTP requests from Node.js or the browser. It provides a simple and intuitive API for interacting with RESTful APIs, handling errors, and working with promises or async/await. `(used for fetching the data from backend or sending the data to backend)`
 
 # Libraries used :
 
@@ -106,13 +306,23 @@ You've successfully run React Native App.
 - React Native Reanimated `react-native-reanimated` : is a library for handling animations in React Native. It provides a highly performant and declarative API to create complex animations that run directly on the native thread.
 - React Native Toast Message `react-native-toast-message` : is a lightweight and customizable library for displaying toast notifications in React Native applications. It allows you to show short, informative messages like success, error, or info alerts in a visually appealing way.
 
-# Gameplay Video Related to FinSphere App
+# Gameplay Video Related to FinSphere App (On Local Host)
 
 - **Login and Register (with validation)** :
 
 - **KYC Submission (with validation)** :
 
 - **Profile View, Borrow a Loan, Repay a Loan** :
+
+# Issues After Pushing the Backend to server(on Vercel) 
+ 
+* [Backend Server](https://ise-1-backend.vercel.app/api/v1/users) hosted on vercel
+* After hoisitng since at time of KYC we are taking the photo from user using **multer** we upload on **server** and then we upload on **cloudinary** since this is free tier hosting so runtime file changes is not allowed on free tier server hosting so right now we are able to run only on local host.(backend)
+
+# Convert the react-native app to APK file
+
+
+
 
 ## Authors
 
