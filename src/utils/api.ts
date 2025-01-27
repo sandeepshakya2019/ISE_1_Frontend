@@ -1,7 +1,7 @@
 import axios from 'axios';
 import {Platform} from 'react-native';
 
-const LOCAL_API_PORT = 3005; // Your Node.js server port
+const LOCAL_API_PORT = 3005; // Node.js server port
 
 // Dynamically set the API base URL
 const API_BASE_URL =
