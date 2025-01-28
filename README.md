@@ -335,8 +335,7 @@ https://github.com/user-attachments/assets/b43f62d7-7e8e-4f22-bbbf-51fc96d7740e
 
 # 6. Convert the react-native app to APK file
 
-
-
+* To convert the react-native app to apk [Check the Docs Here](https://docs.google.com/document/d/1B396y5cUknAeaZ7cdn4GLD83yLyCMGuOIIi6ukGC730/edit?usp=sharing)
 
 
 # 7. Authors
