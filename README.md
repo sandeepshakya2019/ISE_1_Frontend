@@ -307,19 +307,19 @@ You've successfully run React Native App.
 
 - **Login and Register (with validation)** :
 
-  
-
-
 <div style="display: flex; justify-content: space-between;">
-  <a href="VIDEO_URL_1" target="_blank">
-    <img src="https://github.com/user-attachments/assets/cd1b1988-6cd2-47d1-9798-cde68e370b33" alt="Video 1" style="width: 30%;">
-  </a>
-  <a href="VIDEO_URL_2" target="_blank">
-    <img src="THUMBNAIL_URL_2" alt="Video 2" style="width: 30%;">
-  </a>
-  <a href="VIDEO_URL_3" target="_blank">
-    <img src="THUMBNAIL_URL_3" alt="Video 3" style="width: 30%;">
-  </a>
+  <video width="30%" controls>
+    <source src="https://github.com/user-attachments/assets/cd1b1988-6cd2-47d1-9798-cde68e370b33" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+  <video width="30%" controls>
+    <source src=["path/to/video2.mp4](https://github.com/sandeepshakya2019/ISE_1_Frontend/blob/main/videos/Login%20Logout.mp4)" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+  <video width="30%" controls>
+    <source src="path/to/video3.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
 </div>
 
 
