@@ -306,6 +306,8 @@ You've successfully run React Native App.
 ## 4.2 Gameplay Video Related to FinSphere App (On Local Host)
 
 - **Login and Register (with validation)** :
+- 
+[path/to/video3.mp4](https://github.com/sandeepshakya2019/ISE_1_Frontend/blob/main/videos/Login%20Logout.mp4)
 
 <div style="display: flex; justify-content: space-between;">
   <video width="30%" controls>
@@ -313,11 +315,11 @@ You've successfully run React Native App.
     Your browser does not support the video tag.
   </video>
   <video width="30%" controls>
-    <source src=["path/to/video2.mp4](https://github.com/sandeepshakya2019/ISE_1_Frontend/blob/main/videos/Login%20Logout.mp4)" type="video/mp4">
+    <source src=[path/to/video2.mp4](https://github.com/sandeepshakya2019/ISE_1_Frontend/blob/main/videos/Login%20Logout.mp4)" type="video/mp4">
     Your browser does not support the video tag.
   </video>
   <video width="30%" controls>
-    <source src="path/to/video3.mp4" type="video/mp4">
+    <source src="https://github.com/sandeepshakya2019/ISE_1_Frontend/blob/main/videos/Login%20Logout.mp4" type="video/mp4">
     Your browser does not support the video tag.
   </video>
 </div>
