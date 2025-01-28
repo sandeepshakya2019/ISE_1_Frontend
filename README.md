@@ -307,6 +307,12 @@ You've successfully run React Native App.
 
 - **Login and Register (with validation)** :
 
+  
+
+https://github.com/user-attachments/assets/cd1b1988-6cd2-47d1-9798-cde68e370b33
+
+
+
 - **KYC Submission (with validation)** :
 
 - **Profile View, Borrow a Loan, Repay a Loan** :
