@@ -329,9 +329,12 @@ https://github.com/user-attachments/assets/f8551918-a544-4ef7-bb84-de72d516948e
 # 5. Issues After Pushing the Backend to server(on Vercel) 
  
 * [Backend Server](https://ise-1-backend.vercel.app/api/v1/users) hosted on vercel
-* After hoisitng since at time of KYC we are taking the photo from user using **multer** we upload on **server** and then we upload on **cloudinary** since this is free tier hosting so runtime file changes is not allowed on free tier server hosting so right now we are able to run only on local host.(backend)
+* After hoisitng since at time of KYC we are taking the photo from user using **multer** we upload on **server** and then we upload on **cloudinary** since this is free tier hosting so runtime file changes is not allowed on free tier server hosting so right now we are able to run only on local host.(backend) below video is proof of the vercel issue (it is saying director is not present but director is already there)
+
+https://github.com/user-attachments/assets/b43f62d7-7e8e-4f22-bbbf-51fc96d7740e
 
 # 6. Convert the react-native app to APK file
+
 
 
 
