@@ -309,8 +309,18 @@ You've successfully run React Native App.
 
   
 
-https://github.com/user-attachments/assets/cd1b1988-6cd2-47d1-9798-cde68e370b33
 
+<div style="display: flex; justify-content: space-between;">
+  <a href="VIDEO_URL_1" target="_blank">
+    <img src="https://github.com/user-attachments/assets/cd1b1988-6cd2-47d1-9798-cde68e370b33" alt="Video 1" style="width: 30%;">
+  </a>
+  <a href="VIDEO_URL_2" target="_blank">
+    <img src="THUMBNAIL_URL_2" alt="Video 2" style="width: 30%;">
+  </a>
+  <a href="VIDEO_URL_3" target="_blank">
+    <img src="THUMBNAIL_URL_3" alt="Video 3" style="width: 30%;">
+  </a>
+</div>
 
 
 - **KYC Submission (with validation)** :
