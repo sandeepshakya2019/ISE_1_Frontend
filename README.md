@@ -1,5 +1,26 @@
 # APP DOCUMENTATION
 
+# 0. Gameplay Video Related to FinSphere App (On Local Host)
+
+- **Login and Register (with validation)** :
+  
+https://github.com/user-attachments/assets/46c720c6-6832-4eb0-8087-cfaf6f39db70
+
+https://github.com/user-attachments/assets/d639d6b6-674f-409a-807f-b3e61d30b369
+
+
+
+- **KYC Submission (with validation)** :
+
+
+
+https://github.com/user-attachments/assets/d6e6a811-46dd-4aa6-bcda-9c09efd6dd86
+
+
+- **Profile View, Borrow a Loan, Repay a Loan** :
+
+https://github.com/user-attachments/assets/f8551918-a544-4ef7-bb84-de72d516948e
+
 # 1. Introduction
 * App Name: **FinSphere**
 * Version: **Beta**
@@ -285,9 +306,7 @@ If everything is set up _correctly_, you should see your new app running in your
 
 ## Congratulations! :
 
-You've successfully run React Native App.
-
----
+You've successfully run the React Native App.
 
 ---
 
@@ -302,28 +321,6 @@ You've successfully run React Native App.
 - React Native Image Picker `react-native-image-picker` : is a popular library for React Native that allows users to pick images and videos from their device's camera or gallery
 - React Native Reanimated `react-native-reanimated` : is a library for handling animations in React Native. It provides a highly performant and declarative API to create complex animations that run directly on the native thread.
 - React Native Toast Message `react-native-toast-message` : is a lightweight and customizable library for displaying toast notifications in React Native applications. It allows you to show short, informative messages like success, error, or info alerts in a visually appealing way.
-
-## 4.2 Gameplay Video Related to FinSphere App (On Local Host)
-
-- **Login and Register (with validation)** :
-  
-https://github.com/user-attachments/assets/46c720c6-6832-4eb0-8087-cfaf6f39db70
-
-https://github.com/user-attachments/assets/d639d6b6-674f-409a-807f-b3e61d30b369
-
-
-
-- **KYC Submission (with validation)** :
-
-
-
-https://github.com/user-attachments/assets/d6e6a811-46dd-4aa6-bcda-9c09efd6dd86
-
-
-- **Profile View, Borrow a Loan, Repay a Loan** :
-
-https://github.com/user-attachments/assets/f8551918-a544-4ef7-bb84-de72d516948e
-
 
 
 # 5. Issues After Pushing the Backend to server(on Vercel) 
