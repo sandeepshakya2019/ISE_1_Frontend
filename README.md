@@ -306,28 +306,25 @@ You've successfully run React Native App.
 ## 4.2 Gameplay Video Related to FinSphere App (On Local Host)
 
 - **Login and Register (with validation)** :
-- 
-[path/to/video3.mp4](https://github.com/sandeepshakya2019/ISE_1_Frontend/blob/main/videos/Login%20Logout.mp4)
+  
+https://github.com/user-attachments/assets/46c720c6-6832-4eb0-8087-cfaf6f39db70
 
-<div style="display: flex; justify-content: space-between;">
-  <video width="30%" controls>
-    <source src="https://github.com/user-attachments/assets/cd1b1988-6cd2-47d1-9798-cde68e370b33" type="video/mp4">
-    Your browser does not support the video tag.
-  </video>
-  <video width="30%" controls>
-    <source src=[path/to/video2.mp4](https://github.com/sandeepshakya2019/ISE_1_Frontend/blob/main/videos/Login%20Logout.mp4)" type="video/mp4">
-    Your browser does not support the video tag.
-  </video>
-  <video width="30%" controls>
-    <source src="https://github.com/sandeepshakya2019/ISE_1_Frontend/blob/main/videos/Login%20Logout.mp4" type="video/mp4">
-    Your browser does not support the video tag.
-  </video>
-</div>
+https://github.com/user-attachments/assets/d639d6b6-674f-409a-807f-b3e61d30b369
+
 
 
 - **KYC Submission (with validation)** :
 
+
+
+https://github.com/user-attachments/assets/d6e6a811-46dd-4aa6-bcda-9c09efd6dd86
+
+
 - **Profile View, Borrow a Loan, Repay a Loan** :
+
+https://github.com/user-attachments/assets/f8551918-a544-4ef7-bb84-de72d516948e
+
+
 
 # 5. Issues After Pushing the Backend to server(on Vercel) 
  
