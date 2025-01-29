@@ -1,7 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
-import {Alert, Platform} from 'react-native';
-import {logoutApiCall} from './logout';
 
 const LOCAL_API_PORT = 3005; // Node.js server port
 
