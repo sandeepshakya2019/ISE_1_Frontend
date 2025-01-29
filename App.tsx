@@ -16,7 +16,7 @@ import HomeScreen from './src/screens/HomeScreen';
 import ProfileScreen from './src/screens/ProfileScreen';
 
 const Stack = createStackNavigator();
-
+//comment
 const App = () => {
   const [initialRoute, setInitialRoute] = useState<string>('Home');
   const [loading, setLoading] = useState(true);
