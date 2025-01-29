@@ -7,6 +7,8 @@ import {
   Image,
   ScrollView,
   Alert,
+  BackHandler,
+  ActivityIndicator,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {apiCallWithHeader} from '../utils/api';
@@ -25,7 +27,6 @@ const ProfileScreen = ({navigation}) => {
           throw new Error('Failed to fetch profile data');
         }
       } catch (error) {
-        console.error('Error fetching user data:', error);
         Alert.alert(
           'Error',
           'Failed to fetch profile details. Please try again.',
@@ -34,7 +35,20 @@ const ProfileScreen = ({navigation}) => {
         setLoading(false);
       }
     };
+
     fetchUserData();
+
+    const handleBackPress = () => {
+      Alert.alert('Hold on!', 'Are you sure you want to exit the app?', [
+        {text: 'Cancel', style: 'cancel'},
+        {text: 'Yes', onPress: () => BackHandler.exitApp()},
+      ]);
+      return true;
+    };
+
+    BackHandler.addEventListener('hardwareBackPress', handleBackPress);
+    return () =>
+      BackHandler.removeEventListener('hardwareBackPress', handleBackPress);
   }, []);
 
   const handleLogout = async () => {
@@ -46,6 +60,7 @@ const ProfileScreen = ({navigation}) => {
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#28a745" />
         <Text>Loading user details...</Text>
       </View>
     );
@@ -67,56 +82,62 @@ const ProfileScreen = ({navigation}) => {
       {userdetails.photo && (
         <Image source={{uri: userdetails.photo}} style={styles.profileImage} />
       )}
-      <Text style={styles.info}>Name: {userdetails.fullName}</Text>
-      <Text style={styles.info}>Mobile: {userdetails.mobileNo}</Text>
-      <Text style={styles.info}>Email: {userdetails.emailId}</Text>
-      <Text style={styles.info}>No. of Loans: {userdetails.noOfLoan}</Text>
-      <Text style={styles.info}>
-        Sectioned Amount: {userdetails.sectionedAmount}
-      </Text>
-      <Text style={styles.info}>
-        Offered Amount: {userdetails.offeredAmount}
-      </Text>
-
-      <Text style={styles.subheading}>Loan Details</Text>
-      {loandetails?.length > 0 ? (
-        loandetails?.map((loan, index) => (
-          <View key={index} style={styles.loanContainer}>
-            <Text>Total Loan Amount: {loan.totalLoanAmount}</Text>
-            <Text>Reason: {loan.loanReason}</Text>
-            <Text>Status: {loan.loanStatus}</Text>
-            <Text>Remaining Amount: {loan.leftAmount}</Text>
-          </View>
-        ))
-      ) : (
-        <Text>No Loans Found</Text>
-      )}
-
-      <Text style={styles.subheading}>KYC Details</Text>
-      {kycDetaiils?.length > 0 ? (
-        kycDetaiils?.map((kyc, index) => (
-          <View key={index} style={styles.kycContainer}>
-            <Text>Aadhar ID: {kyc.aadharCardId}</Text>
-            <Text>Account Number: {kyc.accountNumber}</Text>
-            <Text>IFSC Code: {kyc.ifscCode}</Text>
-            <Text>Address: {kyc.address}</Text>
-            {kyc.photo && (
-              <Image source={{uri: kyc.photo}} style={styles.kycImage} />
-            )}
-          </View>
-        ))
-      ) : (
-        <Text>No KYC Details Found</Text>
-      )}
-
-      <Button
-        title="Go to Loan Details"
-        onPress={() => navigation.navigate('LoanDetails')}
+      <ProfileDetail label="Name" value={userdetails.fullName} />
+      <ProfileDetail label="Mobile" value={userdetails.mobileNo} />
+      <ProfileDetail label="Email" value={userdetails.emailId} />
+      <ProfileDetail label="No. of Loans" value={userdetails.noOfLoan} />
+      <ProfileDetail
+        label="Sectioned Amount"
+        value={userdetails.sectionedAmount}
       />
-      <Button title="Logout" onPress={handleLogout} color="#d9534f" />
+      <ProfileDetail label="Offered Amount" value={userdetails.offeredAmount} />
+
+      <Section title="Loan Details" data={loandetails} renderItem={LoanItem} />
+      <Section title="KYC Details" data={kycDetaiils} renderItem={KycItem} />
+
+      <View style={styles.buttonContainer}>
+        <Button
+          title="Go to Loan Details"
+          onPress={() => navigation.navigate('LoanDetails')}
+          color="#00796b"
+        />
+        <Button title="Logout" onPress={handleLogout} color="#d9534f" />
+      </View>
     </ScrollView>
   );
 };
+
+const ProfileDetail = ({label, value}) => (
+  <Text style={styles.info}>
+    {label}: {value}
+  </Text>
+);
+
+const Section = ({title, data, renderItem}) => (
+  <View>
+    <Text style={styles.subheading}>{title}</Text>
+    {data?.length > 0 ? data.map(renderItem) : <Text>No {title} Found</Text>}
+  </View>
+);
+
+const LoanItem = (loan, index) => (
+  <View key={index} style={styles.loanContainer}>
+    <Text>Total Loan Amount: {loan.totalLoanAmount}</Text>
+    <Text>Reason: {loan.loanReason}</Text>
+    <Text>Status: {loan.loanStatus}</Text>
+    <Text>Remaining Amount: {loan.leftAmount}</Text>
+  </View>
+);
+
+const KycItem = (kyc, index) => (
+  <View key={index} style={styles.kycContainer}>
+    <Text>Aadhar ID: {kyc.aadharCardId}</Text>
+    <Text>Account Number: {kyc.accountNumber}</Text>
+    <Text>IFSC Code: {kyc.ifscCode}</Text>
+    <Text>Address: {kyc.address}</Text>
+    {kyc.photo && <Image source={{uri: kyc.photo}} style={styles.kycImage} />}
+  </View>
+);
 
 const styles = StyleSheet.create({
   container: {
@@ -166,6 +187,10 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  buttonContainer: {
+    marginTop: 20,
+    width: '100%',
   },
 });
 

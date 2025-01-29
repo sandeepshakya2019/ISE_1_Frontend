@@ -107,13 +107,13 @@ const App = () => {
         <Stack.Screen
           name="Profile"
           component={ProfileScreen}
-          options={{headerShown: true, title: 'Profile'}}
+          options={{headerShown: false, title: 'Profile'}}
         />
         <Stack.Screen
           name="LoanDetails"
           component={LoanDetailsScreen}
           options={{
-            headerShown: false,
+            headerShown: true,
             title: 'Loan Details',
             gestureEnabled: false,
           }}
