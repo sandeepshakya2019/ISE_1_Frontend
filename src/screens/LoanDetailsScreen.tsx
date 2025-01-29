@@ -190,15 +190,6 @@ const LoanDetailsScreen = ({route}) => {
           />
         </View>
       </View>
-      <View style={styles.buttonContainer}>
-        <View style={styles.button}>
-          <Button
-            title="Go to Profile"
-            onPress={() => navigation.navigate('Profile')}
-            color="#00796b"
-          />
-        </View>
-      </View>
 
       <View style={styles.cardContainer}>
         <View style={styles.card}>
@@ -237,9 +228,9 @@ const LoanDetailsScreen = ({route}) => {
         />
       )}
 
-      <View style={styles.logoutButtonContainer}>
+      {/* <View style={styles.logoutButtonContainer}>
         <Button title="Logout" color="#d9534f" onPress={handleLogout} />
-      </View>
+      </View> */}
     </View>
   );
 };

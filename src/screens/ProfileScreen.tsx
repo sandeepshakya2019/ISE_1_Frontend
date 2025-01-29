@@ -79,9 +79,6 @@ const ProfileScreen = ({navigation}) => {
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.heading}>Profile</Text>
-      {userdetails.photo && (
-        <Image source={{uri: userdetails.photo}} style={styles.profileImage} />
-      )}
       <ProfileDetail label="Name" value={userdetails.fullName} />
       <ProfileDetail label="Mobile" value={userdetails.mobileNo} />
       <ProfileDetail label="Email" value={userdetails.emailId} />
