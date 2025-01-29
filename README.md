@@ -6,6 +6,8 @@
 # 0. Gameplay Video Related to FinSphere App (On Local Host)
 
 - **Login and Register (with validation)** :
+
+- One key piece of information since we are using the free service of Twilio, i need to enter the mobile number in my Twilio account so that it can send the OTP
   
 https://github.com/user-attachments/assets/46c720c6-6832-4eb0-8087-cfaf6f39db70
 
