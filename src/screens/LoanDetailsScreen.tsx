@@ -190,6 +190,16 @@ const LoanDetailsScreen = ({route}) => {
           />
         </View>
       </View>
+      <View style={styles.buttonContainer}>
+        <View style={styles.button}>
+          <Button
+            title="Go to Profile"
+            onPress={() => navigation.navigate('Profile')}
+            color="#00796b"
+          />
+        </View>
+      </View>
+
       <View style={styles.cardContainer}>
         <View style={styles.card}>
           <View style={styles.cardRow}>
