@@ -10,8 +10,9 @@ import {
 } from 'react-native';
 import Toast from 'react-native-toast-message';
 import Logo from '../components/Shared/Logo';
-import {api} from '../utils/api';
+import {api, apiCallWithoutHeader} from '../utils/api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import toastConfig from '../styles/toastConfig';
 
 const OTPScreen = ({navigation, route}) => {
   const [otp, setOtp] = useState('');
@@ -53,9 +54,12 @@ const OTPScreen = ({navigation, route}) => {
       try {
         setLoading(true);
         const payload = {otp, mobileNo};
-        const response = await api.post('/users/login-token', payload);
-
-        if (response?.data?.success) {
+        const [success, response] = await apiCallWithoutHeader(
+          '/users/login-token',
+          'POST',
+          payload,
+        );
+        if (success && response?.data?.success) {
           await AsyncStorage.setItem(
             'authToken',
             response.data?.message?.accesst,
@@ -76,21 +80,8 @@ const OTPScreen = ({navigation, route}) => {
           navigation.navigate(isKyc ? 'LoanDetails' : 'KYC');
         }
       } catch (error: any) {
-        console.error('OTP Error:', error?.response?.data);
-        let errorMessage = 'Something went wrong. Please try again.';
-        const errorData = error?.response?.data?.message;
-
-        if (errorData && typeof errorData === 'object') {
-          const firstNonEmptyKey = Object.keys(errorData).find(
-            key => errorData[key]?.trim() !== '',
-          );
-          errorMessage = firstNonEmptyKey
-            ? errorData[firstNonEmptyKey]
-            : errorMessage;
-        } else if (typeof errorData === 'string') {
-          errorMessage = errorData;
-        }
-
+        const errorMessage = error.message.replace(/Error:\s?/i, '');
+        console.error('Error during OTP:', errorMessage);
         Toast.show({
           type: 'error',
           text1: 'Verification Failed',
@@ -161,7 +152,7 @@ const OTPScreen = ({navigation, route}) => {
 
   return (
     <View style={styles.container}>
-      <Toast />
+      <Toast config={toastConfig} />
       <Logo />
       <Text style={styles.headerText}>Enter OTP</Text>
       <TextInput

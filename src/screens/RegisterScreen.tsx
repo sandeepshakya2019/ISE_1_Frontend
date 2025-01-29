@@ -9,14 +9,14 @@ import {
 } from 'react-native';
 import Toast from 'react-native-toast-message'; // Import Toast
 import Logo from '../components/Shared/Logo';
-import {api} from '../utils/api';
+import {api, apiCallWithHeader, apiCallWithoutHeader} from '../utils/api';
 import toastConfig from '../styles/toastConfig';
 // comment check
 const RegisterScreen = ({navigation}) => {
   const [formData, setFormData] = useState({
-    name: '',
-    mobileNumber: '',
-    email: '',
+    name: 'Sandeep',
+    mobileNumber: '8956325691',
+    email: 'sandeep@gmail.com',
     isTermsAccepted: false,
   });
   const [loading, setLoading] = useState(false); // Loading state
@@ -30,15 +30,15 @@ const RegisterScreen = ({navigation}) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     if (!name.trim()) {
-      return 'Please enter your full name.';
+      return 'Full Name is Required';
     }
 
     if (!mobileNumber || mobileNumber.length !== 10) {
-      return 'Please enter a valid 10-digit mobile number.';
+      return 'Mobile Number should be of 10 Digit';
     }
 
     if (email && !emailRegex.test(email)) {
-      return 'Please enter a valid email address.';
+      return 'Valid Email Address is Required';
     }
 
     if (!isTermsAccepted) {
@@ -51,84 +51,66 @@ const RegisterScreen = ({navigation}) => {
   const loginUser = async () => {
     try {
       const payload = {mobileNo: formData.mobileNumber};
-      const response = await api.post('/users/login-otp', payload);
-      Toast.show({
-        type: 'success',
-        text1: 'OTP Sent',
-        text2: 'Please check your mobile number.',
-      });
-      return response;
-    } catch (error: any) {
-      let errorMessage = 'Something went wrong. Please try again.';
-      const errorData = error?.response?.data?.message;
-      if (errorData && typeof errorData === 'string') {
-        errorMessage = errorData;
+      const [success, response] = await apiCallWithoutHeader(
+        '/users/login-otp',
+        'POST',
+        payload,
+      );
+
+      if (success) {
+        Toast.show({
+          type: 'success',
+          text1: 'OTP Sent',
+          text2: 'Please check SMS for OTP',
+        });
+        return response[1];
       }
-      Toast.show({
-        type: 'error',
-        text1: 'Login Failed',
-        text2: errorMessage,
-      });
+    } catch (error: any) {
       throw error;
     }
   };
 
   const getOTP = async () => {
     if (!formData.mobileNumber || formData.mobileNumber.length !== 10) {
-      Toast.show({
-        type: 'error',
-        text1: 'Validation Error',
-        text2: 'Enter a valid 10-digit mobile number.',
-      });
-      return;
+      throw Error('Please Entrer 10 Digit mobile Number');
     }
     setLoading(true);
     try {
       await loginUser();
+    } catch (err: any) {
+      navigation.navigate('Register');
+      throw Error(err);
     } finally {
       setLoading(false);
     }
   };
 
-  const registerUser = async () => {
+  const registerUser = async (): Promise<any> => {
     try {
       const {name, mobileNumber, email} = formData;
+
       const payload = {
         mobileNo: mobileNumber,
         fullName: name,
         emailId: email,
       };
 
-      console.log('Register payload:', payload);
+      const [success, response] = await apiCallWithoutHeader(
+        '/users/register',
+        'POST',
+        payload,
+      );
 
-      const response = await api.post('/users/register', payload);
-
-      return response;
-    } catch (error: any) {
-      console.error('Register Error:', error?.response?.data);
-
-      let errorMessage = 'Something went wrong. Please try again.'; // Default message
-      const errorData = error?.response?.data?.message;
-
-      // Check if `errorData` is an object and find the first key with a non-empty value
-      if (errorData && typeof errorData === 'object') {
-        const firstNonEmptyKey = Object.keys(errorData).find(
-          key => errorData[key]?.trim() !== '',
-        );
-        errorMessage = firstNonEmptyKey
-          ? errorData[firstNonEmptyKey]
-          : errorMessage;
-      } else if (typeof errorData === 'string') {
-        errorMessage = errorData;
+      if (success) {
+        await getOTP();
+        navigation.replace('OTP', {
+          fromLogin: false,
+          mobileNo: formData.mobileNumber,
+        });
+        return response;
       }
-
-      Toast.show({
-        type: 'error',
-        text1: 'Registration Failed',
-        text2: errorMessage,
-      });
-
-      throw error;
+    } catch (err: any) {
+      throw Error(err);
     }
   };
 
@@ -143,21 +125,17 @@ const RegisterScreen = ({navigation}) => {
       return;
     }
 
-    setLoading(true); // Start loading
+    setLoading(true);
     try {
       await registerUser();
-      await getOTP();
-      navigation.replace('OTP', {
-        fromLogin: false,
-        mobileNo: formData.mobileNumber,
-      });
+    } catch (error: any) {
+      const errorMessage = error.message.replace(/Error:\s?/i, '');
+      console.error('Error during registration:', errorMessage);
       Toast.show({
-        type: 'success',
-        text1: 'Registration Successful',
-        text2: 'Please wait for the OTP.',
+        type: 'error',
+        text1: 'Registration Failed',
+        text2: errorMessage,
       });
-    } catch (error) {
-      console.error('Error during registration:', error);
     } finally {
       setLoading(false); // Stop loading
     }

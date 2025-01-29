@@ -26,9 +26,8 @@ const App = () => {
     const checkUserAuthentication = async () => {
       try {
         const response = await apiCallWithHeader('/users/login-check', 'GET');
-
-        if (response[0] && response[1]?.data?.message) {
-          const {isKYC} = response[1]?.data?.message;
+        if (response[0] && response[1]?.message) {
+          const {isKYC} = response[1]?.message;
 
           if (!isKYC) {
             Alert.alert(
@@ -40,15 +39,15 @@ const App = () => {
             setInitialRoute('LoanDetails');
           }
         } else {
-          setInitialRoute('Login');
+          setInitialRoute('Register');
         }
       } catch (error: any) {
         console.log('Main Api Error', error);
         Alert.alert(
-          'Authentication Error',
+          'Authentication dd Error',
           'Something Went Wrong Pls Try Again...',
         );
-        setInitialRoute('Home');
+        setInitialRoute('Register');
       } finally {
         setLoading(false);
       }

@@ -20,11 +20,9 @@ export const api = axios.create({
 });
 
 const errorFormat = (error: any) => {
-  console.error('Register Error:', error?.response?.data);
-
   let errorMessage = 'Something went wrong. Please try again.'; // Default message
   const errorData = error?.response?.data?.message;
-
+  console.log(errorData);
   // Check if `errorData` is an object and find the first key with a non-empty value
   if (errorData && typeof errorData === 'object') {
     const firstNonEmptyKey = Object.keys(errorData).find(
@@ -42,23 +40,24 @@ const errorFormat = (error: any) => {
 
 export const apiCallWithHeader = async (
   path: string,
-  method: string,
-  body = null,
-) => {
+  method: 'GET' | 'POST',
+  body: object = {},
+): Promise<[boolean, any]> => {
   try {
     // Retrieve all stored keys and log them
-    const getAllKeys = await AsyncStorage.getAllKeys();
-    console.log('Auth', getAllKeys);
+    const allKeys = await AsyncStorage.getAllKeys();
+    console.log('Auth Keys:', allKeys);
 
-    for (let key of getAllKeys) {
+    for (let key of allKeys) {
       const value = await AsyncStorage.getItem(key);
       console.log(`Key: ${key}, Value: ${value}`);
     }
 
-    // Retrieve auth token
+    // Retrieve authentication token
     const token = await AsyncStorage.getItem('authToken');
     if (!token) {
-      return [false, 'Please Login again'];
+      // throw new Error('Welcom to FinSpher');
+      return [true, null];
     }
 
     // Define request headers
@@ -66,25 +65,43 @@ export const apiCallWithHeader = async (
       Authorization: `Bearer ${token}`,
     };
 
-    // Choose request method dynamically
+    // Make API request based on method type
     let response;
     if (method === 'GET') {
       response = await api.get(path, {headers});
     } else if (method === 'POST') {
       response = await api.post(path, body, {headers});
     } else {
-      throw new Error('Unsupported HTTP method');
+      throw new Error(`Unsupported HTTP method: ${method}`);
     }
 
-    return [true, response];
+    return [true, response?.data];
   } catch (error: any) {
-    console.error('Main API Call Error:', error);
+    // console.error('API Call Error:', errorFormat(error));
+    throw new Error(errorFormat(error));
+  }
+};
 
-    const isSuccess = error?.response?.data?.success;
-    // if (!isSuccess) {
-    //   logoutApiCall();
-    // }
-
-    return [false, errorFormat(error)];
+export const apiCallWithoutHeader = async (
+  path: string,
+  method: 'GET' | 'POST',
+  body: object = {},
+) => {
+  try {
+    // Make API request based on method type
+    let response;
+    if (method === 'GET') {
+      response = await api.get(path);
+    } else if (method === 'POST') {
+      response = await api.post(path, body);
+    } else {
+      throw new Error(`Unsupported HTTP method: ${method}`);
+    }
+    if (response) {
+      return [true, response];
+    }
+  } catch (error: any) {
+    // console.error('API Call Error:', errorFormat(error));
+    throw new Error(errorFormat(error));
   }
 };
