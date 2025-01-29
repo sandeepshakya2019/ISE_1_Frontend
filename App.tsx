@@ -2,8 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {ActivityIndicator, View, StyleSheet, Alert} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {api, apiCallWithHeader} from './src/utils/api'; // Assuming api is a utility for API requests
+import {apiCallWithHeader} from './src/utils/api'; // Assuming api is a utility for API requests
 
 import LoginScreen from './src/screens/LoginScreen';
 import OTPScreen from './src/screens/OTPScreen';
@@ -13,19 +12,20 @@ import LoanBorrowScreen from './src/screens/LoanBorrowScreen';
 import LoanRepayScreen from './src/screens/LoanRepayScreen';
 import PaymentGatewayScreen from './src/screens/PaymentGatewayScreen';
 import RegisterScreen from './src/screens/RegisterScreen';
-import {logoutApiCall} from './src/utils/logout';
 import HomeScreen from './src/screens/HomeScreen';
+import ProfileScreen from './src/screens/ProfileScreen';
 
 const Stack = createStackNavigator();
 
 const App = () => {
-  const [initialRoute, setInitialRoute] = useState<string | null>('Home');
-  const [loading, setLoading] = useState(true); // Loading state
+  const [initialRoute, setInitialRoute] = useState<string>('Home');
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const checkUserAuthentication = async () => {
       try {
         const response = await apiCallWithHeader('/users/login-check', 'GET');
+
         if (response[0] && response[1]?.message) {
           const {isKYC} = response[1]?.message;
 
@@ -36,7 +36,7 @@ const App = () => {
             );
             setInitialRoute('KYC');
           } else {
-            setInitialRoute('LoanDetails');
+            setInitialRoute('Profile');
           }
         } else {
           setInitialRoute('Register');
@@ -44,8 +44,8 @@ const App = () => {
       } catch (error: any) {
         console.log('Main Api Error', error);
         Alert.alert(
-          'Authentication dd Error',
-          'Something Went Wrong Pls Try Again...',
+          'Authentication Error',
+          'Something Went Wrong. Please Try Again...',
         );
         setInitialRoute('Register');
       } finally {
@@ -70,11 +70,7 @@ const App = () => {
         <Stack.Screen
           name="Home"
           component={HomeScreen}
-          options={{
-            headerShown: false,
-            title: 'Home',
-            gestureEnabled: false,
-          }}
+          options={{headerShown: false, title: 'Home', gestureEnabled: false}}
         />
         <Stack.Screen
           name="Register"
@@ -88,11 +84,7 @@ const App = () => {
         <Stack.Screen
           name="Login"
           component={LoginScreen}
-          options={{
-            headerShown: false,
-            title: 'Login',
-            gestureEnabled: false,
-          }}
+          options={{headerShown: false, title: 'Login', gestureEnabled: false}}
         />
         <Stack.Screen
           name="OTP"
@@ -111,6 +103,11 @@ const App = () => {
             title: 'KYC Details',
             gestureEnabled: false,
           }}
+        />
+        <Stack.Screen
+          name="Profile"
+          component={ProfileScreen}
+          options={{headerShown: true, title: 'Profile'}}
         />
         <Stack.Screen
           name="LoanDetails"
@@ -146,7 +143,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#f4f4f4', // Light background
+    backgroundColor: '#f4f4f4',
   },
 });
 
