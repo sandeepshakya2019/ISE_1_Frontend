@@ -2,12 +2,14 @@
 
 **[Backend FinSphere](https://github.com/sandeepshakya2019/ISE_1_Backend)**
 
+**For Checking Purposes I created a  user with mobile no 9084043946 that doesn't require the OTP for this. If you want to create a new user since we are using free services to send the OTP on mobile number this requires a pre-verification of the number (Twilio service that I am using) so from the above account you can check all the features you want**
+
+**APK file is also available in the root directory**
+
 
 # 0. Gameplay Video Related to FinSphere App (On Local Host)
 
 - **Login and Register (with validation)** :
-
-- One key piece of information since we are using the free service of Twilio, i need to enter the mobile number in my Twilio account so that it can send the OTP
   
 https://github.com/user-attachments/assets/46c720c6-6832-4eb0-8087-cfaf6f39db70
 
@@ -262,7 +264,7 @@ cd .. (use command)
 npm install
 ```
 
-- `Make sure you uncomment below code (if not) already in api.ts file`
+- `Make sure you uncomment the below code (if not) already in the api.ts file`
 
 ```
 const API_BASE_URL =
@@ -284,7 +286,7 @@ Let Metro Bundler run in its _own_ terminal. Open a _new_ terminal from the _roo
 
 - Please make sure you run the [Backend server](https://github.com/sandeepshakya2019/ISE_1_Backend) successfully on PORT 3005 else you have to change to same port in react-native frontend in api.ts file
   `const LOCAL_API_PORT = YOUR_PORT_NUMBER; // Your Node.js server port`
-- before that make sure that Android emulator is runnning
+- before that make sure that the Android emulator is running
 
 ### For Android
 
@@ -321,23 +323,21 @@ You've successfully run the React Native App.
 ## 4.1 Libraries used :
 
 - Axios `axios` : is a popular JavaScript library used to make HTTP requests from Node.js or the browser. It provides a simple and intuitive API for interacting with RESTful APIs, handling errors, and working with promises or async/await.
+
 - React `react` : it is used in react-native by default we have used `useState` and `useEffect` Hooks
+  
 - React Native Gesture handler `react-native-gesture-handler`: is a popular library in the React Native ecosystem used to handle touch gestures and interactions in a performant and customizable way
+  
 - React Native Image Picker `react-native-image-picker` : is a popular library for React Native that allows users to pick images and videos from their device's camera or gallery
+  
 - React Native Reanimated `react-native-reanimated` : is a library for handling animations in React Native. It provides a highly performant and declarative API to create complex animations that run directly on the native thread.
-- React Native Toast Message `react-native-toast-message` : is a lightweight and customizable library for displaying toast notifications in React Native applications. It allows you to show short, informative messages like success, error, or info alerts in a visually appealing way.
+  
+- React Native Toast Message `react-native-toast-message` : is a lightweight and customizable library for displaying toast notifications in React Native applications. It allows you to show short, informative messages like success, error, or info alerts visually appealingly.
 
 
-# 5. Issues After Pushing the Backend to server(on Vercel) 
- 
-* [Backend Server](https://ise-1-backend.vercel.app/api/v1/users) hosted on vercel
-* After hoisitng since at time of KYC we are taking the photo from user using **multer** we upload on **server** and then we upload on **cloudinary** since this is free tier hosting so runtime file changes is not allowed on free tier server hosting so right now we are able to run only on local host.(backend) below video is proof of the vercel issue (it is saying director is not present but director is already there)
+# 6. Convert the react-native app to an APK file
 
-https://github.com/user-attachments/assets/b43f62d7-7e8e-4f22-bbbf-51fc96d7740e
-
-# 6. Convert the react-native app to APK file
-
-* To convert the react-native app to apk [Check the Docs Here](https://docs.google.com/document/d/1B396y5cUknAeaZ7cdn4GLD83yLyCMGuOIIi6ukGC730/edit?usp=sharing)
+* To convert the react-native app to APK [Check the Docs Here](https://docs.google.com/document/d/1B396y5cUknAeaZ7cdn4GLD83yLyCMGuOIIi6ukGC730/edit?usp=sharing)
 
 
 # 7. Authors
