@@ -36,12 +36,10 @@ const KYCScreen: React.FC<Props> = ({navigation}) => {
   const [photo, setPhoto] = useState<string | null>(null);
   const [f, setFullName] = useState('');
   const [mobileNumber, setMobileNumber] = useState('');
-  const [address, setAddress] = useState(
-    'Rani Awanti bai nagar shikohabad road etah',
-  );
-  const [aadhar, setAadhar] = useState('');
-  const [bankAccount, setBankAccount] = useState('');
-  const [ifsc, setIfsc] = useState('');
+  const [address, setAddress] = useState('Some Adderesas');
+  const [aadhar, setAadhar] = useState('895623568956');
+  const [bankAccount, setBankAccount] = useState('895623568956');
+  const [ifsc, setIfsc] = useState('89562356895');
   const [errors, setErrors] = useState({
     fullName: false,
     mobileNumber: false,
@@ -191,9 +189,16 @@ const KYCScreen: React.FC<Props> = ({navigation}) => {
         navigation.replace('LoanDetails', {photo});
       }
     } catch (error: any) {
-      console.error('KYC Submission Error:', error.response);
-      const errorMessage =
-        error?.response?.data?.message || 'Something went wrong.';
+      let errorMessage = 'Something went wrong. Please try again.'; // Default message
+      const errorData = error?.response?.data?.message;
+      if (errorData && typeof errorData === 'object') {
+        const firstNonEmptyKey = Object.keys(errorData).find(
+          key => errorData[key]?.trim() !== '',
+        );
+        errorMessage = firstNonEmptyKey
+          ? errorData[firstNonEmptyKey]
+          : errorMessage;
+      }
       Alert.alert('Error', errorMessage);
     } finally {
       setLoading(false);

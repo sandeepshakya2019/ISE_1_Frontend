@@ -58,7 +58,7 @@ const OTPScreen = ({navigation, route}) => {
         if (response?.data?.success) {
           await AsyncStorage.setItem(
             'authToken',
-            response.data?.message?.refresht,
+            response.data?.message?.accesst,
           );
           await AsyncStorage.setItem(
             'mobileNo',

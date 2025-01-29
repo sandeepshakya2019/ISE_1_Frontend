@@ -28,7 +28,7 @@ const LoginScreen = ({navigation}) => {
         text2: 'Please check your mobile number.',
       });
       return response;
-    } catch (error) {
+    } catch (error: any) {
       console.error('Login Error:', error?.response?.data);
 
       let errorMessage = 'Something went wrong. Please try again.'; // Default message

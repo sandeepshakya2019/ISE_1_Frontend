@@ -10,6 +10,7 @@ const API_BASE_URL =
     : `http://localhost:${LOCAL_API_PORT}/api/v1`; // For iOS Simulator or other platforms
 
 // const API_BASE_URL = 'https://ise-1-backend.vercel.app/api/v1';
+// const API_BASE_URL = 'https://ise1backend-production.up.railway.app/api/v1';
 
 // const API_BASE_URL = 'http://10.23.86.204:3005/api/v1';
 
