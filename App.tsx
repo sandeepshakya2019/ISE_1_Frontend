@@ -3,7 +3,7 @@ import {ActivityIndicator, View, StyleSheet, Alert} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {api} from './src/utils/api'; // Assuming api is a utility for API requests
+import {api, apiCallWithHeader} from './src/utils/api'; // Assuming api is a utility for API requests
 
 import LoginScreen from './src/screens/LoginScreen';
 import OTPScreen from './src/screens/OTPScreen';
@@ -25,34 +25,25 @@ const App = () => {
   useEffect(() => {
     const checkUserAuthentication = async () => {
       try {
-        const getAllKeys = await AsyncStorage.getAllKeys();
-        console.log('Auth', getAllKeys);
-        const token = await AsyncStorage.getItem('authToken');
-        if (token) {
-          const response = await api.get('/users/login-check', {
-            headers: {Authorization: `Bearer ${token}`},
-          });
-          if (response && response.data && response.data.message) {
-            const {isKYC} = response.data.message;
+        const response = await apiCallWithHeader('/users/login-check', 'GET');
 
-            if (!isKYC) {
-              Alert.alert(
-                'KYC Required',
-                'Please fill the KYC Details to proceed.',
-              );
-              setInitialRoute('KYC');
-            } else {
-              setInitialRoute('LoanDetails');
-            }
+        if (response[0] && response[1]?.data?.message) {
+          const {isKYC} = response[1]?.data?.message;
+
+          if (!isKYC) {
+            Alert.alert(
+              'KYC Required',
+              'Please fill the KYC Details to proceed.',
+            );
+            setInitialRoute('KYC');
+          } else {
+            setInitialRoute('LoanDetails');
           }
         } else {
-          setInitialRoute('Home');
+          setInitialRoute('Login');
         }
       } catch (error: any) {
-        const isSuccess = error?.response?.data?.success;
-        if (!isSuccess) {
-          logoutApiCall();
-        }
+        console.log('Main Api Error', error);
         Alert.alert(
           'Authentication Error',
           'Something Went Wrong Pls Try Again...',
