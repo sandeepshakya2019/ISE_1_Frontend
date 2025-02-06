@@ -198,10 +198,13 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   closeButton: {
+    width: '60%',
+    justifyContent: 'center',
+    alignItems: 'center',
     marginTop: 20,
     padding: 10,
     backgroundColor: '#28a745',
-    alignItems: 'center',
+    borderRadius: 10,
   },
   closeButtonText: {
     color: 'white',
