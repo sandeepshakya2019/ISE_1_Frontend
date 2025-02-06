@@ -87,7 +87,7 @@ const ProfileScreen = ({navigation}) => {
           />
         )}
         <Text style={styles.heading}>{userdetails.fullName}</Text>
-        <View style={styles.buttonContainer}>
+        {/* <View style={styles.buttonContainer}>
           <View style={styles.button}>
             <Button
               title="Go to Loan Details"
@@ -98,7 +98,7 @@ const ProfileScreen = ({navigation}) => {
           <View style={styles.button}>
             <Button title="Logout" onPress={handleLogout} color="#d9534f" />
           </View>
-        </View>
+        </View> */}
       </View>
 
       {/* Scrollable Content */}
@@ -163,7 +163,7 @@ const LoanItem = (loan, index) => (
 
 const KycItem = (kyc, index) => (
   <View key={index} style={styles.kycContainer}>
-    {kyc.photo && <Image source={{uri: kyc.photo}} style={styles.kycImage} />}
+    {/* {kyc.photo && <Image source={{uri: kyc.photo}} style={styles.kycImage} />} */}
     <Text style={styles.profile}>
       <Text style={styles.label}>Aadhar ID</Text>: {kyc.aadharCardId}
     </Text>

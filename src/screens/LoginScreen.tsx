@@ -13,7 +13,7 @@ import {api} from '../utils/api';
 import toastConfig from '../styles/toastConfig';
 
 const LoginScreen = ({navigation}) => {
-  const [mobileNumber, setMobileNumber] = useState('');
+  const [mobileNumber, setMobileNumber] = useState('9084043496');
 
   const [isTermsAccepted, setIsTermsAccepted] = useState(false);
   const [loading, setLoading] = useState(false);
