@@ -1,5 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
+import {Platform} from 'react-native';
+import {logoutApiCall} from './logout';
 
 const LOCAL_API_PORT = 3005; // Node.js server port
 
@@ -14,7 +16,7 @@ const API_BASE_URL = 'https://ise1backend-production.up.railway.app/api/v1';
 
 export const api = axios.create({
   baseURL: API_BASE_URL,
-  timeout: 100000, // 10 seconds timeout
+  timeout: 10000, // 10 seconds timeout
 });
 
 const errorFormat = (error: any) => {
@@ -76,6 +78,7 @@ export const apiCallWithHeader = async (
     return [true, response?.data];
   } catch (error: any) {
     // console.error('API Call Error:', errorFormat(error));
+    logoutApiCall();
     throw new Error(errorFormat(error));
   }
 };

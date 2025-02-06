@@ -26,34 +26,6 @@ const LoanDetailsScreen = ({route}) => {
 
   const navigation = useNavigation();
 
-  useEffect(() => {
-    const handleBackPress = () => {
-      Alert.alert(
-        'Hold on!',
-        'Are you sure you want to exit the app?',
-        [
-          {
-            text: 'Cancel',
-            onPress: () => null,
-            style: 'cancel',
-          },
-          {
-            text: 'Yes',
-            onPress: () => BackHandler.exitApp(),
-          },
-        ],
-        {cancelable: false},
-      );
-      return true; // Prevent default back action
-    };
-
-    BackHandler.addEventListener('hardwareBackPress', handleBackPress);
-
-    return () => {
-      BackHandler.removeEventListener('hardwareBackPress', handleBackPress);
-    };
-  }, []);
-
   // Fetch user details
   useEffect(() => {
     const fetchUserDetails = async () => {
@@ -174,7 +146,7 @@ const LoanDetailsScreen = ({route}) => {
         <Text style={styles.noPhotoText}>No photo available</Text>
       )}
 
-      <View style={styles.buttonContainer}>
+      {/* <View style={styles.buttonContainer}>
         <View style={styles.button}>
           <Button
             title="Borrow Loan"
@@ -189,7 +161,7 @@ const LoanDetailsScreen = ({route}) => {
             color="#FF9800"
           />
         </View>
-      </View>
+      </View> */}
 
       <View style={styles.cardContainer}>
         <View style={styles.card}>
