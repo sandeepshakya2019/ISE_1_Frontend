@@ -77,7 +77,7 @@ const OTPScreen = ({navigation, route}) => {
 
           const isKyc = response?.data?.message?.user?.isKYC;
 
-          navigation.navigate(isKyc ? 'LoanDetails' : 'KYC');
+          navigation.navigate(isKyc ? 'Profile' : 'KYC');
         }
       } catch (error: any) {
         const errorMessage = error.message.replace(/Error:\s?/i, '');

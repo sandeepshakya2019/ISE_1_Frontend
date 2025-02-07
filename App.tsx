@@ -22,10 +22,11 @@ import PaymentGatewayScreen from './src/screens/PaymentGatewayScreen';
 import RegisterScreen from './src/screens/RegisterScreen';
 import HomeScreen from './src/screens/HomeScreen';
 import ProfileScreen from './src/screens/ProfileScreen';
+import {logoutApiCall} from './src/utils/logout';
 
 const Stack = createStackNavigator();
 
-const CustomHeader = ({navigation}) => {
+const CustomHeader = ({navigation, handleLogout}) => {
   const [modalVisible, setModalVisible] = useState(false);
 
   return (
@@ -76,14 +77,9 @@ const CustomHeader = ({navigation}) => {
             }}>
             <Text style={styles.modalText}>Repay Loan</Text>
           </TouchableOpacity>
-          {/* <TouchableOpacity
-            style={styles.modalItem}
-            onPress={() => {
-              navigation.navigate('PaymentGateway');
-              setModalVisible(false);
-            }}>
-            <Text style={styles.modalText}>Payment Gateway</Text>
-          </TouchableOpacity> */}
+          <TouchableOpacity style={styles.modalItem} onPress={handleLogout}>
+            <Text style={styles.modalText}>Logout</Text>
+          </TouchableOpacity>
           <TouchableOpacity
             style={styles.closeButton}
             onPress={() => setModalVisible(false)}>
@@ -134,6 +130,17 @@ const App = () => {
     checkUserAuthentication();
   }, []);
 
+  const handleLogout = async navigation => {
+    // Call logout API or perform any other logout logic
+    await logoutApiCall();
+
+    // Navigate to the Login screen after logout
+    navigation.reset({
+      index: 0,
+      routes: [{name: 'Login'}],
+    });
+  };
+
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
@@ -147,12 +154,30 @@ const App = () => {
       <Stack.Navigator
         initialRouteName={initialRoute}
         screenOptions={({navigation}) => ({
-          header: () => <CustomHeader navigation={navigation} />,
+          headerShown: true, // Set headerShown to true by default
+          header: () => (
+            <CustomHeader
+              navigation={navigation}
+              handleLogout={() => handleLogout(navigation)}
+            />
+          ), // Apply CustomHeader to all screens by default
         })}>
         <Stack.Screen name="Home" component={HomeScreen} />
-        <Stack.Screen name="Register" component={RegisterScreen} />
-        <Stack.Screen name="Login" component={LoginScreen} />
-        <Stack.Screen name="OTP" component={OTPScreen} />
+        <Stack.Screen
+          name="Register"
+          component={RegisterScreen}
+          options={{headerShown: false}} // Remove header for Register screen
+        />
+        <Stack.Screen
+          name="Login"
+          component={LoginScreen}
+          options={{headerShown: false}} // Remove header for Login screen
+        />
+        <Stack.Screen
+          name="OTP"
+          component={OTPScreen}
+          options={{headerShown: false}} // Remove header for OTP screen
+        />
         <Stack.Screen name="KYC" component={KYCScreen} />
         <Stack.Screen name="Profile" component={ProfileScreen} />
         <Stack.Screen name="LoanDetails" component={LoanDetailsScreen} />
