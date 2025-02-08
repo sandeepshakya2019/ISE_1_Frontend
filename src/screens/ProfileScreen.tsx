@@ -107,12 +107,9 @@ const ProfileScreen = ({navigation}) => {
           <ProfileDetail label="Mobile" value={userdetails.mobileNo} />
           <ProfileDetail label="Email" value={userdetails.emailId} />
           <ProfileDetail label="No. of Loans" value={userdetails.noOfLoan} />
+          <ProfileDetail label="Disbursed Amount" value={userdetails.sectionedAmount} />
           <ProfileDetail
-            label="Sectioned Amount"
-            value={userdetails.sectionedAmount}
-          />
-          <ProfileDetail
-            label="Offered Amount"
+            label="Sanctioned Amount"
             value={userdetails.offeredAmount}
           />
         </View>
