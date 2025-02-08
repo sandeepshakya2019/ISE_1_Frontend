@@ -129,10 +129,10 @@ const LoanDetailsScreen = ({route}) => {
 
   const renderLoanItem = ({item}) => (
     <View style={styles.loanItem}>
-      <Text style={styles.loanText}>Loan Amount: ₹ {item.totalLoanAmount}</Text>
-      <Text style={styles.loanText}>Status: {item.loanStatus}</Text>
-      <Text style={styles.loanText}>Reason: {item.loanReason}</Text>
-      <Text style={styles.loanText}>Payback Amount: {item.paybackAmount}</Text>
+      <Text style={styles.loanText}>Loan Amount : ₹ {item.totalLoanAmount}</Text>
+      <Text style={styles.loanText}>Status : {item.loanStatus}</Text>
+      <Text style={styles.loanText}>Reason : {item.loanReason}</Text>
+      <Text style={styles.loanText}>Payback Amount : {item.paybackAmount}</Text>
     </View>
   );
 
