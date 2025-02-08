@@ -104,10 +104,10 @@ const ProfileScreen = ({navigation}) => {
       {/* Scrollable Content */}
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <View style={styles.profileSection}>
-          <ProfileDetail label="Mobile" value={userdetails.mobileNo} />
-          <ProfileDetail label="Email" value={userdetails.emailId} />
-          <ProfileDetail label="No. of Loans" value={userdetails.noOfLoan} />
-          <ProfileDetail label="Disbursed Amount" value={userdetails.sectionedAmount} />
+          <ProfileDetail label="Mobile " value={userdetails.mobileNo} />
+          <ProfileDetail label="Email " value={userdetails.emailId} />
+          <ProfileDetail label="No. of Loans " value={userdetails.noOfLoan} />
+          <ProfileDetail label="Disbursed Amount " value={userdetails.sectionedAmount} />
           <ProfileDetail
             label="Sanctioned Amount"
             value={userdetails.offeredAmount}
@@ -158,20 +158,25 @@ const LoanItem = (loan, index) => (
   </View>
 );
 
+const formatAadharNumber = aadhar => {
+  return aadhar && aadhar.match(/.{1,4}/g)?.join(' - '); // Adds space after every 4 digits
+};
+
 const KycItem = (kyc, index) => (
   <View key={index} style={styles.kycContainer}>
     {/* {kyc.photo && <Image source={{uri: kyc.photo}} style={styles.kycImage} />} */}
     <Text style={styles.profile}>
-      <Text style={styles.label}>Aadhar ID</Text>: {kyc.aadharCardId}
+      <Text style={styles.label}>Aadhar ID </Text>:{' '}
+      {formatAadharNumber(kyc.aadharCardId)}
     </Text>
     <Text style={styles.profile}>
-      <Text style={styles.label}>Account Number</Text>: {kyc.accountNumber}
+      <Text style={styles.label}>Account Number</Text> : {kyc.accountNumber}
     </Text>
     <Text style={styles.profile}>
-      <Text style={styles.label}>IFSC Code</Text>: {kyc.ifscCode}
+      <Text style={styles.label}>IFSC Code</Text> : {kyc.ifscCode}
     </Text>
     <Text style={styles.profile}>
-      <Text style={styles.label}>Address</Text>: {kyc.address}
+      <Text style={styles.label}>Address</Text> : {kyc.address}
     </Text>
   </View>
 );
