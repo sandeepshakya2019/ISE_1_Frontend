@@ -40,8 +40,8 @@ const KYCScreen: React.FC<Props> = ({navigation}) => {
     'Already Wriiten Some address you dont need to enter details all details are already filled capture the photo thats it',
   );
   const [aadhar, setAadhar] = useState('895623568956');
-  const [bankAccount, setBankAccount] = useState('895623568956');
-  const [ifsc, setIfsc] = useState('89562356895');
+  const [bankAccount, setBankAccount] = useState('70060052563');
+  const [ifsc, setIfsc] = useState('sbi0000562');
   const [errors, setErrors] = useState({
     fullName: false,
     mobileNumber: false,
@@ -131,8 +131,8 @@ const KYCScreen: React.FC<Props> = ({navigation}) => {
       mobileNumber: mobileNumber.length !== 10,
       address: !address,
       aadhar: aadhar.length !== 12,
-      bankAccount: !bankAccount,
-      ifsc: !ifsc,
+      bankAccount: !bankAccount || !/^\d{10,15}$/.test(bankAccount), // Bank account validation for 10-15 digits
+      ifsc: !ifsc || !/^[A-Za-z]{4}\d{7}$/.test(ifsc), // IFSC validation (4 letters followed by 7 digits)
       photo: !photo,
     };
 
@@ -265,7 +265,9 @@ const KYCScreen: React.FC<Props> = ({navigation}) => {
         value={bankAccount}
         onChangeText={setBankAccount}
       />
-      {errors.bankAccount && <Text style={styles.errorText}>*Required</Text>}
+      {errors.bankAccount && (
+        <Text style={styles.errorText}>*Must be 10-15 digits</Text>
+      )}
 
       <TextInput
         placeholder="IFSC Code"
@@ -273,7 +275,11 @@ const KYCScreen: React.FC<Props> = ({navigation}) => {
         value={ifsc}
         onChangeText={setIfsc}
       />
-      {errors.ifsc && <Text style={styles.errorText}>*Required</Text>}
+      {errors.ifsc && (
+        <Text style={styles.errorText}>
+          *Should start with 4 letters and followed by 7 digits
+        </Text>
+      )}
 
       <TouchableOpacity style={styles.photoButton} onPress={capturePhoto}>
         {photo ? (
