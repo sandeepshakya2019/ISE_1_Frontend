@@ -2,7 +2,17 @@
 
 **[Backend FinSphere](https://github.com/sandeepshakya2019/ISE_1_Backend)**
 
-**For Checking Purposes I created a user with mobile no 9084043946 that doesn't require the OTP for this you can enter whatever you want. If you want to create a new user since we are using free services to send the OTP on mobile number this requires a pre-verification of the number (Twilio service that I am using) so from the above account you can check all the features you want**
+**For Checking Purposes**
+
+Since i am using free api so for free api mobile number should be in friend list of sender list in twillio so we created free account where any OTP will work
+
+**mobile number given below can work with any OTP**
+
+` mobileNo 9084043946 -> Already Register and KYC Done (You can directly view all the things)`
+
+`mobileNo 8677963878 -> You can register with this mobile number`
+
+`if already register ypu can use additional mobileNo 1234567890`
 
 **APK file is also available in the root directory**
 
