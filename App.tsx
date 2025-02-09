@@ -28,6 +28,18 @@ const Stack = createStackNavigator();
 
 const CustomHeader = ({navigation, handleLogout}) => {
   const [modalVisible, setModalVisible] = useState(false);
+  const [loadingLogout, setLoadingLogout] = useState(false); // Loader state
+
+  const handleLogoutPress = async () => {
+    setLoadingLogout(true); // Show loader
+    await handleLogout(); // Perform logout
+    setLoadingLogout(false); // Hide loader
+    setModalVisible(false); // Close modal
+    navigation.reset({
+      index: 0,
+      routes: [{name: 'Login'}],
+    });
+  };
 
   return (
     <View style={styles.headerContainer}>
@@ -45,46 +57,62 @@ const CustomHeader = ({navigation, handleLogout}) => {
         visible={modalVisible}
         onRequestClose={() => setModalVisible(false)}>
         <View style={styles.modalContainer}>
-          <TouchableOpacity
-            style={styles.modalItem}
-            onPress={() => {
-              navigation.navigate('Profile');
-              setModalVisible(false);
-            }}>
-            <Text style={styles.modalText}>Profile</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.modalItem}
-            onPress={() => {
-              navigation.navigate('LoanDetails');
-              setModalVisible(false);
-            }}>
-            <Text style={styles.modalText}>Loan Details</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.modalItem}
-            onPress={() => {
-              navigation.navigate('LoanBorrow');
-              setModalVisible(false);
-            }}>
-            <Text style={styles.modalText}>Borrow Loan</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.modalItem}
-            onPress={() => {
-              navigation.navigate('LoanRepay');
-              setModalVisible(false);
-            }}>
-            <Text style={styles.modalText}>Repay Loan</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.modalItem} onPress={handleLogout}>
-            <Text style={styles.modalText}>Logout</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.closeButton}
-            onPress={() => setModalVisible(false)}>
-            <Text style={styles.closeButtonText}>Close</Text>
-          </TouchableOpacity>
+          {/* Show Loader when Logging Out */}
+          {loadingLogout ? (
+            <View style={styles.loaderContainer}>
+              <ActivityIndicator size="large" color="#28a745" />
+              <Text style={styles.loaderText}>Logging out...</Text>
+            </View>
+          ) : (
+            <>
+              <TouchableOpacity
+                style={styles.modalItem}
+                onPress={() => {
+                  navigation.navigate('Profile');
+                  setModalVisible(false);
+                }}>
+                <Text style={styles.modalText}>Profile</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.modalItem}
+                onPress={() => {
+                  navigation.navigate('LoanDetails');
+                  setModalVisible(false);
+                }}>
+                <Text style={styles.modalText}>Loan Details</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.modalItem}
+                onPress={() => {
+                  navigation.navigate('LoanBorrow');
+                  setModalVisible(false);
+                }}>
+                <Text style={styles.modalText}>Borrow Loan</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.modalItem}
+                onPress={() => {
+                  navigation.navigate('LoanRepay');
+                  setModalVisible(false);
+                }}>
+                <Text style={styles.modalText}>Repay Loan</Text>
+              </TouchableOpacity>
+
+              {/* Logout Button with Loader */}
+              <TouchableOpacity
+                style={styles.modalItem}
+                onPress={handleLogoutPress}>
+                <Text style={styles.modalText}>Logout</Text>
+              </TouchableOpacity>
+
+              {/* Close Button */}
+              <TouchableOpacity
+                style={styles.closeButton}
+                onPress={() => setModalVisible(false)}>
+                <Text style={styles.closeButtonText}>Close</Text>
+              </TouchableOpacity>
+            </>
+          )}
         </View>
       </Modal>
     </View>
@@ -130,15 +158,12 @@ const App = () => {
     checkUserAuthentication();
   }, []);
 
-  const handleLogout = async navigation => {
-    // Call logout API or perform any other logout logic
+  const handleLogout = async () => {
+    // Call logout API
     await logoutApiCall();
 
-    // Navigate to the Login screen after logout
-    navigation.reset({
-      index: 0,
-      routes: [{name: 'Login'}],
-    });
+    // Navigate to Login screen after logout
+    setInitialRoute('Login');
   };
 
   if (loading) {
@@ -154,29 +179,26 @@ const App = () => {
       <Stack.Navigator
         initialRouteName={initialRoute}
         screenOptions={({navigation}) => ({
-          headerShown: true, // Set headerShown to true by default
+          headerShown: true, // Show header
           header: () => (
-            <CustomHeader
-              navigation={navigation}
-              handleLogout={() => handleLogout(navigation)}
-            />
-          ), // Apply CustomHeader to all screens by default
+            <CustomHeader navigation={navigation} handleLogout={handleLogout} />
+          ),
         })}>
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen
           name="Register"
           component={RegisterScreen}
-          options={{headerShown: false}} // Remove header for Register screen
+          options={{headerShown: false}}
         />
         <Stack.Screen
           name="Login"
           component={LoginScreen}
-          options={{headerShown: false}} // Remove header for Login screen
+          options={{headerShown: false}}
         />
         <Stack.Screen
           name="OTP"
           component={OTPScreen}
-          options={{headerShown: false}} // Remove header for OTP screen
+          options={{headerShown: false}}
         />
         <Stack.Screen name="KYC" component={KYCScreen} />
         <Stack.Screen name="Profile" component={ProfileScreen} />
@@ -213,6 +235,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     padding: 20,
     justifyContent: 'center',
+    // alignItems: 'center',
   },
   modalItem: {
     padding: 15,
@@ -234,6 +257,16 @@ const styles = StyleSheet.create({
   closeButtonText: {
     color: 'white',
     fontSize: 16,
+  },
+  loaderContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loaderText: {
+    fontSize: 18,
+    marginTop: 10,
+    color: '#28a745',
   },
 });
 
