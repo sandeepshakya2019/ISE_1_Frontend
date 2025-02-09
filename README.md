@@ -2,132 +2,136 @@
 
 **[Backend FinSphere](https://github.com/sandeepshakya2019/ISE_1_Backend)**
 
-**For Checking Purposes I created a  user with mobile no 9084043946 that doesn't require the OTP for this you can enter whatever you want. If you want to create a new user since we are using free services to send the OTP on mobile number this requires a pre-verification of the number (Twilio service that I am using) so from the above account you can check all the features you want**
+**For Checking Purposes I created a user with mobile no 9084043946 that doesn't require the OTP for this you can enter whatever you want. If you want to create a new user since we are using free services to send the OTP on mobile number this requires a pre-verification of the number (Twilio service that I am using) so from the above account you can check all the features you want**
 
 **APK file is also available in the root directory**
-
 
 # 0. Gameplay Video Related to FinSphere App (On Local Host)
 
 - **Login and Register (with validation)** :
-  
+
 https://github.com/user-attachments/assets/46c720c6-6832-4eb0-8087-cfaf6f39db70
 
 https://github.com/user-attachments/assets/d639d6b6-674f-409a-807f-b3e61d30b369
 
-
-
 - **KYC Submission (with validation)** :
-
-
 
 https://github.com/user-attachments/assets/d6e6a811-46dd-4aa6-bcda-9c09efd6dd86
 
-
-- **Profile View, Borrow a Loan, Repay a Loan** :
+- **Borrow a Loan, Repay a Loan** :
 
 https://github.com/user-attachments/assets/f8551918-a544-4ef7-bb84-de72d516948e
 
+- **User Profiles (Contains KYC, Loans and User Info)** :
+
+- **Govt Schemes Page & Docs Related to the App** :
+
 # 1. Introduction
-* App Name: **FinSphere**
-* Version: **Beta**
-* Author/Team: **Sandeep Kumar, Ashant Kumar, Abhishek Kumar**
-* Submission Date: **30/01/2025**
-* Purpose: **Objective To develop a mobile application that addresses financial inclusion by providing access to essential financial services like savings, loans, and insurance to underbanked and underserved populations. The app leverages mobile banking, microfinance, and fintech innovations to create an easy-to-use, accessible platform.**
+
+- App Name: **FinSphere**
+- Version: **Beta**
+- Author/Team: **Sandeep Kumar, Ashant Kumar, Abhishek Kumar**
+- Submission Date: **30/01/2025**
+- Purpose: **Objective To develop a mobile application that addresses financial inclusion by providing access to essential financial services like savings, loans, and insurance to underbanked and underserved populations. The app leverages mobile banking, microfinance, and fintech innovations to create an easy-to-use, accessible platform.**
 
 # 2. Features
 
-## 2.1 Proposed Features 
+## 2.1 Proposed Features
 
 ### 2.1.1 User Authentication
+
 Description: Provides secure access control for users through Register, Login, and Logout functionalities.
 Proposed Implementation:
 
-* Use JWT (JSON Web Token) for stateless authentication.
-* Store tokens using AsyncStorage for session persistence.
-* Integrate Redux (or similar state management) to track user sessions(future Implementation)
+- Use JWT (JSON Web Token) for stateless authentication.
+- Store tokens using AsyncStorage for session persistence.
+- Integrate Redux (or similar state management) to track user sessions(future Implementation)
 
-### 2.1.2 e-KYC 
+### 2.1.2 e-KYC
+
 Description: Allows users to upload photos for identity verification or loan applications in real time.
 Proposed Implementation:
 
 Frontend:
-* Real-time photo capture using device camera API.
-* Option to upload existing images from the device gallery.
-* Authentication of e-KYC Data such as Aadhar ID, Bank etc.
+
+- Real-time photo capture using device camera API.
+- Option to upload existing images from the device gallery.
+- Authentication of e-KYC Data such as Aadhar ID, Bank etc.
 
 Backend:
 
-* Use Multer middleware to handle file uploads.
-* Store images in Cloudinary, ensuring optimized delivery and transformation.
+- Use Multer middleware to handle file uploads.
+- Store images in Cloudinary, ensuring optimized delivery and transformation.
 
 ### 2.1.3 User Profile Management
+
 Description: Displays user-specific details, including personal information and loan history.
 
 Proposed Implementation:
 
-* Dedicated backend route to fetch and update user profiles.
-* Display: Name, email, and demographic details.
-* Active and past loans.
+- Dedicated backend route to fetch and update user profiles.
+- Display: Name, email, and demographic details.
+- Active and past loans.
 
 ### 2.1.4 Loan Management
+
 Take a Loan
 
-Description: 
+Description:
 
 Users can apply for loans by specifying the amount and reason.
 
 Proposed Implementation:
 
-* Input form to collect loan details (amount and purpose).
-* API call to backend for loan application with user authentication (via JWT).
-* Response includes loan status, approval, and repayment schedule.
+- Input form to collect loan details (amount and purpose).
+- API call to backend for loan application with user authentication (via JWT).
+- Response includes loan status, approval, and repayment schedule.
 
 Repay a Loan
 
-Description: 
+Description:
 
 Users can select from their active loans and repay them partially or in full.
 
 Proposed Implementation:
 
-* Fetch active loans via API.
-* UI/UX feature to select a loan, specify repayment amount, and confirm the transaction.
-* Maintain transaction logs for repayment history.
+- Fetch active loans via API.
+- UI/UX feature to select a loan, specify repayment amount, and confirm the transaction.
+- Maintain transaction logs for repayment history.
 
 ### 2.1.5 Notifications
 
-Description: 
+Description:
 
 Notify users about loan repayment deadlines, application status, or profile changes.
 
 Proposed Implementation:
 
-* Push notifications using Firebase Cloud Messaging (FCM).
-* Customizable reminders for payment deadlines.
+- Push notifications using Firebase Cloud Messaging (FCM).
+- Customizable reminders for payment deadlines.
 
 ### 2.1.6 Financial Literacy Resources
 
-Description: 
+Description:
 
 Educate users about loans, savings, and financial planning.
 
 Proposed Implementation:
 
-* Interactive modules for financial literacy (e.g., videos, quizzes).
-* Progress tracking to reward users for completed lessons.
+- Interactive modules for financial literacy (e.g., videos, quizzes).
+- Progress tracking to reward users for completed lessons.
 
 ### 2.1.7 Data Fetching with Axios
 
-Description: 
+Description:
 
 Establish reliable communication between frontend and backend.
 
 Proposed Implementation:
 
-* Standardized Axios instances with base URLs and JWT authorization headers.
-* Graceful error handling for API calls, including retry mechanisms.
-* Use interceptors to include JWT automatically in requests.
+- Standardized Axios instances with base URLs and JWT authorization headers.
+- Graceful error handling for API calls, including retry mechanisms.
+- Use interceptors to include JWT automatically in requests.
 
 ### 2.1.8 More Enhancements
 
@@ -137,20 +141,20 @@ For seamless repayment of loans via Stripe, Razorpay, or PayPal.
 
 AI-Based Recommendations:
 
-* Detect Below Poverty Level People's finance based on user behavior, history and some other data.
+- Detect Below Poverty Level People's finance based on user behavior, history and some other data.
 
 Offline Support:
 
-* Enable basic functionalities like viewing profiles or logging past transactions offline.
+- Enable basic functionalities like viewing profiles or logging past transactions offline.
 
 Accessibility Features:
 
-* Multilingual support, text-to-speech, and high-contrast UI for inclusivity.
-
+- Multilingual support, text-to-speech, and high-contrast UI for inclusivity.
 
 ## 2.2 Implemented Features
 
 ### 2.2.1 User Authentication (Register, Login, Logout)
+
 Description: Secure user authentication system using JWT.
 
 Implementation: Use JSON Web Token (JWT) for stateless user authentication.
@@ -163,9 +167,10 @@ Logout functionality (invalidate token and clear AsyncStorage).
 Add auto-login functionality on app restart if a valid JWT exists in AsyncStorage.
 
 ### 2.2.2 Uploading a Photo
+
 Description: Allow users to upload real-time photos for verification or loan application.
 
-Implementation: 
+Implementation:
 
 Frontend:
 Use the device camera for clicking photos in real-time.
@@ -178,6 +183,7 @@ Viewing uploaded photos directly in the app via Cloudinary CDN URLs.
 Photo optimization for fast upload and reduced data usage.
 
 ### 2.2.3 Profile Management
+
 Description: Users can view a dedicated profile page showing their details and loan information.
 
 Implementation:
@@ -190,6 +196,7 @@ Display loan-related information using dynamic lists.
 Include an option for profile photo updates, utilizing the upload photo feature.
 
 ### 2.2.4 Take a Loan
+
 Description: Enable users to apply for loans by entering the amount and purpose.
 
 Implementation:
@@ -203,6 +210,7 @@ Form with validation for entering loan details.
 Status page showing approval pending/completed loans.
 
 ### 2.2.5 Repay a Loan
+
 Description: Allow users to repay selected loans with payment integration in future versions.
 
 Implementation:
@@ -217,6 +225,7 @@ Future Scope:
 Integrate payment gateways like Razorpay, Stripe, or PayPal for seamless repayments.
 
 ### 2.2.6 Data Fetching and Backend Communication with Axios
+
 Description: Ensure seamless data communication between frontend and backend using Axios.
 
 Implementation:
@@ -230,15 +239,13 @@ Automatically attach the JWT from AsyncStorage to every API call.
 
 ## 2.3 Future Implementation
 
-*  **2.3.1 Loan Recommendations**
-* **2.3.2 Financial Planning Tools**
-* **2.3.3 Push Notifications**
-*  **2.3.4 Payment Integration**
-* **2.3.5 Real Time e-KYC Authentication**
-* **2.3.6 Multilingual support**
-* **2.3.7 AI based Recommendations System**
-
-
+- **2.3.1 Loan Recommendations**
+- **2.3.2 Financial Planning Tools**
+- **2.3.3 Push Notifications**
+- **2.3.4 Payment Integration**
+- **2.3.5 Real Time e-KYC Authentication**
+- **2.3.6 Multilingual support**
+- **2.3.7 AI based Recommendations System**
 
 This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
 
@@ -319,26 +326,15 @@ You've successfully run the React Native App.
 
 # 4. Project Details
 
-
 ## 4.1 Libraries used :
 
 - Axios `axios` : is a popular JavaScript library used to make HTTP requests from Node.js or the browser. It provides a simple and intuitive API for interacting with RESTful APIs, handling errors, and working with promises or async/await.
 
 - React `react` : it is used in react-native by default we have used `useState` and `useEffect` Hooks
-  
 - React Native Gesture handler `react-native-gesture-handler`: is a popular library in the React Native ecosystem used to handle touch gestures and interactions in a performant and customizable way
-  
 - React Native Image Picker `react-native-image-picker` : is a popular library for React Native that allows users to pick images and videos from their device's camera or gallery
-  
 - React Native Reanimated `react-native-reanimated` : is a library for handling animations in React Native. It provides a highly performant and declarative API to create complex animations that run directly on the native thread.
-  
 - React Native Toast Message `react-native-toast-message` : is a lightweight and customizable library for displaying toast notifications in React Native applications. It allows you to show short, informative messages like success, error, or info alerts visually appealingly.
-
-
-# 6. Convert the react-native app to an APK file
-
-* To convert the react-native app to APK [Check the Docs Here](https://docs.google.com/document/d/1B396y5cUknAeaZ7cdn4GLD83yLyCMGuOIIi6ukGC730/edit?usp=sharing)
-
 
 # 7. Authors
 
