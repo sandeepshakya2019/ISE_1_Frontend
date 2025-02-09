@@ -10,7 +10,6 @@ import {
 } from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
-import {apiCallWithHeader} from './src/utils/api';
 
 import LoginScreen from './src/screens/LoginScreen';
 import OTPScreen from './src/screens/OTPScreen';
@@ -22,7 +21,10 @@ import PaymentGatewayScreen from './src/screens/PaymentGatewayScreen';
 import RegisterScreen from './src/screens/RegisterScreen';
 import HomeScreen from './src/screens/HomeScreen';
 import ProfileScreen from './src/screens/ProfileScreen';
+import DocumentScreen from './src/screens/DocumentScreen'; // Import DocumentScreen
+import {apiCallWithHeader} from './src/utils/api';
 import {logoutApiCall} from './src/utils/logout';
+import GovtSchemeScreen from './src/screens/GovtSchemeScreen';
 
 const Stack = createStackNavigator();
 
@@ -96,6 +98,26 @@ const CustomHeader = ({navigation, handleLogout}) => {
                   setModalVisible(false);
                 }}>
                 <Text style={styles.modalText}>Repay Loan</Text>
+              </TouchableOpacity>
+
+              {/* New Document Screen in Modal */}
+              <TouchableOpacity
+                style={styles.modalItem}
+                onPress={() => {
+                  navigation.navigate('Document');
+                  setModalVisible(false);
+                }}>
+                <Text style={styles.modalText}>Documents</Text>
+              </TouchableOpacity>
+
+              {/* New Document Screen in Modal */}
+              <TouchableOpacity
+                style={styles.modalItem}
+                onPress={() => {
+                  navigation.navigate('GovtSchemeScreen');
+                  setModalVisible(false);
+                }}>
+                <Text style={styles.modalText}>Govt Schemes</Text>
               </TouchableOpacity>
 
               {/* Logout Button with Loader */}
@@ -206,6 +228,8 @@ const App = () => {
         <Stack.Screen name="LoanBorrow" component={LoanBorrowScreen} />
         <Stack.Screen name="LoanRepay" component={LoanRepayScreen} />
         <Stack.Screen name="PaymentGateway" component={PaymentGatewayScreen} />
+        <Stack.Screen name="Document" component={DocumentScreen} />
+        <Stack.Screen name="GovtSchemeScreen" component={GovtSchemeScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
@@ -235,7 +259,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     padding: 20,
     justifyContent: 'center',
-    // alignItems: 'center',
   },
   modalItem: {
     padding: 15,
