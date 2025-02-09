@@ -40,8 +40,8 @@ const KYCScreen: React.FC<Props> = ({navigation}) => {
     'Already Wriiten Some address you dont need to enter details all details are already filled capture the photo thats it',
   );
   const [aadhar, setAadhar] = useState('895623568956');
-  const [bankAccount, setBankAccount] = useState('70060052563');
-  const [ifsc, setIfsc] = useState('sbi0000562');
+  const [bankAccount, setBankAccount] = useState('8965235689562');
+  const [ifsc, setIfsc] = useState('sbin0000562');
   const [errors, setErrors] = useState({
     fullName: false,
     mobileNumber: false,

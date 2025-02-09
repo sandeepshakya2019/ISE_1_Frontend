@@ -222,7 +222,11 @@ const App = () => {
           component={OTPScreen}
           options={{headerShown: false}}
         />
-        <Stack.Screen name="KYC" component={KYCScreen} />
+        <Stack.Screen
+          name="KYC"
+          component={KYCScreen}
+          options={{headerShown: false}}
+        />
         <Stack.Screen name="Profile" component={ProfileScreen} />
         <Stack.Screen name="LoanDetails" component={LoanDetailsScreen} />
         <Stack.Screen name="LoanBorrow" component={LoanBorrowScreen} />
