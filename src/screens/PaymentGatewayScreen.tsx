@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   Alert,
   View,
@@ -6,16 +6,56 @@ import {
   StyleSheet,
   TouchableOpacity,
   Image,
+  BackHandler,
 } from 'react-native';
 import Toast from 'react-native-toast-message';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {api} from '../utils/api';
+import {useFocusEffect} from '@react-navigation/native';
 
 const PaymentGatewayScreen = ({route, navigation}) => {
   const {loan} = route.params;
   const [loading, setLoading] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState(null); // Store selected payment method
+  const [timer, setTimer] = useState(30); // Timer for payment method (30 seconds)
+  const [intervalId, setIntervalId] = useState(null); // Store the interval ID
 
-  const payment = async paymentMethod => {
+  useEffect(() => {
+    if (paymentMethod && timer > 0) {
+      const id = setInterval(() => {
+        setTimer(prevTimer => prevTimer - 1);
+      }, 1000);
+      setIntervalId(id); // Save the interval ID to clear it later
+    } else if (timer === 0) {
+      // Trigger the payment success after timer hits 0
+      handlePaymentSuccess(paymentMethod);
+      clearInterval(intervalId); // Stop the timer
+    }
+
+    // Cleanup function to clear the interval when the component unmounts or when the screen changes
+    return () => {
+      if (intervalId) {
+        clearInterval(intervalId);
+      }
+    };
+  }, [paymentMethod, timer]);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      const onBackPress = () => {
+        // Prevent going back when on this screen
+        return true;
+      };
+
+      BackHandler.addEventListener('hardwareBackPress', onBackPress);
+
+      return () => {
+        BackHandler.removeEventListener('hardwareBackPress', onBackPress);
+      };
+    }, []),
+  );
+
+  const handlePaymentSuccess = async method => {
     try {
       setLoading(true);
       const token = await AsyncStorage.getItem('authToken');
@@ -33,7 +73,7 @@ const PaymentGatewayScreen = ({route, navigation}) => {
         '/loan/repay',
         {
           loanId: loan._id,
-          paymentMethod, // Pass the selected payment method
+          paymentMethod: method, // Send the selected payment method
         },
         {headers: {Authorization: `Bearer ${token}`}},
       );
@@ -45,15 +85,11 @@ const PaymentGatewayScreen = ({route, navigation}) => {
           [{text: 'OK'}],
           {cancelable: false},
         );
-
-        // Navigate to Loan Details page after successful repayment
         navigation.navigate('LoanDetails');
-
-        // Optionally, update loans list or other state as needed
       } else {
         throw new Error(response?.data?.message || 'Payment failed.');
       }
-    } catch (error: any) {
+    } catch (error) {
       console.error('Error during payment:', error.response || error.message);
       Toast.show({
         type: 'error',
@@ -66,19 +102,22 @@ const PaymentGatewayScreen = ({route, navigation}) => {
     }
   };
 
-  const handleGooglePay = () => {
-    // Alert.alert('Processing', 'Redirecting to Google Pay...');
-    payment('googlePay');
+  const handlePaymentOption = method => {
+    setPaymentMethod(method);
+    setTimer(30); // Reset the timer for the selected payment method
   };
 
-  const handleCardPayment = () => {
-    // Alert.alert('Processing', 'Proceeding to Card Payment...');
-    payment('card');
-  };
-
-  const handleQRCodePayment = () => {
-    // Alert.alert('Processing', 'Displaying QR Code...');
-    payment('qrCode');
+  const getPaymentImage = () => {
+    switch (paymentMethod) {
+      case 'qrcode':
+        return 'https://dummyimage.com/200x200/000/fff&text=QR+Code';
+      case 'googlePay':
+        return 'https://dummyimage.com/200x200/000/fff&text=Google+Pay';
+      case 'card':
+        return 'https://dummyimage.com/200x200/000/fff&text=Card';
+      default:
+        return 'https://dummyimage.com/200x200/000/fff&text=Payment';
+    }
   };
 
   return (
@@ -89,47 +128,75 @@ const PaymentGatewayScreen = ({route, navigation}) => {
         <Text style={styles.amount}>₹ {loan?.totalLoanAmount}</Text>
       </Text>
 
-      {/* QR Code Payment Option */}
-      <View style={styles.cardContainer}>
-        <TouchableOpacity
-          style={styles.paymentOption}
-          onPress={handleQRCodePayment}
-          disabled={loading}>
+      {paymentMethod ? (
+        <View style={styles.cardContainer}>
+          <Text style={styles.qrText}>
+            {paymentMethod === 'qrcode'
+              ? 'Scan this QR code to complete the payment'
+              : `Please complete payment via ${
+                  paymentMethod.charAt(0).toUpperCase() + paymentMethod.slice(1)
+                }`}
+          </Text>
+          <Text>Payment will be completed automatically (Sit back relax).</Text>
           <Image
-            source={{uri: 'https://dummyimage.com/100x100/000/fff&text=QR'}}
-            style={styles.image}
+            source={{
+              uri: getPaymentImage(),
+            }}
+            style={styles.qrImage}
           />
-          <Text style={styles.optionText}>Pay with QR Code</Text>
-        </TouchableOpacity>
-      </View>
+          <Text style={styles.timerText}>{timer}s</Text>
+        </View>
+      ) : (
+        <>
+          {/* QR Code Payment Option */}
+          <View style={styles.cardContainer}>
+            <TouchableOpacity
+              style={styles.paymentOption}
+              onPress={() => handlePaymentOption('qrcode')}
+              disabled={loading}>
+              <Image
+                source={{
+                  uri: 'https://dummyimage.com/100x100/000/fff&text=QR',
+                }}
+                style={styles.image}
+              />
+              <Text style={styles.optionText}>Pay with QR Code</Text>
+            </TouchableOpacity>
+          </View>
 
-      {/* Card Payment Option */}
-      <View style={styles.cardContainer}>
-        <TouchableOpacity
-          style={styles.paymentOption}
-          onPress={handleCardPayment}
-          disabled={loading}>
-          <Image
-            source={{uri: 'https://dummyimage.com/100x100/000/fff&text=Card'}}
-            style={styles.image}
-          />
-          <Text style={styles.optionText}>Pay with Card</Text>
-        </TouchableOpacity>
-      </View>
+          {/* Card Payment Option */}
+          <View style={styles.cardContainer}>
+            <TouchableOpacity
+              style={styles.paymentOption}
+              onPress={() => handlePaymentOption('card')}
+              disabled={loading}>
+              <Image
+                source={{
+                  uri: 'https://dummyimage.com/100x100/000/fff&text=Card',
+                }}
+                style={styles.image}
+              />
+              <Text style={styles.optionText}>Pay with Card</Text>
+            </TouchableOpacity>
+          </View>
 
-      {/* Google Pay Payment Option */}
-      <View style={styles.cardContainer}>
-        <TouchableOpacity
-          style={styles.paymentOption}
-          onPress={handleGooglePay}
-          disabled={loading}>
-          <Image
-            source={{uri: 'https://dummyimage.com/100x100/000/fff&text=GPay'}}
-            style={styles.image}
-          />
-          <Text style={styles.optionText}>Pay with Google Pay</Text>
-        </TouchableOpacity>
-      </View>
+          {/* Google Pay Payment Option */}
+          <View style={styles.cardContainer}>
+            <TouchableOpacity
+              style={styles.paymentOption}
+              onPress={() => handlePaymentOption('googlePay')}
+              disabled={loading}>
+              <Image
+                source={{
+                  uri: 'https://dummyimage.com/100x100/000/fff&text=GPay',
+                }}
+                style={styles.image}
+              />
+              <Text style={styles.optionText}>Pay with Google Pay</Text>
+            </TouchableOpacity>
+          </View>
+        </>
+      )}
     </View>
   );
 };
@@ -142,22 +209,23 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: '#f8f9fa',
   },
-  title: {fontSize: 24, fontWeight: 'bold', marginBottom: 20, color: '#333'},
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 20,
+    color: '#333',
+  },
   amount: {
     fontSize: 18,
     marginBottom: 20,
-    color: '#fff', // White text color for contrast
-    backgroundColor: '#00796b', // Chip background color (you can adjust this)
+    color: '#fff',
+    backgroundColor: '#00796b',
     fontWeight: 'bold',
-    paddingVertical: 8, // Vertical padding for chip height
-    paddingHorizontal: 20, // Horizontal padding for chip width
-    borderRadius: 25, // Rounded corners for the chip
-    textAlign: 'center', // Center the text inside the chip
-    elevation: 3, // Shadow for Android
-    shadowColor: '#000', // Shadow color for iOS
-    shadowOpacity: 0.2,
-    shadowRadius: 3,
-    shadowOffset: {width: 0, height: 2}, // Shadow offset for iOS
+    paddingVertical: 8,
+    paddingHorizontal: 20,
+    borderRadius: 25,
+    textAlign: 'center',
+    elevation: 3,
   },
   cardContainer: {
     backgroundColor: '#fff',
@@ -170,21 +238,37 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     width: '90%',
   },
-  paymentOption: {flexDirection: 'row', alignItems: 'center', padding: 10},
-  image: {width: 50, height: 50, marginRight: 15, borderRadius: 8},
-  optionText: {fontSize: 16, fontWeight: 'bold', color: '#333'},
-  button: {
-    backgroundColor: '#FFD700',
-    padding: 10,
-    borderRadius: 10,
+  paymentOption: {
+    flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: 20,
-    width: '90%',
+    padding: 10,
   },
-  buttonText: {color: '#fff', fontSize: 16, fontWeight: 'bold'},
-  disabledButton: {
-    backgroundColor: '#e0e0e0',
+  image: {
+    width: 50,
+    height: 50,
+    marginRight: 15,
+    borderRadius: 8,
+  },
+  optionText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#333',
+  },
+  qrText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 10,
+  },
+  qrImage: {
+    width: 200,
+    height: 200,
+    marginBottom: 15,
+  },
+  timerText: {
+    fontSize: 16,
+    textAlign: 'center',
+    marginBottom: 10,
   },
 });
 
