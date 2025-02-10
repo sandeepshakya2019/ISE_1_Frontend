@@ -49,10 +49,14 @@ const PaymentGatewayScreen = ({route, navigation}) => {
 
       BackHandler.addEventListener('hardwareBackPress', onBackPress);
 
+      // Stop timer and clean up when user leaves the screen or app
       return () => {
+        if (intervalId) {
+          clearInterval(intervalId); // Stop the interval
+        }
         BackHandler.removeEventListener('hardwareBackPress', onBackPress);
       };
-    }, []),
+    }, [intervalId]),
   );
 
   const handlePaymentSuccess = async method => {
@@ -138,12 +142,14 @@ const PaymentGatewayScreen = ({route, navigation}) => {
                 }`}
           </Text>
           <Text>Payment will be completed automatically (Sit back relax).</Text>
-          <Image
-            source={{
-              uri: getPaymentImage(),
-            }}
-            style={styles.qrImage}
-          />
+          <View style={styles.centeredImageContainer}>
+            <Image
+              source={{
+                uri: getPaymentImage(),
+              }}
+              style={styles.qrImage}
+            />
+          </View>
           <Text style={styles.timerText}>{timer}s</Text>
         </View>
       ) : (
@@ -264,6 +270,11 @@ const styles = StyleSheet.create({
     width: 200,
     height: 200,
     marginBottom: 15,
+  },
+  centeredImageContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginVertical: 20,
   },
   timerText: {
     fontSize: 16,

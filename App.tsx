@@ -243,7 +243,11 @@ const App = () => {
         <Stack.Screen name="LoanDetails" component={LoanDetailsScreen} />
         <Stack.Screen name="LoanBorrow" component={LoanBorrowScreen} />
         <Stack.Screen name="LoanRepay" component={LoanRepayScreen} />
-        <Stack.Screen name="PaymentGateway" component={PaymentGatewayScreen} />
+        <Stack.Screen
+          name="PaymentGateway"
+          component={PaymentGatewayScreen}
+          options={{headerShown: false}}
+        />
         <Stack.Screen name="Document" component={DocumentScreen} />
         <Stack.Screen name="GovtSchemeScreen" component={GovtSchemeScreen} />
       </Stack.Navigator>
