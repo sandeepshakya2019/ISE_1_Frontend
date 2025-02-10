@@ -129,7 +129,10 @@ const GovtSchemeScreen = () => {
         Page {currentPage} of {totalPages}
       </Text>
 
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
+      <ScrollView
+        contentContainerStyle={styles.scrollContainer}
+        showsVerticalScrollIndicator={false} // Hide the scroll bar
+      >
         {paginatedSchemes.map((scheme, index) => (
           <View key={index} style={styles.schemeContainer}>
             <Text style={styles.schemeName}>{scheme.name}</Text>
@@ -175,7 +178,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#f4f4f4',
   },
   title: {
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: 'bold',
     marginBottom: 10,
   },
@@ -191,27 +194,27 @@ const styles = StyleSheet.create({
     margin: 5,
   },
   scrollContainer: {
-    paddingBottom: 20,
-    padding: 10,
+    paddingBottom: 30, // Extra padding for smooth scrolling
+    paddingHorizontal: 10,
   },
   schemeContainer: {
-    marginBottom: 20,
+    marginBottom: 15,
     backgroundColor: '#ffffff',
     padding: 15,
     borderRadius: 8,
-    elevation: 3,
+    elevation: 2, // Reduced shadow effect for subtle styling
   },
   schemeName: {
-    fontSize: 18,
+    fontSize: 17,
     fontWeight: 'bold',
     marginBottom: 10,
   },
   schemeDescription: {
-    fontSize: 16,
+    fontSize: 15,
     marginBottom: 10,
   },
   linkButton: {
-    padding: 5,
+    padding: 8,
     backgroundColor: '#28a745',
     borderRadius: 5,
     alignItems: 'center',
@@ -226,7 +229,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   pageButton: {
-    padding: 5,
+    padding: 8,
     backgroundColor: '#FF9800',
     borderRadius: 5,
     alignItems: 'center',
