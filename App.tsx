@@ -21,7 +21,7 @@ import PaymentGatewayScreen from './src/screens/PaymentGatewayScreen';
 import RegisterScreen from './src/screens/RegisterScreen';
 import HomeScreen from './src/screens/HomeScreen';
 import ProfileScreen from './src/screens/ProfileScreen';
-import DocumentScreen from './src/screens/DocumentScreen'; // Import DocumentScreen
+import DocumentScreen from './src/screens/DocumentScreen';
 import {apiCallWithHeader} from './src/utils/api';
 import {logoutApiCall} from './src/utils/logout';
 import GovtSchemeScreen from './src/screens/GovtSchemeScreen';
@@ -30,13 +30,17 @@ const Stack = createStackNavigator();
 
 const CustomHeader = ({navigation, handleLogout}) => {
   const [modalVisible, setModalVisible] = useState(false);
-  const [loadingLogout, setLoadingLogout] = useState(false); // Loader state
+  const [loadingLogout, setLoadingLogout] = useState(false);
+
+  // Get the current active screen
+  const routeName =
+    navigation.getState()?.routes?.[navigation.getState().index]?.name;
 
   const handleLogoutPress = async () => {
-    setLoadingLogout(true); // Show loader
-    await handleLogout(); // Perform logout
-    setLoadingLogout(false); // Hide loader
-    setModalVisible(false); // Close modal
+    setLoadingLogout(true);
+    await handleLogout();
+    setLoadingLogout(false);
+    setModalVisible(false);
     navigation.reset({
       index: 0,
       routes: [{name: 'Login'}],
@@ -45,21 +49,18 @@ const CustomHeader = ({navigation, handleLogout}) => {
 
   return (
     <View style={styles.headerContainer}>
-      {/* Breadcrumb Button */}
       <TouchableOpacity
         onPress={() => setModalVisible(true)}
         style={styles.breadcrumbButton}>
         <Text style={styles.breadcrumbText}>☰</Text>
       </TouchableOpacity>
 
-      {/* Navigation Modal */}
       <Modal
         animationType="slide"
         transparent={true}
         visible={modalVisible}
         onRequestClose={() => setModalVisible(false)}>
         <View style={styles.modalContainer}>
-          {/* Show Loader when Logging Out */}
           {loadingLogout ? (
             <View style={styles.loaderContainer}>
               <ActivityIndicator size="large" color="#28a745" />
@@ -68,7 +69,10 @@ const CustomHeader = ({navigation, handleLogout}) => {
           ) : (
             <>
               <TouchableOpacity
-                style={styles.modalItem}
+                style={[
+                  styles.modalItem,
+                  routeName === 'Profile' && styles.activeItem,
+                ]}
                 onPress={() => {
                   navigation.navigate('Profile');
                   setModalVisible(false);
@@ -76,7 +80,10 @@ const CustomHeader = ({navigation, handleLogout}) => {
                 <Text style={styles.modalText}>Profile</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                style={styles.modalItem}
+                style={[
+                  styles.modalItem,
+                  routeName === 'LoanDetails' && styles.activeItem,
+                ]}
                 onPress={() => {
                   navigation.navigate('LoanDetails');
                   setModalVisible(false);
@@ -84,7 +91,10 @@ const CustomHeader = ({navigation, handleLogout}) => {
                 <Text style={styles.modalText}>Loan Details</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                style={styles.modalItem}
+                style={[
+                  styles.modalItem,
+                  routeName === 'LoanBorrow' && styles.activeItem,
+                ]}
                 onPress={() => {
                   navigation.navigate('LoanBorrow');
                   setModalVisible(false);
@@ -92,7 +102,10 @@ const CustomHeader = ({navigation, handleLogout}) => {
                 <Text style={styles.modalText}>Borrow Loan</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                style={styles.modalItem}
+                style={[
+                  styles.modalItem,
+                  routeName === 'LoanRepay' && styles.activeItem,
+                ]}
                 onPress={() => {
                   navigation.navigate('LoanRepay');
                   setModalVisible(false);
@@ -100,9 +113,11 @@ const CustomHeader = ({navigation, handleLogout}) => {
                 <Text style={styles.modalText}>Repay Loan</Text>
               </TouchableOpacity>
 
-              {/* New Document Screen in Modal */}
               <TouchableOpacity
-                style={styles.modalItem}
+                style={[
+                  styles.modalItem,
+                  routeName === 'Document' && styles.activeItem,
+                ]}
                 onPress={() => {
                   navigation.navigate('Document');
                   setModalVisible(false);
@@ -110,9 +125,11 @@ const CustomHeader = ({navigation, handleLogout}) => {
                 <Text style={styles.modalText}>Documents</Text>
               </TouchableOpacity>
 
-              {/* New Document Screen in Modal */}
               <TouchableOpacity
-                style={styles.modalItem}
+                style={[
+                  styles.modalItem,
+                  routeName === 'GovtSchemeScreen' && styles.activeItem,
+                ]}
                 onPress={() => {
                   navigation.navigate('GovtSchemeScreen');
                   setModalVisible(false);
@@ -120,14 +137,12 @@ const CustomHeader = ({navigation, handleLogout}) => {
                 <Text style={styles.modalText}>Govt Schemes</Text>
               </TouchableOpacity>
 
-              {/* Logout Button with Loader */}
               <TouchableOpacity
                 style={styles.modalItem}
                 onPress={handleLogoutPress}>
                 <Text style={styles.modalText}>Logout</Text>
               </TouchableOpacity>
 
-              {/* Close Button */}
               <TouchableOpacity
                 style={styles.closeButton}
                 onPress={() => setModalVisible(false)}>
@@ -181,10 +196,7 @@ const App = () => {
   }, []);
 
   const handleLogout = async () => {
-    // Call logout API
     await logoutApiCall();
-
-    // Navigate to Login screen after logout
     setInitialRoute('Login');
   };
 
@@ -201,7 +213,7 @@ const App = () => {
       <Stack.Navigator
         initialRouteName={initialRoute}
         screenOptions={({navigation}) => ({
-          headerShown: true, // Show header
+          headerShown: true,
           header: () => (
             <CustomHeader navigation={navigation} handleLogout={handleLogout} />
           ),
@@ -269,6 +281,9 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#ccc',
   },
+  activeItem: {
+    backgroundColor: '#28a745',
+  },
   modalText: {
     fontSize: 18,
   },
@@ -284,16 +299,6 @@ const styles = StyleSheet.create({
   closeButtonText: {
     color: 'white',
     fontSize: 16,
-  },
-  loaderContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  loaderText: {
-    fontSize: 18,
-    marginTop: 10,
-    color: '#28a745',
   },
 });
 
