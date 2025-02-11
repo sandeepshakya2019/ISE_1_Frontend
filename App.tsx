@@ -81,10 +81,7 @@ const CustomHeader = ({navigation, handleLogout}) => {
                 {transform: [{translateX: slideAnim}]},
               ]}>
               {loadingLogout ? (
-                <View style={styles.loaderContainer}>
-                  <ActivityIndicator size="large" color="#28a745" />
-                  <Text style={styles.loaderText}>Logging out...</Text>
-                </View>
+                <ActivityIndicator size="large" color="#28a745" />
               ) : (
                 <>
                   <TouchableOpacity
