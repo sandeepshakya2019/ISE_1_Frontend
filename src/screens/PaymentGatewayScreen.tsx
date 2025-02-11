@@ -17,7 +17,7 @@ const PaymentGatewayScreen = ({route, navigation}) => {
   const {loan} = route.params;
   const [loading, setLoading] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState(null); // Store selected payment method
-  const [timer, setTimer] = useState(30); // Timer for payment method (30 seconds)
+  const [timer, setTimer] = useState(10); // Timer changed to 10 seconds
   const [intervalId, setIntervalId] = useState(null); // Store the interval ID
 
   useEffect(() => {
@@ -32,7 +32,6 @@ const PaymentGatewayScreen = ({route, navigation}) => {
       clearInterval(intervalId); // Stop the timer
     }
 
-    // Cleanup function to clear the interval when the component unmounts or when the screen changes
     return () => {
       if (intervalId) {
         clearInterval(intervalId);
@@ -42,17 +41,12 @@ const PaymentGatewayScreen = ({route, navigation}) => {
 
   useFocusEffect(
     React.useCallback(() => {
-      const onBackPress = () => {
-        // Prevent going back when on this screen
-        return true;
-      };
-
+      const onBackPress = () => true; // Prevent going back
       BackHandler.addEventListener('hardwareBackPress', onBackPress);
 
-      // Stop timer and clean up when user leaves the screen or app
       return () => {
         if (intervalId) {
-          clearInterval(intervalId); // Stop the interval
+          clearInterval(intervalId);
         }
         BackHandler.removeEventListener('hardwareBackPress', onBackPress);
       };
@@ -75,10 +69,7 @@ const PaymentGatewayScreen = ({route, navigation}) => {
 
       const response = await api.post(
         '/loan/repay',
-        {
-          loanId: loan._id,
-          paymentMethod: method, // Send the selected payment method
-        },
+        {loanId: loan._id, paymentMethod: method},
         {headers: {Authorization: `Bearer ${token}`}},
       );
 
@@ -94,7 +85,6 @@ const PaymentGatewayScreen = ({route, navigation}) => {
         throw new Error(response?.data?.message || 'Payment failed.');
       }
     } catch (error) {
-      console.error('Error during payment:', error.response || error.message);
       Toast.show({
         type: 'error',
         text1: 'Payment Error',
@@ -108,7 +98,7 @@ const PaymentGatewayScreen = ({route, navigation}) => {
 
   const handlePaymentOption = method => {
     setPaymentMethod(method);
-    setTimer(30); // Reset the timer for the selected payment method
+    setTimer(10); // Reset the timer for the selected payment method
   };
 
   const getPaymentImage = () => {
@@ -141,36 +131,30 @@ const PaymentGatewayScreen = ({route, navigation}) => {
                   paymentMethod.charAt(0).toUpperCase() + paymentMethod.slice(1)
                 }`}
           </Text>
-          <Text>Payment will be completed automatically (Sit back relax).</Text>
+          <Text>
+            Payment will be completed automatically (Sit back relax) Later we
+            can change it with some payment api such as stripe.
+          </Text>
           <View style={styles.centeredImageContainer}>
-            <Image
-              source={{
-                uri: getPaymentImage(),
-              }}
-              style={styles.qrImage}
-            />
+            <Image source={{uri: getPaymentImage()}} style={styles.qrImage} />
           </View>
           <Text style={styles.timerText}>{timer}s</Text>
         </View>
       ) : (
         <>
-          {/* QR Code Payment Option */}
           <View style={styles.cardContainer}>
             <TouchableOpacity
               style={styles.paymentOption}
               onPress={() => handlePaymentOption('qrcode')}
               disabled={loading}>
               <Image
-                source={{
-                  uri: 'https://dummyimage.com/100x100/000/fff&text=QR',
-                }}
+                source={{uri: 'https://dummyimage.com/100x100/000/fff&text=QR'}}
                 style={styles.image}
               />
               <Text style={styles.optionText}>Pay with QR Code</Text>
             </TouchableOpacity>
           </View>
 
-          {/* Card Payment Option */}
           <View style={styles.cardContainer}>
             <TouchableOpacity
               style={styles.paymentOption}
@@ -186,7 +170,6 @@ const PaymentGatewayScreen = ({route, navigation}) => {
             </TouchableOpacity>
           </View>
 
-          {/* Google Pay Payment Option */}
           <View style={styles.cardContainer}>
             <TouchableOpacity
               style={styles.paymentOption}

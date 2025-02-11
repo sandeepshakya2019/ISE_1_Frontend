@@ -7,6 +7,8 @@ import {
   TouchableOpacity,
   Text,
   Modal,
+  Animated,
+  TouchableWithoutFeedback,
 } from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
@@ -22,17 +24,17 @@ import RegisterScreen from './src/screens/RegisterScreen';
 import HomeScreen from './src/screens/HomeScreen';
 import ProfileScreen from './src/screens/ProfileScreen';
 import DocumentScreen from './src/screens/DocumentScreen';
+import GovtSchemeScreen from './src/screens/GovtSchemeScreen';
 import {apiCallWithHeader} from './src/utils/api';
 import {logoutApiCall} from './src/utils/logout';
-import GovtSchemeScreen from './src/screens/GovtSchemeScreen';
 
 const Stack = createStackNavigator();
 
 const CustomHeader = ({navigation, handleLogout}) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [loadingLogout, setLoadingLogout] = useState(false);
+  const slideAnim = useState(new Animated.Value(-300))[0]; // Slide from left
 
-  // Get the current active screen
   const routeName =
     navigation.getState()?.routes?.[navigation.getState().index]?.name;
 
@@ -47,110 +49,127 @@ const CustomHeader = ({navigation, handleLogout}) => {
     });
   };
 
+  const openModal = () => {
+    setModalVisible(true);
+    Animated.timing(slideAnim, {
+      toValue: 0,
+      duration: 300,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  const closeModal = () => {
+    Animated.timing(slideAnim, {
+      toValue: -300,
+      duration: 300,
+      useNativeDriver: true,
+    }).start(() => setModalVisible(false));
+  };
+
   return (
     <View style={styles.headerContainer}>
-      <TouchableOpacity
-        onPress={() => setModalVisible(true)}
-        style={styles.breadcrumbButton}>
+      <TouchableOpacity onPress={openModal} style={styles.breadcrumbButton}>
         <Text style={styles.breadcrumbText}>☰</Text>
       </TouchableOpacity>
 
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => setModalVisible(false)}>
-        <View style={styles.modalContainer}>
-          {loadingLogout ? (
-            <View style={styles.loaderContainer}>
-              <ActivityIndicator size="large" color="#28a745" />
-              <Text style={styles.loaderText}>Logging out...</Text>
-            </View>
-          ) : (
-            <>
-              <TouchableOpacity
-                style={[
-                  styles.modalItem,
-                  routeName === 'Profile' && styles.activeItem,
-                ]}
-                onPress={() => {
-                  navigation.navigate('Profile');
-                  setModalVisible(false);
-                }}>
-                <Text style={styles.modalText}>Profile</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[
-                  styles.modalItem,
-                  routeName === 'LoanDetails' && styles.activeItem,
-                ]}
-                onPress={() => {
-                  navigation.navigate('LoanDetails');
-                  setModalVisible(false);
-                }}>
-                <Text style={styles.modalText}>Loan Details</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[
-                  styles.modalItem,
-                  routeName === 'LoanBorrow' && styles.activeItem,
-                ]}
-                onPress={() => {
-                  navigation.navigate('LoanBorrow');
-                  setModalVisible(false);
-                }}>
-                <Text style={styles.modalText}>Borrow Loan</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[
-                  styles.modalItem,
-                  routeName === 'LoanRepay' && styles.activeItem,
-                ]}
-                onPress={() => {
-                  navigation.navigate('LoanRepay');
-                  setModalVisible(false);
-                }}>
-                <Text style={styles.modalText}>Repay Loan</Text>
-              </TouchableOpacity>
+      <Modal transparent={true} visible={modalVisible} animationType="none">
+        <TouchableWithoutFeedback onPress={closeModal}>
+          <View style={styles.modalOverlay}>
+            <Animated.View
+              style={[
+                styles.modalContainer,
+                {transform: [{translateX: slideAnim}]},
+              ]}>
+              {loadingLogout ? (
+                <View style={styles.loaderContainer}>
+                  <ActivityIndicator size="large" color="#28a745" />
+                  <Text style={styles.loaderText}>Logging out...</Text>
+                </View>
+              ) : (
+                <>
+                  <TouchableOpacity
+                    style={[
+                      styles.modalItem,
+                      routeName === 'Profile' && styles.activeItem,
+                    ]}
+                    onPress={() => {
+                      navigation.navigate('Profile');
+                      closeModal();
+                    }}>
+                    <Text style={styles.modalText}>Profile</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={[
+                      styles.modalItem,
+                      routeName === 'LoanDetails' && styles.activeItem,
+                    ]}
+                    onPress={() => {
+                      navigation.navigate('LoanDetails');
+                      closeModal();
+                    }}>
+                    <Text style={styles.modalText}>Loan Details</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={[
+                      styles.modalItem,
+                      routeName === 'LoanBorrow' && styles.activeItem,
+                    ]}
+                    onPress={() => {
+                      navigation.navigate('LoanBorrow');
+                      closeModal();
+                    }}>
+                    <Text style={styles.modalText}>Borrow Loan</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={[
+                      styles.modalItem,
+                      routeName === 'LoanRepay' && styles.activeItem,
+                    ]}
+                    onPress={() => {
+                      navigation.navigate('LoanRepay');
+                      closeModal();
+                    }}>
+                    <Text style={styles.modalText}>Repay Loan</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={[
+                      styles.modalItem,
+                      routeName === 'Document' && styles.activeItem,
+                    ]}
+                    onPress={() => {
+                      navigation.navigate('Document');
+                      closeModal();
+                    }}>
+                    <Text style={styles.modalText}>Documents</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={[
+                      styles.modalItem,
+                      routeName === 'GovtSchemeScreen' && styles.activeItem,
+                    ]}
+                    onPress={() => {
+                      navigation.navigate('GovtSchemeScreen');
+                      closeModal();
+                    }}>
+                    <Text style={styles.modalText}>Govt Schemes</Text>
+                  </TouchableOpacity>
 
-              <TouchableOpacity
-                style={[
-                  styles.modalItem,
-                  routeName === 'Document' && styles.activeItem,
-                ]}
-                onPress={() => {
-                  navigation.navigate('Document');
-                  setModalVisible(false);
-                }}>
-                <Text style={styles.modalText}>Documents</Text>
-              </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.modalItem}
+                    onPress={handleLogoutPress}>
+                    <Text style={styles.modalText}>Logout</Text>
+                  </TouchableOpacity>
 
-              <TouchableOpacity
-                style={[
-                  styles.modalItem,
-                  routeName === 'GovtSchemeScreen' && styles.activeItem,
-                ]}
-                onPress={() => {
-                  navigation.navigate('GovtSchemeScreen');
-                  setModalVisible(false);
-                }}>
-                <Text style={styles.modalText}>Govt Schemes</Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                style={styles.modalItem}
-                onPress={handleLogoutPress}>
-                <Text style={styles.modalText}>Logout</Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                style={styles.closeButton}
-                onPress={() => setModalVisible(false)}>
-                <Text style={styles.closeButtonText}>Close</Text>
-              </TouchableOpacity>
-            </>
-          )}
-        </View>
+                  <TouchableOpacity
+                    style={styles.closeButton}
+                    onPress={closeModal}>
+                    <Text style={styles.closeButtonText}>Close</Text>
+                  </TouchableOpacity>
+                </>
+              )}
+            </Animated.View>
+          </View>
+        </TouchableWithoutFeedback>
       </Modal>
     </View>
   );
@@ -256,6 +275,7 @@ const App = () => {
 };
 
 const styles = StyleSheet.create({
+  // All styles remain the same...
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
@@ -275,9 +295,10 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
   modalContainer: {
-    flex: 1,
+    width: '70%',
     backgroundColor: 'white',
     padding: 20,
+    flex: 1,
     justifyContent: 'center',
   },
   modalItem: {
@@ -303,6 +324,12 @@ const styles = StyleSheet.create({
   closeButtonText: {
     color: 'white',
     fontSize: 16,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'center',
+    alignItems: 'flex-start',
   },
 });
 
