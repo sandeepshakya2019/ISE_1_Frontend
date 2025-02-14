@@ -16,7 +16,7 @@ Since i am using free api so for free api mobile number should be in friend list
 
 **APK file is also available in the root directory**
 
-# 0. Gameplay Video Related to FinSphere App (On Local Host)
+# 0. Gameplay Video Related to FinSphere App
 
 - **Login, Register and Logout (with validation)** :
 
