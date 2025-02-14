@@ -28,13 +28,18 @@ https://github.com/user-attachments/assets/d639d6b6-674f-409a-807f-b3e61d30b369
 
 https://github.com/user-attachments/assets/d6e6a811-46dd-4aa6-bcda-9c09efd6dd86
 
-- **User Profiles (Loans and User Info)** :
+<div style="display: flex; justify-content: space-between;">
+  <video width="45%" controls autoplay muted>
+    <source src="https://github.com/user-attachments/assets/7cecd4b9-dd5b-4fd2-8fb4-08463e3831f1" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+  
+  <video width="45%" controls autoplay muted>
+    <source src="https://github.com/user-attachments/assets/2fb6551f-841c-46eb-9c5f-b699d28d1914" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+</div>
 
-https://github.com/user-attachments/assets/7cecd4b9-dd5b-4fd2-8fb4-08463e3831f1
-
-- **Govt Schemes Page & Docs Related to the App** :
-
-https://github.com/user-attachments/assets/2fb6551f-841c-46eb-9c5f-b699d28d1914
 
 # 1. Introduction
 
