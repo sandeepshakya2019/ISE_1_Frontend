@@ -6,19 +6,19 @@
 
 Since i am using free api so for free api mobile number should be in friend list of sender list in twillio so we created free account where any OTP will work
 
-**mobile number given below can work with any OTP**
+**The mobile number given below can work with any OTP (Please strictly use these mobile numbers only (due to free version of Twilio api))**
 
-` mobileNo 9084043946 -> Already Register and KYC Done (You can directly view all the things)`
+`mobile no 9084043946 -> Already Register and KYC Done (You can directly view all the things)`
 
-`mobileNo 8677963878 -> You can register with this mobile number`
+`mobile no 8677963878 -> You can register with this mobile number`
 
-`if already register ypu can use additional mobileNo 1234567890`
+`you can use an additional mobile 1234567890`
 
 **APK file is also available in the root directory**
 
 # 0. Gameplay Video Related to FinSphere App (On Local Host)
 
-- **Login and Register (with validation)** :
+- **Login, Register and Logout (with validation)** :
 
 https://github.com/user-attachments/assets/46c720c6-6832-4eb0-8087-cfaf6f39db70
 
@@ -28,13 +28,13 @@ https://github.com/user-attachments/assets/d639d6b6-674f-409a-807f-b3e61d30b369
 
 https://github.com/user-attachments/assets/d6e6a811-46dd-4aa6-bcda-9c09efd6dd86
 
-- **Borrow a Loan, Repay a Loan** :
+- **User Profiles (Loans and User Info)** :
 
-https://github.com/user-attachments/assets/f8551918-a544-4ef7-bb84-de72d516948e
-
-- **User Profiles (Contains KYC, Loans and User Info)** :
+https://github.com/user-attachments/assets/7cecd4b9-dd5b-4fd2-8fb4-08463e3831f1
 
 - **Govt Schemes Page & Docs Related to the App** :
+
+https://github.com/user-attachments/assets/2fb6551f-841c-46eb-9c5f-b699d28d1914
 
 # 1. Introduction
 
@@ -59,7 +59,7 @@ Proposed Implementation:
 
 ### 2.1.2 e-KYC
 
-Description: Allows users to upload photos for identity verification or loan applications in real time.
+Description: Allows users to upload photos for identity verification or loan applications in real-time (if we get govt APIs to verify aadhar card and accounts).
 Proposed Implementation:
 
 Frontend:
@@ -79,7 +79,7 @@ Description: Displays user-specific details, including personal information and 
 
 Proposed Implementation:
 
-- Dedicated backend route to fetch and update user profiles.
+- A dedicated backend route is used to fetch and update user profiles.
 - Display: Name, email, and demographic details.
 - Active and past loans.
 
@@ -94,7 +94,7 @@ Users can apply for loans by specifying the amount and reason.
 Proposed Implementation:
 
 - Input form to collect loan details (amount and purpose).
-- API call to backend for loan application with user authentication (via JWT).
+- API call to the backend for loan application with user authentication (via JWT).
 - Response includes loan status, approval, and repayment schedule.
 
 Repay a Loan
@@ -135,7 +135,7 @@ Proposed Implementation:
 
 Description:
 
-Establish reliable communication between frontend and backend.
+Establish reliable communication between the front-end and the backend.
 
 Proposed Implementation:
 
@@ -151,7 +151,7 @@ For seamless repayment of loans via Stripe, Razorpay, or PayPal.
 
 AI-Based Recommendations:
 
-- Detect Below Poverty Level People's finance based on user behavior, history and some other data.
+- Detect Below Poverty Level People's finances based on user behaviour, history and some other data.
 
 Offline Support:
 
@@ -183,10 +183,10 @@ Description: Allow users to upload real-time photos for verification or loan app
 Implementation:
 
 Frontend:
-Use the device camera for clicking photos in real-time.
+Use the device camera for clicking photos in real time.
 Integrate file input components to allow manual uploads.
 Backend:
-Use Multer middleware to handle image uploads from the frontend.
+Use Multer middleware to handle image uploads from the front end.
 Upload images to Cloudinary for efficient storage, delivery, and on-the-fly transformations.
 Provide features like:
 Viewing uploaded photos directly in the app via Cloudinary CDN URLs.
