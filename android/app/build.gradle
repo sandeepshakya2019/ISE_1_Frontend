@@ -20,7 +20,7 @@ android {
     namespace "com.newapp"
 
     defaultConfig {
-        applicationId "com.FinSphere"
+        applicationId "com.finsphere"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
