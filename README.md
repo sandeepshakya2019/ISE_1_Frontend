@@ -282,28 +282,10 @@ cd .. (use command)
 npm install
 ```
 
-- `Make sure you uncomment the below code (if not) already in the api.ts file`
-
-```
-const API_BASE_URL =
-  Platform.OS === 'android'
-    ? `http://10.0.2.2:${LOCAL_API_PORT}/api/v1` // For Android Emulator
-    : `http://localhost:${LOCAL_API_PORT}/api/v1`; // For iOS Simulator or other platforms
-```
-
-- `Comment below code (if not)`
-
-```// const API_BASE_URL = 'https://ise-1-backend.vercel.app/api/v1';
-
-const API_BASE_URL = 'http://10.23.86.204:3005/api/v1';
-```
-
 ## Step 2: Start your Application
 
 Let Metro Bundler run in its _own_ terminal. Open a _new_ terminal from the _root_ of your React Native project. Run the following command to start your _Android_ or _iOS_ app:
 
-- Please make sure you run the [Backend server](https://github.com/sandeepshakya2019/ISE_1_Backend) successfully on PORT 3005 else you have to change to same port in react-native frontend in api.ts file
-  `const LOCAL_API_PORT = YOUR_PORT_NUMBER; // Your Node.js server port`
 - before that make sure that the Android emulator is running
 
 ### For Android
