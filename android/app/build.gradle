@@ -20,7 +20,7 @@ android {
     namespace "com.newapp"
 
     defaultConfig {
-        applicationId "com.newapp"
+        applicationId "com.FinSphere"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
@@ -34,19 +34,12 @@ android {
             keyAlias 'androiddebugkey'
             keyPassword 'android'
         }
-        release {
-            if (project.hasProperty('MYAPP_RELEASE_STORE_FILE')) {
-                storeFile file(MYAPP_RELEASE_STORE_FILE)
-                storePassword MYAPP_RELEASE_STORE_PASSWORD
-                keyAlias MYAPP_RELEASE_KEY_ALIAS
-                keyPassword MYAPP_RELEASE_KEY_PASSWORD
-            } else {
-                storeFile file('path/to/keystore.jks') // Ensure the path is correct
-                storePassword 'your-password'
-                keyAlias 'your-alias'
-                keyPassword 'your-key-password'
-            }
-        }
+       release {
+        storeFile file("my-release-key.keystore") // Ensure the file name is correct
+        storePassword MYAPP_RELEASE_STORE_PASSWORD
+        keyAlias MYAPP_RELEASE_KEY_ALIAS
+        keyPassword MYAPP_RELEASE_KEY_PASSWORD
+    }
     }
 
     buildTypes {
