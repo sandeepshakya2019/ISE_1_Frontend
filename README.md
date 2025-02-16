@@ -4,9 +4,9 @@
 
 **For Checking Purposes**
 
-Since i am using free api so for free api mobile number should be in friend list of sender list in twillio so we created free account where any OTP will work
+Since I am using free API so in free API mobile number should be in the friend list of the sender in Twillio so we created a free account where any OTP will work
 
-**The mobile number given below can work with any OTP (Please strictly use these mobile numbers only (due to free version of Twilio api))**
+**The mobile number given below can work with any OTP (Please strictly use these mobile numbers only (due to the free version of Twilio API))**
 
 `mobile no 9084043946 -> Already Register and KYC Done (You can directly view all the things)`
 
@@ -16,7 +16,7 @@ Since i am using free api so for free api mobile number should be in friend list
 
 **APK file is also available in the root directory**
 
-# 0. Gameplay Video Related to FinSphere App
+# 0. Gameplay Video Related to the FinSphere App
 
 - **Login, Register and Logout (with validation)** :
 
@@ -42,10 +42,11 @@ https://github.com/user-attachments/assets/2fb6551f-841c-46eb-9c5f-b699d28d1914
 - App Name: **FinSphere**
 - Version: **Beta**
 - Author/Team: **Sandeep Kumar, Ashant Kumar, Abhishek Kumar**
-- Submission Date: **30/01/2025**
+- Submission Date: **16/02/2025**
 - Purpose: **Objective To develop a mobile application that addresses financial inclusion by providing access to essential financial services like savings, loans, and insurance to underbanked and underserved populations. The app leverages mobile banking, microfinance, and fintech innovations to create an easy-to-use, accessible platform.**
 
-# 2. Features
+
+# 2. Detailed Features
 
 ## 2.1 Proposed Features
 
@@ -166,14 +167,14 @@ Accessibility Features:
 
 ### 2.2.1 User Authentication (Register, Login, Logout)
 
-Description: Secure user authentication system using JWT.
+Description: A secure user authentication system is used using JWT.
 
 Implementation: Use JSON Web Token (JWT) for stateless user authentication.
 AsyncStorage for storing JWT locally to maintain session states.
 Integrate state management tools like Redux for advanced user session tracking.
 Routes for:
 User registration.
-Login with JWT issuance upon successful authentication.
+You can log in with JWT issuance after you've completed it.
 Logout functionality (invalidate token and clear AsyncStorage).
 Add auto-login functionality on app restart if a valid JWT exists in AsyncStorage.
 
@@ -184,7 +185,7 @@ Description: Allow users to upload real-time photos for verification or loan app
 Implementation:
 
 Frontend:
-Use the device camera for clicking photos in real time.
+Use the device camera for clicking photos in real-time.
 Integrate file input components to allow manual uploads.
 Backend:
 Use Multer middleware to handle image uploads from the front end.
@@ -254,9 +255,9 @@ Automatically attach the JWT from AsyncStorage to every API call.
 - **2.3.2 Financial Planning Tools**
 - **2.3.3 Push Notifications**
 - **2.3.4 Payment Integration**
-- **2.3.5 Real Time e-KYC Authentication**
+- **2.3.5 Real-Time e-KYC Authentication**
 - **2.3.6 Multilingual support**
-- **2.3.7 AI based Recommendations System**
+- **2.3.7 AI-based Recommendations System**
 
 This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
 
@@ -266,7 +267,7 @@ This is a new [**React Native**](https://reactnative.dev) project, bootstrapped 
 
 ## Step 0: Fetch the Github Frontend Repository
 
-- Fetch the github Repository by following command [**Frontend For FinSphere**](https://github.com/sandeepshakya2019/ISE_1_Frontend)
+- Fetch the GitHub Repository by following command [**Frontend For FinSphere**](https://github.com/sandeepshakya2019/ISE_1_Frontend)
 
 ```bash
 git clone https://github.com/sandeepshakya2019/ISE_1_Frontend
@@ -275,7 +276,7 @@ git clone https://github.com/sandeepshakya2019/ISE_1_Frontend
 ## Step 1: Install the dependencies
 
 ```bash
-# change directory to the folder where you clone the Repository
+# Change directory to the folder where you clone the Repository
 cd .. (use command)
 
 # using npm
@@ -284,7 +285,7 @@ npm install
 
 ## Step 2: Start your Application
 
-Let Metro Bundler run in its _own_ terminal. Open a _new_ terminal from the _root_ of your React Native project. Run the following command to start your _Android_ or _iOS_ app:
+Run the following command to start your _Android_ or _iOS_ app:
 
 - before that make sure that the Android emulator is running
 
@@ -322,7 +323,6 @@ You've successfully run the React Native App.
 ## 4.1 Libraries used :
 
 - Axios `axios` : is a popular JavaScript library used to make HTTP requests from Node.js or the browser. It provides a simple and intuitive API for interacting with RESTful APIs, handling errors, and working with promises or async/await.
-
 - React `react` : it is used in react-native by default we have used `useState` and `useEffect` Hooks
 - React Native Gesture handler `react-native-gesture-handler`: is a popular library in the React Native ecosystem used to handle touch gestures and interactions in a performant and customizable way
 - React Native Image Picker `react-native-image-picker` : is a popular library for React Native that allows users to pick images and videos from their device's camera or gallery
